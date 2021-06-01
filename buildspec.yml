@@ -33,7 +33,6 @@ phases:
 
   post_build:
     commands:
-      - ./scripts/package-template.sh
       - ./scripts/push-docker-images.sh
 
 artifacts:
