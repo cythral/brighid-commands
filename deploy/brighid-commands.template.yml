@@ -1,0 +1,149 @@
+Transform: AWS::Serverless-2016-10-31
+Description: Brighid Commands Service
+Parameters:
+  DomainName:
+    Type: String
+    Description: Domain name to use for Brighid Commands.
+
+  Image:
+    Type: String
+    Description: URI of the Docker Image to pull.
+
+  DatabaseName:
+    Type: String
+    Description: The name of the database to use.
+
+  DatabaseUser:
+    Type: String
+    Description: The name of the database user to use.
+
+  DatabasePassword:
+    Type: String
+    Description: The encrypted database password.
+
+Resources:
+  ServiceRegistryRecord:
+    Type: AWS::ServiceDiscovery::Service
+    Properties:
+      Description: Service Registry Record for Brighid Commands.
+      DnsConfig:
+        RoutingPolicy: MULTIVALUE
+        DnsRecords:
+          - TTL: 60
+            Type: A
+          - TTL: 60
+            Type: SRV
+      HealthCheckCustomConfig:
+        FailureThreshold: 1
+      NamespaceId: !ImportValue brighid-infrastructure:ServiceRegistry
+      Name: commands
+
+  ListenerRule:
+    Type: AWS::ElasticLoadBalancingV2::ListenerRule
+    Properties:
+      ListenerArn: !ImportValue cfn-utilities:HttpListenerArn
+      Priority: 6
+      Actions:
+        - Type: forward
+          TargetGroupArn: !Ref TargetGroup
+      Conditions:
+        - Field: host-header
+          HostHeaderConfig:
+            Values:
+              - !Ref DomainName
+
+  TargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      TargetType: ip
+      VpcId: !ImportValue cfn-utilities:VpcId
+      Protocol: HTTP
+      Port: 80
+      HealthCheckPath: /healthcheck
+      TargetGroupAttributes:
+        - Key: deregistration_delay.timeout_seconds
+          Value: "30"
+
+  Service:
+    Type: AWS::ECS::Service
+    Properties:
+      ServiceName: commands
+      Cluster: !ImportValue brighid-infrastructure:ClusterName
+      LaunchType: FARGATE
+      NetworkConfiguration:
+        AwsvpcConfiguration:
+          Subnets: !Split
+            - ","
+            - !ImportValue cfn-utilities:SubnetIds
+          SecurityGroups:
+            - !ImportValue cfn-utilities:WebSecurityGroupId
+          AssignPublicIp: ENABLED
+      TaskDefinition: !Ref TaskDefinition
+      LoadBalancers:
+        - ContainerName: commands
+          ContainerPort: 80
+          TargetGroupArn: !Ref TargetGroup
+      ServiceRegistries:
+        - RegistryArn: !GetAtt ServiceRegistryRecord.Arn
+          Port: 80
+      DesiredCount: 1
+      DeploymentConfiguration:
+        MinimumHealthyPercent: 1
+        MaximumPercent: 200
+        DeploymentCircuitBreaker:
+          Enable: true
+          Rollback: true
+
+  TaskDefinition:
+    Type: AWS::ECS::TaskDefinition
+    Properties:
+      Cpu: "256"
+      Memory: "512"
+      Family: !Ref AWS::StackName
+      NetworkMode: awsvpc
+      ExecutionRoleArn: !GetAtt TaskRole.Arn
+      TaskRoleArn: !GetAtt TaskRole.Arn
+      RequiresCompatibilities:
+        - FARGATE
+      ContainerDefinitions:
+        - Name: commands
+          Essential: true
+          Image: !Ref Image
+          PortMappings:
+            - ContainerPort: 80
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: brighid
+          Environment:
+            - Name: Database__Host
+              Value: !ImportValue mutedac:ClusterAddress
+            - Name: Database__Name
+              Value: !Ref DatabaseName
+            - Name: Database__User
+              Value: !Ref DatabaseUser
+            - Name: Encrypted__Database__Password
+              Value: !Ref DatabasePassword
+
+  TaskRole:
+    Type: AWS::IAM::Role
+    Properties:
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+        - arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role
+        - !ImportValue cfn-utilities:SecretsKeyDecryptPolicyArn
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Action: sts:AssumeRole
+            Principal:
+              Service: ecs-tasks.amazonaws.com
+
+  LogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: /brighid/commands
+      RetentionInDays: 14

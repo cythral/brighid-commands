@@ -1,0 +1,34 @@
+version: "3.4"
+services:
+  adapter:
+    image: mcr.microsoft.com/dotnet/sdk:5.0.300
+    entrypoint: dotnet watch --project src/Commands run
+    working_dir: /app
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - ./:/app
+      - ~/.aws:/root/.aws
+    environment:
+      Environment: local
+      CONFIGURATION: Debug
+      AWS_REGION: us-east-1
+      Database__Host: db
+      Database__Name: ${DB_NAME}
+      Database__User: ${DB_USER}
+      Database__Password: ${DB_PASSWORD}
+
+  db:
+    image: mariadb/server:10.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_RANDOM_ROOT_PASSWORD: "true"
+    volumes:
+      - my-db:/var/lib/mysql
+
+volumes:
+  my-db:

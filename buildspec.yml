@@ -1,0 +1,50 @@
+version: 0.2
+
+env:
+  shell: bash
+  variables:
+    DOTNET_SYSTEM_GLOBALIZATION_INVARIANT: "true"
+    DOTNET_NOLOGO: "true"
+    CONFIGURATION: "Release"
+
+phases:
+  install:
+    runtime-versions:
+      docker: 19
+
+    commands:
+      - dotnet-install.sh --jsonfile global.json
+      - dotnet --info
+
+  pre_build:
+    commands:
+      - aws ecr get-login-password | docker login --username AWS --password-stdin $REPOSITORY_URI
+      - . ./scripts/codebuild-extras.sh
+
+  build:
+    commands:
+      - export COMMANDS_IMAGE_TAG=$REPOSITORY_URI:$CODEBUILD_BUILD_NUMBER
+      - dotnet restore
+      - dotnet publish --no-restore
+      - dotnet test --logger trx --no-build
+
+      - ./scripts/create-config-files.sh $COMMANDS_IMAGE_TAG
+      - dotnet build -t:Dockerize
+
+  post_build:
+    commands:
+      - ./scripts/package-template.sh
+      - ./scripts/push-docker-images.sh
+
+artifacts:
+  discard-paths: yes
+  files:
+    - "bin/brighid-commands.template.yml"
+    - "brighid-commands.*.config.json"
+
+reports:
+  test-results:
+    files:
+      - "**/TestResults/*.trx"
+    discard-paths: yes
+    file-format: VisualStudioTrx

@@ -1,0 +1,20 @@
+<Project>
+    <Target Name="RestoreTools" AfterTargets="Restore">
+        <Exec Command="dotnet tool restore" ConsoleToMsBuild="true" />
+    </Target>
+
+    <Target Name="GenerateEnvFile" AfterTargets="Restore" Condition="!Exists('$(MSBuildThisFileDirectory).env')">
+        <ItemGroup>
+            <EnvFileLines Include="DB_USER=commands-user" />
+            <EnvFileLines Include="DB_PASSWORD=$([System.Guid]::NewGuid())" />
+            <EnvFileLines Include="DB_NAME=commands" />
+            <EnvFileLines Include="ASPNET_VERSION=5.0.6" />
+        </ItemGroup>
+
+        <WriteLinesToFile File="$(MSBuildThisFileDirectory).env" Lines="@(EnvFileLines)" />
+    </Target>
+
+    <Target Name="Format" DependsOnTargets="Restore;RestoreTools">
+        <Exec Command="dotnet format $(MSBuildThisFileDirectory)brighid-commands.sln --fix-style info" />
+    </Target>
+</Project>
