@@ -38,7 +38,7 @@ phases:
 artifacts:
   discard-paths: yes
   files:
-    - "bin/brighid-commands.template.yml"
+    - "deploy/brighid-commands.template.yml"
     - "brighid-commands.*.config.json"
 
 reports:
