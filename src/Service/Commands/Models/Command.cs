@@ -25,7 +25,7 @@ namespace Brighid.Commands.Commands
         /// <summary>
         /// Gets or sets the name of the command.
         /// </summary>
-        public string? Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the checksum of the command's contents.
@@ -38,9 +38,14 @@ namespace Brighid.Commands.Commands
         public string? Description { get; set; }
 
         /// <summary>
-        /// Gets or sets the URL where the command's assembly can be downloaded from.
+        /// Gets or sets the URL where the command's package can be downloaded from.
         /// </summary>
-        public string? AssemblyDownloadURL { get; set; }
+        public string? DownloadURL { get; set; }
+
+        /// <summary>
+        /// Gets or sets the name of the assembly within the package that the command lives in.
+        /// </summary>
+        public string? AssemblyName { get; set; }
 
         /// <summary>
         /// Gets or sets the fully-qualified name of the command type within the assembly.

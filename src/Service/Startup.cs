@@ -44,9 +44,12 @@ namespace Brighid.Commands
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
+            services.Configure<ServiceOptions>(configuration.GetSection("Commands"));
             services.AddHealthChecks();
             services.AddControllers();
             services.ConfigureDatabaseServices(configuration);
+            services.ConfigureCommandServices();
+            services.AddHostedService<TestHostedService>();
         }
 
         /// <summary>

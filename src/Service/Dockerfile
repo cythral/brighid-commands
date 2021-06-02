@@ -33,6 +33,8 @@ RUN \
     useradd --no-create-home brighid && \
     usermod --shell /bin/false brighid && \
     usermod --lock brighid && \
+    mkdir -p /var/brighid/commands && \
+    chown brighid /var/brighid/commands && \
     chmod +x /entrypoint.sh
 
 EXPOSE 80

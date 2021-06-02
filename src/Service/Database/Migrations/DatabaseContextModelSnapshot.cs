@@ -23,7 +23,7 @@ namespace Brighid.Commands.Database
                         .ValueGeneratedOnAdd()
                         .HasColumnType("binary(16)");
 
-                    b.Property<string>("AssemblyDownloadURL")
+                    b.Property<string>("AssemblyName")
                         .HasColumnType("longtext");
 
                     b.Property<string>("Checksum")
@@ -32,10 +32,14 @@ namespace Brighid.Commands.Database
                     b.Property<string>("Description")
                         .HasColumnType("longtext");
 
+                    b.Property<string>("DownloadURL")
+                        .HasColumnType("longtext");
+
                     b.Property<bool>("IsEnabled")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
                     b.Property<int>("Type")

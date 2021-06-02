@@ -117,6 +117,19 @@
           "System.ComponentModel.Annotations": "4.3.0"
         }
       },
+      "AWSSDK.Core": {
+        "type": "Transitive",
+        "resolved": "3.7.0.31",
+        "contentHash": "C2vzPag+Rzb1hBiMUwRW+HQzIrsPxxKBk7EMX0AUxkApg36DOGXI1Aha4xpC0w5sWqRuQAJ3YW0Ihk1nPlBzKA=="
+      },
+      "AWSSDK.S3": {
+        "type": "Transitive",
+        "resolved": "3.7.0.32",
+        "contentHash": "Por+i5I+nnhx0buPAwJv316wOT8Yx/xSF5Q/wk2uS1K1815/jIsWMQcvIemwyjsIBNrQY4FUk7wwHD4fLizJIQ==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.0.31, 4.0.0)"
+        }
+      },
       "Castle.Core": {
         "type": "Transitive",
         "resolved": "4.4.0",
@@ -1256,9 +1269,17 @@
           "System.Xml.XmlDocument": "4.3.0"
         }
       },
-      "brighid.commands": {
+      "core": {
         "type": "Project",
         "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "5.0.1"
+        }
+      },
+      "service": {
+        "type": "Project",
+        "dependencies": {
+          "AWSSDK.S3": "3.7.0.32",
+          "Core": "1.0.0",
           "Destructurama.Attributed": "2.0.0",
           "Microsoft.EntityFrameworkCore.Design": "5.0.6",
           "Pomelo.EntityFrameworkCore.MySql": "5.0.0",
