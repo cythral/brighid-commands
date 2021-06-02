@@ -20,6 +20,8 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<IUtilsFactory, DefaultUtilsFactory>();
             services.AddSingleton<ICommandService, DefaultCommandService>();
             services.AddSingleton<ICommandPackageDownloader, DefaultCommandPackageDownloader>();
+            services.AddSingleton<ICommandRepository, DefaultCommandRepository>();
+            services.AddSingleton<ICommandLoader, DefaultCommandLoader>();
         }
     }
 }

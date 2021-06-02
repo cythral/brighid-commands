@@ -5,7 +5,7 @@ using Brighid.Commands.Core;
 namespace Brighid.Commands.Commands
 {
     /// <inheritdoc />
-    public class DefaultCommandCache : ConcurrentDictionary<string, ICommand>, ICommandCache
+    public class DefaultCommandCache : ConcurrentDictionary<string, ICommandRunner>, ICommandCache
     {
     }
 }

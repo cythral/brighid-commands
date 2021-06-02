@@ -11,7 +11,7 @@ namespace Brighid.Commands.TestCommands
     /// Ping command.
     /// </summary>
     [CommandStartup(typeof(PingCommandStartup))]
-    public class PingCommand : ICommand
+    public class PingCommand : ICommandRunner
     {
         private readonly ILogger<PingCommand> logger;
 

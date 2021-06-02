@@ -4,9 +4,9 @@ using System.Threading.Tasks;
 namespace Brighid.Commands.Core
 {
     /// <summary>
-    /// Represents a command.
+    /// Service that runs a command.
     /// </summary>
-    public interface ICommand
+    public interface ICommandRunner
     {
         /// <summary>
         /// Runs the command.
