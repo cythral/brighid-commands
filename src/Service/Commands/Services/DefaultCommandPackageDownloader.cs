@@ -41,6 +41,8 @@ namespace Brighid.Commands.Commands
         /// <todo>Handle concurrency between multiple threads wanting to download the same package.</todo>
         public async Task<Assembly> DownloadCommandPackageFromS3(string s3Uri, string assemblyName, CancellationToken cancellationToken)
         {
+            cancellationToken.ThrowIfCancellationRequested();
+
             if (loadedAssemblies.TryGetValue(s3Uri + assemblyName, out var assembly))
             {
                 return assembly;

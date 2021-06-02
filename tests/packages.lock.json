@@ -895,6 +895,11 @@
           "System.Runtime.Extensions": "4.3.0"
         }
       },
+      "System.Linq.Async": {
+        "type": "Transitive",
+        "resolved": "5.0.0",
+        "contentHash": "cPtIuuH8TIjVHSi2ewwReWGW1PfChPE0LxPIDlfwVcLuTM9GANFTXiMB7k3aC4sk3f0cQU25LNKzx+jZMxijqw=="
+      },
       "System.Linq.Expressions": {
         "type": "Transitive",
         "resolved": "4.3.0",
@@ -1283,7 +1288,8 @@
           "Destructurama.Attributed": "2.0.0",
           "Microsoft.EntityFrameworkCore.Design": "5.0.6",
           "Pomelo.EntityFrameworkCore.MySql": "5.0.0",
-          "Serilog.AspNetCore": "4.1.0"
+          "Serilog.AspNetCore": "4.1.0",
+          "System.Linq.Async": "5.0.0"
         }
       }
     }

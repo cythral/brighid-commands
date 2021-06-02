@@ -1,6 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+using Brighid.Commands.Core;
+
 namespace Brighid.Commands.Commands
 {
     /// <summary>
@@ -14,6 +16,6 @@ namespace Brighid.Commands.Commands
         /// <param name="command">The command to load.</param>
         /// <param name="cancellationToken">Token used to cancel the operation.</param>
         /// <returns>The resulting task.</returns>
-        Task LoadEmbedded(Command command, CancellationToken cancellationToken = default);
+        Task<ICommandRunner> LoadEmbedded(Command command, CancellationToken cancellationToken = default);
     }
 }

@@ -146,7 +146,7 @@ namespace Brighid.Commands.Commands
                 }
             }
 
-            private class TestCommand : ICommand
+            private class TestCommand : ICommandRunner
             {
                 public Task<string> Run(CommandContext context, CancellationToken cancellationToken = default)
                 {

@@ -12,7 +12,7 @@ namespace Brighid.Commands.Commands
         /// </summary>
         /// <param name="commandName">The name of the command that was not found..</param>
         public CommandNotFoundException(string commandName)
-            : base($"Command {commandName} was not found in the provided assembly.")
+            : base($"Command {commandName} was not found.")
         {
             CommandName = commandName;
         }
