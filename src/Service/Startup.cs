@@ -49,7 +49,6 @@ namespace Brighid.Commands
             services.AddControllers();
             services.ConfigureDatabaseServices(configuration);
             services.ConfigureCommandServices();
-            services.AddHostedService<TestHostedService>();
         }
 
         /// <summary>
