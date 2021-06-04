@@ -20,6 +20,14 @@ Parameters:
     Type: String
     Description: The encrypted database password.
 
+  OpenIdMetadataAddress:
+    Type: String
+    Description: The metadata address for validating OpenID Tokens.
+
+  OpenIdValidIssuer:
+    Type: String
+    Description: The issuer to validate tokens against.
+
 Resources:
   ServiceRegistryRecord:
     Type: AWS::ServiceDiscovery::Service
@@ -125,6 +133,10 @@ Resources:
               Value: !Ref DatabaseUser
             - Name: Encrypted__Database__Password
               Value: !Ref DatabasePassword
+            - Name: Auth__MetadataAddress
+              Value: !Ref OpenIdMetadataAddress
+            - Name: Auth__ValidIssuer
+              Value: !Ref OpenIdValidIssuer
 
   TaskRole:
     Type: AWS::IAM::Role
