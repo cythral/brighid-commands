@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -8,6 +10,7 @@ using Brighid.Commands.Core;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace Brighid.Commands.Commands
 {
@@ -63,6 +66,16 @@ namespace Brighid.Commands.Commands
         public bool IsEnabled { get; set; }
 
         /// <summary>
+        /// Gets or sets the number of arguments the command has.
+        /// </summary>
+        public uint ArgCount { get; set; }
+
+        /// <summary>
+        /// Gets or sets a list of valid options.
+        /// </summary>
+        public List<string> ValidOptions { get; set; } = new List<string>();
+
+        /// <summary>
         /// Gets or sets the command runner.
         /// </summary>
         [NotMapped]
@@ -89,6 +102,12 @@ namespace Brighid.Commands.Commands
             public void Configure(EntityTypeBuilder<Command> builder)
             {
                 builder.HasIndex(bucket => bucket.Name).IsUnique();
+                builder
+                .Property(command => command.ValidOptions)
+                .HasConversion(new ValueConverter<List<string>, string>(
+                    list => string.Join(';', list),
+                    @string => @string.Split(';', StringSplitOptions.TrimEntries).ToList()
+                ));
             }
         }
     }

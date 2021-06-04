@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 
 using NUnit.Framework;
 
@@ -21,6 +23,85 @@ namespace Brighid.Commands.Commands
 {
     public class CommandControllerTests
     {
+        [TestFixture]
+        public class GetCommandInfoHeadersTests
+        {
+            [Test, Auto]
+            public async Task ShouldSetArgCountHeader(
+                string name,
+                uint argCount,
+                HttpContext httpContext,
+                [Frozen] Command command,
+                [Frozen, Substitute] ICommandRepository repository,
+                [Target] CommandController controller
+            )
+            {
+                command.ArgCount = argCount;
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+
+                await controller.GetCommandInfoHeaders(name);
+
+                httpContext.Response.Headers["x-command-argcount"].Should().Contain(argCount.ToString());
+                await repository.Received().FindCommandByName(Is(name), Is(httpContext.RequestAborted));
+            }
+
+            [Test, Auto]
+            public async Task ShouldSetValidOptionsHeader(
+                string name,
+                string option1,
+                string option2,
+                HttpContext httpContext,
+                [Frozen] Command command,
+                [Frozen, Substitute] ICommandRepository repository,
+                [Target] CommandController controller
+            )
+            {
+                command.ValidOptions = new List<string> { option1, option2 };
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+
+                await controller.GetCommandInfoHeaders(name);
+
+                httpContext.Response.Headers["x-command-options"].Should().Contain(option1);
+                httpContext.Response.Headers["x-command-options"].Should().Contain(option2);
+                await repository.Received().FindCommandByName(Is(name), Is(httpContext.RequestAborted));
+            }
+
+            [Test, Auto]
+            public async Task ShouldReturnOk(
+                string name,
+                uint argCount,
+                HttpContext httpContext,
+                [Frozen] Command command,
+                [Frozen, Substitute] ICommandRepository repository,
+                [Target] CommandController controller
+            )
+            {
+                command.ArgCount = argCount;
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+
+                var result = await controller.GetCommandInfoHeaders(name);
+
+                result.Should().BeOfType<OkResult>();
+            }
+
+            [Test, Auto]
+            public async Task ShouldReturnNotFoundIfCommandWasntFound(
+                string name,
+                HttpContext httpContext,
+                [Frozen] Command command,
+                [Frozen, Substitute] ICommandRepository repository,
+                [Target] CommandController controller
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                repository.FindCommandByName(Any<string>(), Any<CancellationToken>()).Throws(new CommandNotFoundException(name));
+
+                var result = await controller.GetCommandInfoHeaders(name);
+
+                result.Should().BeOfType<NotFoundResult>();
+            }
+        }
+
         [TestFixture]
         public class ExecuteTests
         {
