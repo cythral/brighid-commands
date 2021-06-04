@@ -20,18 +20,11 @@ namespace Microsoft.Extensions.DependencyInjection
         public static void ConfigureDatabaseServices(this IServiceCollection services, IConfiguration configuration)
         {
             var databaseOptions = configuration.GetSection("Database").Get<DatabaseOptions>();
-            services.AddDbContext<DatabaseContext>(options =>
+            services.AddDbContextPool<DatabaseContext>(options =>
             {
-                var conn = $"Server={databaseOptions.Host};";
-                conn += $"Database={databaseOptions.Name};";
-                conn += $"User={databaseOptions.User};";
-                conn += $"Password=\"{databaseOptions.Password}\";";
-                conn += "GuidFormat=Binary16;";
-                conn += "DefaultCommandTimeout=0";
-
                 options
                 .UseMySql(
-                    conn,
+                    databaseOptions.ToString(),
                     new MySqlServerVersion(new Version(5, 7, 7))
                 );
             });

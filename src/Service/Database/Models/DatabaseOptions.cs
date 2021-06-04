@@ -24,5 +24,17 @@ namespace Brighid.Commands.Database
         /// Gets or sets the database password to use.
         /// </summary>
         public string Password { get; set; } = string.Empty;
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            var result = $"Server={Host};";
+            result += $"Database={Name};";
+            result += $"User={User};";
+            result += $"Password=\"{Password}\";";
+            result += "GuidFormat=Binary16;";
+            result += "DefaultCommandTimeout=0";
+            return result;
+        }
     }
 }
