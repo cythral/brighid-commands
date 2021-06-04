@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Claims;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,6 +29,63 @@ namespace Brighid.Commands.Commands
 {
     public class DefaultCommandServiceTests
     {
+        [TestFixture]
+        public class EnsureCommandIsAccessibleToPrincipalTests
+        {
+            [Test, Auto]
+            public void ShouldThrowIfUserIsNotInRole(
+                string role,
+                Command command,
+                ClaimsPrincipal principal,
+                [Target] DefaultCommandService service
+            )
+            {
+                command.RequiredRole = role;
+
+                Action func = () => service.EnsureCommandIsAccessibleToPrincipal(command, principal);
+
+                func.Should().Throw<CommandRequiresRoleException>().And.RequiredRole.Should().Be(role);
+            }
+
+            [Test, Auto]
+            public void ShouldNotThrowIfUserIsInRole(
+                string role,
+                Command command,
+                ClaimsPrincipal principal,
+                [Target] DefaultCommandService service
+            )
+            {
+                command.RequiredRole = role;
+
+                var identity = new ClaimsIdentity();
+                identity.AddClaim(new Claim(ClaimTypes.Role, role));
+                principal.AddIdentity(identity);
+
+                Action func = () => service.EnsureCommandIsAccessibleToPrincipal(command, principal);
+
+                func.Should().NotThrow<CommandRequiresRoleException>();
+            }
+
+            [Test, Auto]
+            public void ShouldNotThrowIfRequiredRoleIsNull(
+                string randomRole,
+                Command command,
+                ClaimsPrincipal principal,
+                [Target] DefaultCommandService service
+            )
+            {
+                command.RequiredRole = null;
+
+                var identity = new ClaimsIdentity();
+                identity.AddClaim(new Claim(ClaimTypes.Role, randomRole));
+                principal.AddIdentity(identity);
+
+                Action func = () => service.EnsureCommandIsAccessibleToPrincipal(command, principal);
+
+                func.Should().NotThrow<CommandRequiresRoleException>();
+            }
+        }
+
         [TestFixture]
         public class LoadEmbedded
         {

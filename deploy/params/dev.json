@@ -2,5 +2,7 @@
   "DomainName": "commands.dev.brigh.id",
   "DatabaseUser": "brighid-commands",
   "DatabaseName": "brighid-commands",
-  "DatabasePassword": "AQICAHjCPp/4JJqnSjdP1A4JZ+E3yC2Gqmk9GshiMiqu57jujwG1ay6aLj6UdPxsd3Krb78bAAAAczBxBgkqhkiG9w0BBwagZDBiAgEAMF0GCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMgop9c6x0m3vxCpdTAgEQgDCdLC0bmInFoRZm1F0zexSOGRZY/WhYYTO0g83YjCj9yRmpcCdHSIS/ZGKRvPkhxGo="
+  "DatabasePassword": "AQICAHjCPp/4JJqnSjdP1A4JZ+E3yC2Gqmk9GshiMiqu57jujwG1ay6aLj6UdPxsd3Krb78bAAAAczBxBgkqhkiG9w0BBwagZDBiAgEAMF0GCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMgop9c6x0m3vxCpdTAgEQgDCdLC0bmInFoRZm1F0zexSOGRZY/WhYYTO0g83YjCj9yRmpcCdHSIS/ZGKRvPkhxGo=",
+  "OpenIdMetadataAddress": "http://identity.dev.brigh.id/.well-known/openid-configuration",
+  "OpenIdValidIssuer": "https://identity.dev.brigh.id/"
 }

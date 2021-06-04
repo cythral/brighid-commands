@@ -11,9 +11,9 @@ namespace Brighid.Commands.Commands
         /// <summary>
         /// Loads a command by name.
         /// </summary>
-        /// <param name="name">Name of the command to load.</param>
+        /// <param name="command">Command to load.</param>
         /// <param name="cancellationToken">Token used to cancel the operation.</param>
         /// <returns>The resulting command.</returns>
-        Task<Command> LoadCommandByName(string name, CancellationToken cancellationToken);
+        Task LoadCommand(Command command, CancellationToken cancellationToken);
     }
 }

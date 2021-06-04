@@ -23,22 +23,9 @@ namespace Brighid.Commands.Commands
         public class LoadCommandByNameTests
         {
             [Test, Auto]
-            public async Task ShouldFetchTheCommandFromTheRepository(
-                string name,
-                [Frozen, Substitute] ICommandRepository repository,
-                [Target] DefaultCommandLoader loader,
-                CancellationToken cancellationToken
-            )
-            {
-                await loader.LoadCommandByName(name, cancellationToken);
-
-                await repository.Received().FindCommandByName(Is(name), Is(cancellationToken));
-            }
-
-            [Test, Auto]
             public async Task ShouldLoadEmbeddedCommands(
                 string name,
-                [Frozen] Command command,
+                Command command,
                 [Frozen] ICommandRunner runner,
                 [Frozen, Substitute] ICommandService service,
                 [Target] DefaultCommandLoader loader,
@@ -46,24 +33,22 @@ namespace Brighid.Commands.Commands
             )
             {
                 command.Type = CommandType.Embedded;
-                var result = await loader.LoadCommandByName(name, cancellationToken);
+                await loader.LoadCommand(command, cancellationToken);
 
-                result.Should().Be(command);
-                result.Runner.Should().Be(runner);
+                command.Runner.Should().Be(runner);
                 await service.Received().LoadEmbedded(Is(command), Is(cancellationToken));
             }
 
             [Test, Auto]
             public async Task ShouldThrowForUnsupportedCommands(
-                string name,
-                [Frozen] Command command,
+                Command command,
                 [Frozen, Substitute] ICommandService service,
                 [Target] DefaultCommandLoader loader,
                 CancellationToken cancellationToken
             )
             {
                 command.Type = (CommandType)(-1);
-                Func<Task> func = () => loader.LoadCommandByName(name, cancellationToken);
+                Func<Task> func = () => loader.LoadCommand(command, cancellationToken);
 
                 await func.Should().ThrowAsync<CommandTypeNotSupportedException>();
             }
