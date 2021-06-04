@@ -50,6 +50,7 @@ namespace Brighid.Commands
             services.AddSwaggerGen();
             services.ConfigureDatabaseServices(configuration);
             services.ConfigureCommandServices();
+            services.ConfigureAuthServices(configuration.GetSection("Auth").Bind);
         }
 
         /// <summary>
@@ -78,6 +79,8 @@ namespace Brighid.Commands
 
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseAuthentication();
+            app.UseAuthorization();
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHealthChecks("/healthcheck");

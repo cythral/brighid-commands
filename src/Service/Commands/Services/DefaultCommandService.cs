@@ -1,5 +1,6 @@
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,6 +41,15 @@ namespace Brighid.Commands.Commands
             this.downloader = downloader;
             this.logger = logger;
             this.loggerFactory = loggerFactory;
+        }
+
+        /// <inheritdoc />
+        public void EnsureCommandIsAccessibleToPrincipal(Command command, ClaimsPrincipal principal)
+        {
+            if (command.RequiredRole != null && !principal.IsInRole(command.RequiredRole))
+            {
+                throw new CommandRequiresRoleException(command);
+            }
         }
 
         /// <inheritdoc />

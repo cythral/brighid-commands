@@ -24,17 +24,14 @@ namespace Brighid.Commands.Commands
         }
 
         /// <inheritdoc />
-        public async Task<Command> LoadCommandByName(string name, CancellationToken cancellationToken)
+        public async Task LoadCommand(Command command, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var command = await repository.FindCommandByName(name, cancellationToken);
             command.Runner = command.Type switch
             {
                 CommandType.Embedded => await service.LoadEmbedded(command, cancellationToken),
                 _ => throw new CommandTypeNotSupportedException(command.Type),
             };
-
-            return command;
         }
     }
 }

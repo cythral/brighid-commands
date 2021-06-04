@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,6 +37,7 @@ namespace Brighid.Commands.Commands
                 [Target] CommandController controller
             )
             {
+                command.RequiredRole = null;
                 command.ArgCount = argCount;
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
 
@@ -56,6 +58,7 @@ namespace Brighid.Commands.Commands
                 [Target] CommandController controller
             )
             {
+                command.RequiredRole = null;
                 command.ValidOptions = new List<string> { option1, option2 };
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
 
@@ -76,6 +79,7 @@ namespace Brighid.Commands.Commands
                 [Target] CommandController controller
             )
             {
+                command.RequiredRole = null;
                 command.ArgCount = argCount;
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
 
@@ -93,6 +97,7 @@ namespace Brighid.Commands.Commands
                 [Target] CommandController controller
             )
             {
+                command.RequiredRole = null;
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 repository.FindCommandByName(Any<string>(), Any<CancellationToken>()).Throws(new CommandNotFoundException(name));
 
@@ -100,23 +105,58 @@ namespace Brighid.Commands.Commands
 
                 result.Should().BeOfType<NotFoundResult>();
             }
+
+            [Test, Auto]
+            public async Task ShouldReturnForbiddenIfUserDoesntHavePermissionToUseCommand(
+                string name,
+                HttpContext httpContext,
+                [Frozen] Command command,
+                [Frozen, Substitute] ICommandService service,
+                [Frozen, Substitute] ICommandRepository repository,
+                [Target] CommandController controller
+            )
+            {
+                command.RequiredRole = null;
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                service.When(svc => svc.EnsureCommandIsAccessibleToPrincipal(Any<Command>(), Any<ClaimsPrincipal>())).Throw(new CommandRequiresRoleException(command));
+
+                var result = await controller.GetCommandInfoHeaders(name);
+
+                result.Should().BeOfType<ForbidResult>();
+                service.Received().EnsureCommandIsAccessibleToPrincipal(Is(command), Is(httpContext.User));
+            }
         }
 
         [TestFixture]
         public class ExecuteTests
         {
             [Test, Auto]
-            public async Task ShouldLoadTheCommandByName(
-                string command,
+            public async Task ShouldFindTheCommandInTheRepository(
+                string commandName,
                 HttpContext httpContext,
+                [Frozen, Substitute] ICommandRepository repository,
+                [Target] CommandController controller
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                await controller.Execute(commandName);
+
+                await repository.Received().FindCommandByName(Is(commandName), Is(httpContext.RequestAborted));
+            }
+
+            [Test, Auto]
+            public async Task ShouldLoadTheCommandByName(
+                string commandName,
+                HttpContext httpContext,
+                [Frozen] Command command,
                 [Frozen, Substitute] ICommandLoader loader,
                 [Target] CommandController controller
             )
             {
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
-                await controller.Execute(command);
+                await controller.Execute(commandName);
 
-                await loader.Received().LoadCommandByName(Is(command), Is(httpContext.RequestAborted));
+                await loader.Received().LoadCommand(Is(command), Is(httpContext.RequestAborted));
             }
 
             [Test, Auto]
@@ -167,6 +207,27 @@ namespace Brighid.Commands.Commands
                 var result = await controller.Execute(commandName);
 
                 result.Should().BeOfType<OkObjectResult>().Which.Value.Should().Be(commandOutput);
+            }
+
+            [Test, Auto]
+            public async Task ShouldReturnForbiddenIfUserDoesntHaveAccessToCommand(
+                string commandName,
+                string commandOutput,
+                HttpContext httpContext,
+                [Frozen] Command command,
+                [Frozen] ICommandRunner runner,
+                [Frozen, Substitute] ICommandService service,
+                [Target] CommandController controller
+            )
+            {
+                runner.Run(Any<CommandContext>(), Any<CancellationToken>()).Returns(commandOutput);
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+
+                service.When(svc => svc.EnsureCommandIsAccessibleToPrincipal(Any<Command>(), Any<ClaimsPrincipal>())).Throw(new CommandRequiresRoleException(command));
+
+                var result = await controller.Execute(commandName);
+
+                result.Should().BeOfType<ForbidResult>();
             }
         }
     }

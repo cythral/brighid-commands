@@ -36,6 +36,11 @@ namespace Brighid.Commands.Commands
         public string Name { get; set; } = string.Empty;
 
         /// <summary>
+        /// Gets or sets the role users need to execute this command.
+        /// </summary>
+        public string? RequiredRole { get; set; } = string.Empty;
+
+        /// <summary>
         /// Gets or sets the checksum of the command's contents.
         /// </summary>
         public string? Checksum { get; set; }
