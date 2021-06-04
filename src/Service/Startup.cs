@@ -1,14 +1,18 @@
+using System.Collections.Generic;
+
 using Brighid.Commands.Database;
 
 using Destructurama;
 
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Microsoft.OpenApi.Models;
 
 using Serilog;
 
@@ -74,7 +78,7 @@ namespace Brighid.Commands
                 databaseContext.Database.MigrateAsync().GetAwaiter().GetResult();
             }
 
-            app.UseSwagger();
+            app.UseSwagger(options => options.PreSerializeFilters.Add(ConfigureSwaggerPreserializeFilter));
             app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Brighid Commands Swagger"));
 
             app.UseStaticFiles();
@@ -86,6 +90,12 @@ namespace Brighid.Commands
                 endpoints.MapHealthChecks("/healthcheck");
                 endpoints.MapControllers();
             });
+        }
+
+        private void ConfigureSwaggerPreserializeFilter(OpenApiDocument document, HttpRequest request)
+        {
+            var server = new OpenApiServer { Url = $"{request.Scheme}://{request.Host.Value}" };
+            document.Servers = new List<OpenApiServer> { server };
         }
     }
 }
