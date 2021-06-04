@@ -47,6 +47,7 @@ namespace Brighid.Commands
             services.Configure<ServiceOptions>(configuration.GetSection("Commands"));
             services.AddHealthChecks();
             services.AddControllers();
+            services.AddSwaggerGen();
             services.ConfigureDatabaseServices(configuration);
             services.ConfigureCommandServices();
         }
@@ -71,6 +72,9 @@ namespace Brighid.Commands
             {
                 databaseContext.Database.MigrateAsync().GetAwaiter().GetResult();
             }
+
+            app.UseSwagger();
+            app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Brighid Commands Swagger"));
 
             app.UseStaticFiles();
             app.UseRouting();

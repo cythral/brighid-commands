@@ -39,7 +39,7 @@ namespace Brighid.Commands.Commands
         /// </summary>
         /// <param name="name">The name of the command to get info for.</param>
         /// <returns>The HTTP Response.</returns>
-        [HttpHead("{name}")]
+        [HttpHead("{name}", Name = "Commands:GetCommandInfoHeaders")]
         public async Task<IActionResult> GetCommandInfoHeaders(string name)
         {
             HttpContext.RequestAborted.ThrowIfCancellationRequested();
@@ -62,7 +62,7 @@ namespace Brighid.Commands.Commands
         /// </summary>
         /// <param name="name">The name of the command to execute.</param>
         /// <returns>The HTTP Response.</returns>
-        [HttpPost("{name}/execute")]
+        [HttpPost("{name}/execute", Name = "Commands:ExecuteCommand")]
         public async Task<IActionResult> Execute(string name)
         {
             HttpContext.RequestAborted.ThrowIfCancellationRequested();
