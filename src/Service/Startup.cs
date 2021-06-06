@@ -94,7 +94,7 @@ namespace Brighid.Commands
 
         private void ConfigureSwaggerPreserializeFilter(OpenApiDocument document, HttpRequest request)
         {
-            var server = new OpenApiServer { Url = $"{request.Scheme}://{request.Host.Value}" };
+            var server = new OpenApiServer { Url = $"https://{request.Host.Value}" };
             document.Servers = new List<OpenApiServer> { server };
         }
     }
