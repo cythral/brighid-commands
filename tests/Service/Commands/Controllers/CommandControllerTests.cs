@@ -25,10 +25,10 @@ namespace Brighid.Commands.Commands
     public class CommandControllerTests
     {
         [TestFixture]
-        public class GetCommandInfoHeadersTests
+        public class GetCommandParseInfo
         {
             [Test, Auto]
-            public async Task ShouldSetArgCountHeader(
+            public async Task ShouldReturnArgCount(
                 string name,
                 uint argCount,
                 HttpContext httpContext,
@@ -41,9 +41,12 @@ namespace Brighid.Commands.Commands
                 command.ArgCount = argCount;
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
 
-                await controller.GetCommandInfoHeaders(name);
+                var result = (await controller.GetCommandParseInfo(name)).Result;
 
-                httpContext.Response.Headers["x-command-argcount"].Should().Contain(argCount.ToString());
+                result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeOfType<CommandParseInfo>()
+                .Which.ArgCount.Should().Be(argCount);
+
                 await repository.Received().FindCommandByName(Is(name), Is(httpContext.RequestAborted));
             }
 
@@ -62,30 +65,15 @@ namespace Brighid.Commands.Commands
                 command.ValidOptions = new List<string> { option1, option2 };
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
 
-                await controller.GetCommandInfoHeaders(name);
+                var result = (await controller.GetCommandParseInfo(name)).Result;
 
-                httpContext.Response.Headers["x-command-options"].Should().Contain(option1);
-                httpContext.Response.Headers["x-command-options"].Should().Contain(option2);
+                var validOptions = result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeOfType<CommandParseInfo>()
+                .Which.ValidOptions;
+
+                validOptions.Should().Contain(option1);
+                validOptions.Should().Contain(option2);
                 await repository.Received().FindCommandByName(Is(name), Is(httpContext.RequestAborted));
-            }
-
-            [Test, Auto]
-            public async Task ShouldReturnOk(
-                string name,
-                uint argCount,
-                HttpContext httpContext,
-                [Frozen] Command command,
-                [Frozen, Substitute] ICommandRepository repository,
-                [Target] CommandController controller
-            )
-            {
-                command.RequiredRole = null;
-                command.ArgCount = argCount;
-                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
-
-                var result = await controller.GetCommandInfoHeaders(name);
-
-                result.Should().BeOfType<OkResult>();
             }
 
             [Test, Auto]
@@ -101,7 +89,7 @@ namespace Brighid.Commands.Commands
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 repository.FindCommandByName(Any<string>(), Any<CancellationToken>()).Throws(new CommandNotFoundException(name));
 
-                var result = await controller.GetCommandInfoHeaders(name);
+                var result = (await controller.GetCommandParseInfo(name)).Result;
 
                 result.Should().BeOfType<NotFoundResult>();
             }
@@ -120,7 +108,7 @@ namespace Brighid.Commands.Commands
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 service.When(svc => svc.EnsureCommandIsAccessibleToPrincipal(Any<Command>(), Any<ClaimsPrincipal>())).Throw(new CommandRequiresRoleException(command));
 
-                var result = await controller.GetCommandInfoHeaders(name);
+                var result = (await controller.GetCommandParseInfo(name)).Result;
 
                 result.Should().BeOfType<ForbidResult>();
                 service.Received().EnsureCommandIsAccessibleToPrincipal(Is(command), Is(httpContext.User));
@@ -189,6 +177,10 @@ namespace Brighid.Commands.Commands
                 var result = (await controller.Execute(commandName)).Result;
 
                 result.Should().BeOfType<AcceptedResult>();
+                result.As<AcceptedResult>()
+                .Value.Should().BeOfType<ExecuteCommandResponse>()
+                .Which.ReplyImmediately.Should().BeFalse();
+
                 await runner.Received().Run(Any<CommandContext>());
             }
 
@@ -206,7 +198,12 @@ namespace Brighid.Commands.Commands
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 var result = (await controller.Execute(commandName)).Result;
 
-                result.Should().BeOfType<OkObjectResult>().Which.Value.Should().Be(commandOutput);
+                var response = result.Should().BeOfType<OkObjectResult>().Which
+                .Value.Should().BeOfType<ExecuteCommandResponse>()
+                .Which;
+
+                response.ReplyImmediately.Should().BeTrue();
+                response.Response.Should().Be(commandOutput);
             }
 
             [Test, Auto]

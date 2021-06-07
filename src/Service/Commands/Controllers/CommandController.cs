@@ -45,8 +45,8 @@ namespace Brighid.Commands.Commands
         /// <param name="name">The name of the command to get info for.</param>
         /// <returns>The HTTP Response.</returns>
         [Authorize]
-        [HttpHead("{name}", Name = "Commands:GetCommandInfoHeaders")]
-        public async Task<IActionResult> GetCommandInfoHeaders(string name)
+        [HttpGet("{name}", Name = "Commands:GetCommandParseInfo")]
+        public async Task<ActionResult<CommandParseInfo>> GetCommandParseInfo(string name)
         {
             HttpContext.RequestAborted.ThrowIfCancellationRequested();
 
@@ -55,9 +55,13 @@ namespace Brighid.Commands.Commands
                 var command = await repository.FindCommandByName(name, HttpContext.RequestAborted);
                 service.EnsureCommandIsAccessibleToPrincipal(command, HttpContext.User);
 
-                HttpContext.Response.Headers["x-command-argcount"] = command.ArgCount.ToString();
-                HttpContext.Response.Headers["x-command-options"] = command.ValidOptions.ToArray();
-                return Ok();
+                var parseInfo = new CommandParseInfo
+                {
+                    ArgCount = command.ArgCount,
+                    ValidOptions = command.ValidOptions.ToArray(),
+                };
+
+                return Ok(parseInfo);
             }
             catch (CommandRequiresRoleException)
             {
@@ -75,7 +79,7 @@ namespace Brighid.Commands.Commands
         /// <param name="name">The name of the command to execute.</param>
         /// <returns>The HTTP Response.</returns>
         [HttpPost("{name}/execute", Name = "Commands:ExecuteCommand")]
-        public async Task<ActionResult<string>> Execute(string name)
+        public async Task<ActionResult<ExecuteCommandResponse>> Execute(string name)
         {
             HttpContext.RequestAborted.ThrowIfCancellationRequested();
 
@@ -94,11 +98,13 @@ namespace Brighid.Commands.Commands
                 if (command.Type == CommandType.Embedded)
                 {
                     var result = await command.Run(context, HttpContext.RequestAborted);
-                    return Ok(result);
+                    var okResponse = new ExecuteCommandResponse { Response = result, ReplyImmediately = true };
+                    return Ok(okResponse);
                 }
 
                 _ = command.Run(context);
-                return Accepted();
+                var acceptedResponse = new ExecuteCommandResponse { ReplyImmediately = false };
+                return Accepted(acceptedResponse);
             }
             catch (CommandRequiresRoleException)
             {
