@@ -153,6 +153,19 @@ Resources:
             Principal:
               Service: ecs-tasks.amazonaws.com
 
+  TaskPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      Roles:
+        - !Ref TaskRole
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Sid: AllowGettingAnyS3Object
+            Effect: Allow
+            Action: s3:GetObject
+            Resource: "*"
+
   LogGroup:
     Type: AWS::Logs::LogGroup
     Properties:
