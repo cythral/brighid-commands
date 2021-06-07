@@ -186,7 +186,7 @@ namespace Brighid.Commands.Commands
             {
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 command.Type = (CommandType)(-1);
-                var result = await controller.Execute(commandName);
+                var result = (await controller.Execute(commandName)).Result;
 
                 result.Should().BeOfType<AcceptedResult>();
                 await runner.Received().Run(Any<CommandContext>());
@@ -204,7 +204,7 @@ namespace Brighid.Commands.Commands
             {
                 command.Run(Any<CommandContext>(), Any<CancellationToken>()).Returns(commandOutput);
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
-                var result = await controller.Execute(commandName);
+                var result = (await controller.Execute(commandName)).Result;
 
                 result.Should().BeOfType<OkObjectResult>().Which.Value.Should().Be(commandOutput);
             }
@@ -225,7 +225,7 @@ namespace Brighid.Commands.Commands
 
                 service.When(svc => svc.EnsureCommandIsAccessibleToPrincipal(Any<Command>(), Any<ClaimsPrincipal>())).Throw(new CommandRequiresRoleException(command));
 
-                var result = await controller.Execute(commandName);
+                var result = (await controller.Execute(commandName)).Result;
 
                 result.Should().BeOfType<ForbidResult>();
             }

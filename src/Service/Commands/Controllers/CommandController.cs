@@ -75,7 +75,7 @@ namespace Brighid.Commands.Commands
         /// <param name="name">The name of the command to execute.</param>
         /// <returns>The HTTP Response.</returns>
         [HttpPost("{name}/execute", Name = "Commands:ExecuteCommand")]
-        public async Task<IActionResult> Execute(string name)
+        public async Task<ActionResult<string>> Execute(string name)
         {
             HttpContext.RequestAborted.ThrowIfCancellationRequested();
 
