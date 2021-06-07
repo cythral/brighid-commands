@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 using Brighid.Commands.Database;
 
@@ -77,6 +78,17 @@ namespace Brighid.Commands
             {
                 databaseContext.Database.MigrateAsync().GetAwaiter().GetResult();
             }
+
+            app.Use(async (context, next) =>
+            {
+                context.Request.Headers.TryGetValue("x-forwarded-for", out var forwardedForAddressValues);
+                if (forwardedForAddressValues.Any())
+                {
+                    context.Request.Scheme = "https";
+                }
+
+                await next();
+            });
 
             app.UseSwagger(options => options.PreSerializeFilters.Add(ConfigureSwaggerPreserializeFilter));
             app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Brighid Commands Swagger"));
