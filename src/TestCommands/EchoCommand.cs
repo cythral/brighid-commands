@@ -11,16 +11,16 @@ namespace Brighid.Commands.TestCommands
     /// Ping command.
     /// </summary>
     [CommandStartup(typeof(PingCommandStartup))]
-    public class PingCommand : ICommandRunner
+    public class EchoCommand : ICommandRunner
     {
-        private readonly ILogger<PingCommand> logger;
+        private readonly ILogger<EchoCommand> logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="PingCommand"/> class.
+        /// Initializes a new instance of the <see cref="EchoCommand"/> class.
         /// </summary>
         /// <param name="logger">Logger used to log info to some destination(s).</param>
-        public PingCommand(
-            ILogger<PingCommand> logger
+        public EchoCommand(
+            ILogger<EchoCommand> logger
         )
         {
             this.logger = logger;
@@ -30,7 +30,7 @@ namespace Brighid.Commands.TestCommands
         public Task<string> Run(CommandContext context, CancellationToken cancellationToken = default)
         {
             logger.LogInformation("Received command request: {@context}", context);
-            return Task.FromResult("Pong");
+            return Task.FromResult(context.Arguments[0]);
         }
     }
 }
