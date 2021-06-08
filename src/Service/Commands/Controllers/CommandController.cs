@@ -1,3 +1,4 @@
+using System.Net;
 using System.Threading.Tasks;
 
 using Brighid.Commands.Core;
@@ -73,13 +74,18 @@ namespace Brighid.Commands.Commands
             }
         }
 
+#pragma warning disable IDE0060
+
         /// <summary>
         /// Executes a command.
         /// </summary>
         /// <param name="name">The name of the command to execute.</param>
+        /// <param name="request">Options to use when running the command.</param>
         /// <returns>The HTTP Response.</returns>
         [HttpPost("{name}/execute", Name = "Commands:ExecuteCommand")]
-        public async Task<ActionResult<ExecuteCommandResponse>> Execute(string name)
+        [ProducesResponseType(typeof(ExecuteCommandResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ExecuteCommandResponse), (int)HttpStatusCode.Accepted)]
+        public async Task<ActionResult<ExecuteCommandResponse>> Execute(string name, [FromBody] ExecuteCommandRequest request)
         {
             HttpContext.RequestAborted.ThrowIfCancellationRequested();
 
@@ -89,7 +95,11 @@ namespace Brighid.Commands.Commands
                 service.EnsureCommandIsAccessibleToPrincipal(command, HttpContext.User);
                 await loader.LoadCommand(command, HttpContext.RequestAborted);
 
-                var context = new CommandContext { };
+                var context = new CommandContext
+                {
+                    Arguments = request.Arguments,
+                    Options = request.Options,
+                };
 
                 // Embedded Commands are typically very fast once loaded into the Assembly Load Context.
                 // Save a call to the response topic + its transformer by just returning immediately and delegating
