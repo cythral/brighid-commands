@@ -16,6 +16,6 @@ namespace Brighid.Commands.Commands
         /// <summary>
         /// Gets or sets the options used to run the command.
         /// </summary>
-        public Dictionary<string, string> Options { get; set; } = new Dictionary<string, string>();
+        public Dictionary<string, object> Options { get; set; } = new Dictionary<string, object>();
     }
 }
