@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 
-namespace Brighid.Commands.Core
+namespace Brighid.Commands.Commands
 {
     /// <summary>
-    /// Context holder for executing commands.
+    /// Represents a request to execute a command.
     /// </summary>
-    public class CommandContext
+    public class ExecuteCommandRequest
     {
         /// <summary>
         /// Gets or sets the arguments used to run the command.

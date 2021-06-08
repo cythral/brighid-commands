@@ -122,12 +122,13 @@ namespace Brighid.Commands.Commands
             public async Task ShouldFindTheCommandInTheRepository(
                 string commandName,
                 HttpContext httpContext,
+                ExecuteCommandRequest request,
                 [Frozen, Substitute] ICommandRepository repository,
                 [Target] CommandController controller
             )
             {
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
-                await controller.Execute(commandName);
+                await controller.Execute(commandName, request);
 
                 await repository.Received().FindCommandByName(Is(commandName), Is(httpContext.RequestAborted));
             }
@@ -136,13 +137,14 @@ namespace Brighid.Commands.Commands
             public async Task ShouldLoadTheCommandByName(
                 string commandName,
                 HttpContext httpContext,
+                ExecuteCommandRequest request,
                 [Frozen] Command command,
                 [Frozen, Substitute] ICommandLoader loader,
                 [Target] CommandController controller
             )
             {
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
-                await controller.Execute(commandName);
+                await controller.Execute(commandName, request);
 
                 await loader.Received().LoadCommand(Is(command), Is(httpContext.RequestAborted));
             }
@@ -151,21 +153,29 @@ namespace Brighid.Commands.Commands
             public async Task ShouldExecuteTheLoadedCommand(
                 string commandName,
                 HttpContext httpContext,
+                ExecuteCommandRequest request,
                 [Frozen] ICommandRunner runner,
                 [Frozen, Substitute] ICommandLoader loader,
                 [Target] CommandController controller
             )
             {
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
-                await controller.Execute(commandName);
+                await controller.Execute(commandName, request);
 
-                await runner.Received().Run(Any<CommandContext>(), Is(httpContext.RequestAborted));
+                await runner.Received().Run(
+                    Is<CommandContext>(context =>
+                        context.Options == request.Options &&
+                        context.Arguments == request.Arguments
+                    ),
+                    Is(httpContext.RequestAborted)
+                );
             }
 
             [Test, Auto]
             public async Task ShouldReturnAcceptedIfCommandTypeIsNotEmbedded(
                 string commandName,
                 HttpContext httpContext,
+                ExecuteCommandRequest request,
                 [Frozen] ICommandRunner runner,
                 [Frozen] Command command,
                 [Frozen, Substitute] ICommandLoader loader,
@@ -174,7 +184,7 @@ namespace Brighid.Commands.Commands
             {
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 command.Type = (CommandType)(-1);
-                var result = (await controller.Execute(commandName)).Result;
+                var result = (await controller.Execute(commandName, request)).Result;
 
                 result.Should().BeOfType<AcceptedResult>();
                 result.As<AcceptedResult>()
@@ -189,6 +199,7 @@ namespace Brighid.Commands.Commands
                 string commandName,
                 string commandOutput,
                 HttpContext httpContext,
+                ExecuteCommandRequest request,
                 [Frozen] ICommandRunner command,
                 [Frozen, Substitute] ICommandLoader loader,
                 [Target] CommandController controller
@@ -196,7 +207,7 @@ namespace Brighid.Commands.Commands
             {
                 command.Run(Any<CommandContext>(), Any<CancellationToken>()).Returns(commandOutput);
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
-                var result = (await controller.Execute(commandName)).Result;
+                var result = (await controller.Execute(commandName, request)).Result;
 
                 var response = result.Should().BeOfType<OkObjectResult>().Which
                 .Value.Should().BeOfType<ExecuteCommandResponse>()
@@ -211,6 +222,7 @@ namespace Brighid.Commands.Commands
                 string commandName,
                 string commandOutput,
                 HttpContext httpContext,
+                ExecuteCommandRequest request,
                 [Frozen] Command command,
                 [Frozen] ICommandRunner runner,
                 [Frozen, Substitute] ICommandService service,
@@ -222,7 +234,7 @@ namespace Brighid.Commands.Commands
 
                 service.When(svc => svc.EnsureCommandIsAccessibleToPrincipal(Any<Command>(), Any<ClaimsPrincipal>())).Throw(new CommandRequiresRoleException(command));
 
-                var result = (await controller.Execute(commandName)).Result;
+                var result = (await controller.Execute(commandName, request)).Result;
 
                 result.Should().BeOfType<ForbidResult>();
             }
