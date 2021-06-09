@@ -165,8 +165,8 @@
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "Transitive",
-        "resolved": "5.0.6",
-        "contentHash": "m69AyXr3RgSufAdfPxpCFi4DPNPfbTDwamZYQvaU9o/3ii1tAK/J2CaLPWnbYtvPfkiyFOYRk3EqTzdy51XDcA==",
+        "resolved": "5.0.7",
+        "contentHash": "80zYklKE6CZZswm5zjCUNbDx2Pavt45qfmVWLY1Heoe7GiJsPGGs9odgmsUFZ75bq4D6F4ZwK0LOam1TGUlHCg==",
         "dependencies": {
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.7.1"
         }
@@ -1376,7 +1376,8 @@
           "AWSSDK.S3": "3.7.1",
           "Core": "1.0.0",
           "Destructurama.Attributed": "2.0.0",
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "5.0.6",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "5.0.7",
+          "Microsoft.EntityFrameworkCore.Design": "5.0.7",
           "Pomelo.EntityFrameworkCore.MySql": "5.0.0",
           "Serilog.AspNetCore": "4.1.0",
           "Swashbuckle.AspNetCore": "6.1.4",
