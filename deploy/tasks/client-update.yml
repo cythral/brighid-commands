@@ -40,4 +40,5 @@ phases:
         if git commit -m ":package: Automatic update of swagger.json to $SWAGGER_SPEC"; then
           git push --set-upstream origin $BRANCH_NAME;
           gh pr create --title "Update Swagger to $SWAGGER_SPEC Spec" --body "This is an automated update of the swagger spec to $SWAGGER_SPEC.";
+          gh pr merge --auto;
         fi
