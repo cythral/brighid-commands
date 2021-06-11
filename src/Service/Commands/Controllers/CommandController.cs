@@ -47,7 +47,7 @@ namespace Brighid.Commands.Commands
         /// <returns>The HTTP Response.</returns>
         [Authorize]
         [HttpGet("{name}", Name = "Commands:GetCommandParseInfo")]
-        public async Task<ActionResult<CommandParseInfo>> GetCommandParseInfo(string name)
+        public async Task<ActionResult<CommandParserRestrictions>> GetCommandParseInfo(string name)
         {
             HttpContext.RequestAborted.ThrowIfCancellationRequested();
 
@@ -56,7 +56,7 @@ namespace Brighid.Commands.Commands
                 var command = await repository.FindCommandByName(name, HttpContext.RequestAborted);
                 service.EnsureCommandIsAccessibleToPrincipal(command, HttpContext.User);
 
-                var parseInfo = new CommandParseInfo
+                var parseInfo = new CommandParserRestrictions
                 {
                     ArgCount = command.ArgCount,
                     ValidOptions = command.ValidOptions.ToArray(),

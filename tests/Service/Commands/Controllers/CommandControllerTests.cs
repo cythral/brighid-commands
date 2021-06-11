@@ -44,7 +44,7 @@ namespace Brighid.Commands.Commands
                 var result = (await controller.GetCommandParseInfo(name)).Result;
 
                 result.Should().BeOfType<OkObjectResult>()
-                .Which.Value.Should().BeOfType<CommandParseInfo>()
+                .Which.Value.Should().BeOfType<CommandParserRestrictions>()
                 .Which.ArgCount.Should().Be(argCount);
 
                 await repository.Received().FindCommandByName(Is(name), Is(httpContext.RequestAborted));
@@ -68,7 +68,7 @@ namespace Brighid.Commands.Commands
                 var result = (await controller.GetCommandParseInfo(name)).Result;
 
                 var validOptions = result.Should().BeOfType<OkObjectResult>()
-                .Which.Value.Should().BeOfType<CommandParseInfo>()
+                .Which.Value.Should().BeOfType<CommandParserRestrictions>()
                 .Which.ValidOptions;
 
                 validOptions.Should().Contain(option1);
