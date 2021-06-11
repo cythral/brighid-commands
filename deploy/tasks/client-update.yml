@@ -1,0 +1,17 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      docker: 19
+
+    commands:
+      - |
+        curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo gpg --dearmor -o /usr/share/keyrings/githubcli-archive-keyring.gpg
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
+        apt update
+        apt install gh
+
+  build:
+    commands:
+      - ./scripts/decrypt-secret.sh $ENCRYPTED_GITHUB_TOKEN | gh auth login --with-token
+      - gh auth status
