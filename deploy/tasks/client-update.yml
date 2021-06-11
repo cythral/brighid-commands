@@ -11,7 +11,25 @@ phases:
         apt update
         apt install gh
 
+  pre_build:
+    commands:
+      - | # Setup GitHub CLI + Git Config
+        ./scripts/decrypt-secret.sh $ENCRYPTED_GITHUB_TOKEN | gh auth login --with-token
+        gh auth status
+        git config --global user.name Brighid
+        git config --global user.email 52382196+brighid-bot@users.noreply.github.com
+
   build:
     commands:
-      - ./scripts/decrypt-secret.sh $ENCRYPTED_GITHUB_TOKEN | gh auth login --with-token
-      - gh auth status
+      - |
+        SWAGGER_FILE=${CODEBUILD_SRC_DIR_BUILD_ARTIFACTS}/swagger.json
+        SWAGGER_SPEC=$(date '+%Y%m%d-%H%M%S')
+        BRANCH_NAME=swagger-updates/$SWAGGER_SPEC
+        git branch $BRANCH_NAME master 
+        git checkout $BRANCH_NAME
+        rm swagger.json
+        cp $SWAGGER_FILE swagger.json
+        git add swagger.json
+        git commit -m "Update swagger.json"
+        git push --set-upstream origin $BRANCH_NAME
+        gh pr create --title "Update Swagger to $SWAGGER_SPEC Spec" --body "This is an automated update of the swagger spec to $SWAGGER_SPEC."
