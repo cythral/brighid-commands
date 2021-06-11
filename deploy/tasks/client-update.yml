@@ -30,6 +30,7 @@ phases:
         rm swagger.json
         cp $SWAGGER_FILE swagger.json
         git add swagger.json
-        git commit -m "Update swagger.json"
-        git push --set-upstream origin $BRANCH_NAME
-        gh pr create --title "Update Swagger to $SWAGGER_SPEC Spec" --body "This is an automated update of the swagger spec to $SWAGGER_SPEC."
+        if git commit -m "Update swagger.json"; then
+          git push --set-upstream origin $BRANCH_NAME;
+          gh pr create --title ":package: Update Swagger to $SWAGGER_SPEC Spec" --body "This is an automated update of the swagger spec to $SWAGGER_SPEC.";
+        fi
