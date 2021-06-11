@@ -21,6 +21,9 @@ phases:
         gh auth status
         git config --global user.name Brighid
         git config --global user.email 52382196+brighid-bot@users.noreply.github.com
+        cd ../
+        git clone https://github.com/cythral/brighid-commands-client.git
+        cd brighid-commands-client
 
   build:
     commands:
@@ -28,6 +31,7 @@ phases:
         SWAGGER_FILE=${CODEBUILD_SRC_DIR_BUILD_ARTIFACTS}/swagger.json
         SWAGGER_SPEC=$(date '+%Y%m%d-%H%M%S')
         BRANCH_NAME=swagger-updates/$SWAGGER_SPEC
+
         git branch $BRANCH_NAME master 
         git checkout $BRANCH_NAME
         rm swagger.json
