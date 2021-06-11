@@ -30,7 +30,7 @@ Resources:
     Type: Custom::Secret
     Properties:
       ServiceToken: !ImportValue cfn-secret-resource:SecretLambdaArn
-      Ciphertext: !Ref GithubToken
+      Plaintext: !Ref GithubToken
 
   DevDnsRecords:
     Type: AWS::Route53::RecordSetGroup
