@@ -227,6 +227,7 @@ Resources:
         GithubOwner: !Ref GithubOwner
         ArtifactStore: !Ref ArtifactStore
         BuildProject: !Ref BuildProject
+        ClientUpdateProject: !Ref ClientUpdateProject
         DeploymentQueue: !Ref DeploymentQueue
         SupersessionQueue: !Ref SupersessionQueue
         DevRoleArn: !ImportValue cfn-metadata:DevAgentRoleArn
