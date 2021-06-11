@@ -46,8 +46,8 @@ namespace Brighid.Commands.Commands
         /// <param name="name">The name of the command to get info for.</param>
         /// <returns>The HTTP Response.</returns>
         [Authorize]
-        [HttpGet("{name}", Name = "Commands:GetCommandParseInfo")]
-        public async Task<ActionResult<CommandParserRestrictions>> GetCommandParseInfo(string name)
+        [HttpGet("{name}", Name = "Commands:GetCommandParserRestrictions")]
+        public async Task<ActionResult<CommandParserRestrictions>> GetCommandParserRestrictions(string name)
         {
             HttpContext.RequestAborted.ThrowIfCancellationRequested();
 

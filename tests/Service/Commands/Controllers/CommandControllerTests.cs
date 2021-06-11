@@ -41,7 +41,7 @@ namespace Brighid.Commands.Commands
                 command.ArgCount = argCount;
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
 
-                var result = (await controller.GetCommandParseInfo(name)).Result;
+                var result = (await controller.GetCommandParserRestrictions(name)).Result;
 
                 result.Should().BeOfType<OkObjectResult>()
                 .Which.Value.Should().BeOfType<CommandParserRestrictions>()
@@ -65,7 +65,7 @@ namespace Brighid.Commands.Commands
                 command.ValidOptions = new List<string> { option1, option2 };
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
 
-                var result = (await controller.GetCommandParseInfo(name)).Result;
+                var result = (await controller.GetCommandParserRestrictions(name)).Result;
 
                 var validOptions = result.Should().BeOfType<OkObjectResult>()
                 .Which.Value.Should().BeOfType<CommandParserRestrictions>()
@@ -89,7 +89,7 @@ namespace Brighid.Commands.Commands
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 repository.FindCommandByName(Any<string>(), Any<CancellationToken>()).Throws(new CommandNotFoundException(name));
 
-                var result = (await controller.GetCommandParseInfo(name)).Result;
+                var result = (await controller.GetCommandParserRestrictions(name)).Result;
 
                 result.Should().BeOfType<NotFoundResult>();
             }
@@ -108,7 +108,7 @@ namespace Brighid.Commands.Commands
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 service.When(svc => svc.EnsureCommandIsAccessibleToPrincipal(Any<Command>(), Any<ClaimsPrincipal>())).Throw(new CommandRequiresRoleException(command));
 
-                var result = (await controller.GetCommandParseInfo(name)).Result;
+                var result = (await controller.GetCommandParserRestrictions(name)).Result;
 
                 result.Should().BeOfType<ForbidResult>();
                 service.Received().EnsureCommandIsAccessibleToPrincipal(Is(command), Is(httpContext.User));
