@@ -31,6 +31,7 @@ Resources:
     Properties:
       ServiceToken: !ImportValue cfn-secret-resource:SecretLambdaArn
       Plaintext: !Ref GithubToken
+      KeyId: alias/SecretsKey
 
   DevDnsRecords:
     Type: AWS::Route53::RecordSetGroup
