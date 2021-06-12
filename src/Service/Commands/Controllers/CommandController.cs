@@ -41,13 +41,13 @@ namespace Brighid.Commands.Commands
         }
 
         /// <summary>
-        /// Get command info (headers only).
+        /// Get command parser restrictions.
         /// </summary>
         /// <param name="name">The name of the command to get info for.</param>
         /// <returns>The HTTP Response.</returns>
         [Authorize]
-        [HttpGet("{name}", Name = "Commands:GetCommandParseInfo")]
-        public async Task<ActionResult<CommandParseInfo>> GetCommandParseInfo(string name)
+        [HttpGet("{name}/parser-restrictions", Name = "Commands:GetCommandParserRestrictions")]
+        public async Task<ActionResult<CommandParserRestrictions>> GetCommandParserRestrictions(string name)
         {
             HttpContext.RequestAborted.ThrowIfCancellationRequested();
 
@@ -56,7 +56,7 @@ namespace Brighid.Commands.Commands
                 var command = await repository.FindCommandByName(name, HttpContext.RequestAborted);
                 service.EnsureCommandIsAccessibleToPrincipal(command, HttpContext.User);
 
-                var parseInfo = new CommandParseInfo
+                var parseInfo = new CommandParserRestrictions
                 {
                     ArgCount = command.ArgCount,
                     ValidOptions = command.ValidOptions.ToArray(),
@@ -73,8 +73,6 @@ namespace Brighid.Commands.Commands
                 return NotFound();
             }
         }
-
-#pragma warning disable IDE0060
 
         /// <summary>
         /// Executes a command.
