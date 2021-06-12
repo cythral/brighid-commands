@@ -27,4 +27,8 @@
     <ProjectReference Include="../Core/Core.csproj" />
   </ItemGroup>
 
+  <Target Name="GenerateSwagger" AfterTargets="Build">
+    <Exec Command="dotnet swagger tofile --output $(OutputPath)swagger.json --host https://commands.brigh.id $(OutputPath)/Service.dll v1" />
+  </Target>
+
 </Project>

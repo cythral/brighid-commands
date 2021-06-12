@@ -26,6 +26,13 @@ Parameters:
     Description: Key name where the pipeline definition is located
 
 Resources:
+  GithubTokenSecret:
+    Type: Custom::Secret
+    Properties:
+      ServiceToken: !ImportValue cfn-secret-resource:SecretLambdaArn
+      Plaintext: !Ref GithubToken
+      KeyId: alias/SecretsKey
+
   DevDnsRecords:
     Type: AWS::Route53::RecordSetGroup
     Properties:
@@ -133,6 +140,40 @@ Resources:
           Context: AWS CodeBuild (brighid-commands)
           TargetUrl: !Sub https://sso.brigh.id/start/shared?destination=https://console.aws.amazon.com/codesuite/codebuild/${AWS::AccountId}/projects/${AWS::StackName}-build/build/$CODEBUILD_BUILD_ID/?region=${AWS::Region}
 
+  ClientUpdateProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Name: !Sub ${AWS::StackName}-client-update
+      BadgeEnabled: true
+      ServiceRole: !ImportValue cfn-utilities:BuilderRoleArn
+      EncryptionKey: !ImportValue cfn-utilities:ArtifactKeyArn
+      Environment:
+        PrivilegedMode: true
+        Image: aws/codebuild/standard:4.0
+        ComputeType: BUILD_GENERAL1_SMALL
+        EnvironmentVariables:
+          - Name: ARTIFACT_STORE
+            Value: !Ref ArtifactStore
+          - Name: REPOSITORY_URI
+            Value: !Sub ${AWS::AccountId}.dkr.ecr.${AWS::Region}.amazonaws.com/${DockerRepo}
+          - Name: ENCRYPTED_GITHUB_TOKEN
+            Value: !GetAtt GithubTokenSecret.Ciphertext
+        Type: LINUX_CONTAINER
+      Cache:
+        Type: LOCAL
+        Modes:
+          - LOCAL_DOCKER_LAYER_CACHE
+      Artifacts:
+        Type: NO_ARTIFACTS
+      Source:
+        Type: GITHUB
+        Location: !Sub https://github.com/${GithubOwner}/${GithubRepo}.git
+        ReportBuildStatus: true
+        BuildSpec: deploy/tasks/client-update.yml
+        BuildStatusConfig:
+          Context: Update Commands Client
+          TargetUrl: !Sub https://sso.brigh.id/start/shared?destination=https://console.aws.amazon.com/codesuite/codebuild/${AWS::AccountId}/projects/${AWS::StackName}-client-update/build/$CODEBUILD_BUILD_ID/?region=${AWS::Region}
+
   TestReportGroup:
     Type: AWS::CodeBuild::ReportGroup
     Properties:
@@ -186,6 +227,7 @@ Resources:
         GithubOwner: !Ref GithubOwner
         ArtifactStore: !Ref ArtifactStore
         BuildProject: !Ref BuildProject
+        ClientUpdateProject: !Ref ClientUpdateProject
         DeploymentQueue: !Ref DeploymentQueue
         SupersessionQueue: !Ref SupersessionQueue
         DevRoleArn: !ImportValue cfn-metadata:DevAgentRoleArn
