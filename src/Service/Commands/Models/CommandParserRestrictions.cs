@@ -3,9 +3,9 @@ using System;
 namespace Brighid.Commands.Commands
 {
     /// <summary>
-    /// Information useful for parsing a command with.
+    /// Restrictions to impart on command parsers for a particular command.
     /// </summary>
-    public class CommandParseInfo
+    public class CommandParserRestrictions
     {
         /// <summary>
         /// Gets or sets the number of arguments the command has.
