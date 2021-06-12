@@ -52,26 +52,9 @@
         {
           "Variable": "$.SupersededOutput.Superseded",
           "BooleanEquals": false,
-          "Next": "Update Client"
+          "Next": "Deploy to Dev"
         }
       ]
-    },
-    "Update Client": {
-      "Type": "Task",
-      "ResultPath": null,
-      "Resource": "arn:aws:states:::codebuild:startBuild.sync",
-      "Parameters": {
-        "ProjectName": "${ClientUpdateProject}",
-        "SourceVersion.$": "States.Format('{}^\\{{}\\}', $.ref, $.head_commit_id)",
-        "SecondarySourcesOverride": [
-          {
-            "SourceIdentifier": "BUILD_ARTIFACTS",
-            "Type": "S3",
-            "Location.$": "$.BuildOutput.Build.Artifacts.Location"
-          }
-        ]
-      },
-      "Next": "Deploy to Dev"
     },
     "Deploy to Dev": {
       "Type": "Task",

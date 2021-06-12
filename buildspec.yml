@@ -39,7 +39,6 @@ artifacts:
   discard-paths: yes
   files:
     - "deploy/brighid-commands.template.yml"
-    - "bin/Service/Release/*/swagger.json"
     - "brighid-commands.*.config.json"
 
 reports:
