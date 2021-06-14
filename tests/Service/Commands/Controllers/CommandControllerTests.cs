@@ -238,6 +238,24 @@ namespace Brighid.Commands.Commands
 
                 result.Should().BeOfType<ForbidResult>();
             }
+
+            [Test, Auto]
+            public async Task ShouldReturnNotFoundIfTheCommandWasNotFound(
+                string commandName,
+                HttpContext httpContext,
+                ExecuteCommandRequest request,
+                [Frozen, Substitute] ICommandRepository repository,
+                [Target] CommandController controller
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+
+                repository.FindCommandByName(Any<string>(), Any<CancellationToken>()).Throws(new CommandNotFoundException(commandName));
+
+                var result = (await controller.Execute(commandName, request)).Result;
+
+                result.Should().BeOfType<NotFoundResult>();
+            }
         }
     }
 }

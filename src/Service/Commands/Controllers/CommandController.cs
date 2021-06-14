@@ -118,6 +118,10 @@ namespace Brighid.Commands.Commands
             {
                 return Forbid();
             }
+            catch (CommandNotFoundException)
+            {
+                return NotFound();
+            }
         }
     }
 }
