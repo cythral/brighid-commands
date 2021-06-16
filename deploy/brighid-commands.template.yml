@@ -28,7 +28,68 @@ Parameters:
     Type: String
     Description: The issuer to validate tokens against.
 
+  EnvoyImage:
+    Type: String
+    Description: Image to use for the Envoy Sidecar.
+
+  MeshNodeName:
+    Type: String
+    Description: Name to use for the node in the App Mesh.
+
 Resources:
+  MeshService:
+    Type: AWS::AppMesh::VirtualService
+    Properties:
+      MeshName: brighid-mesh
+      MeshOwner: !ImportValue cfn-metadata:SharedAccountId
+      VirtualServiceName: !Ref DomainName
+      Spec:
+        Provider:
+          VirtualNode:
+            VirtualNodeName: !GetAtt MeshNode.VirtualNodeName
+
+  MeshNode:
+    Type: AWS::AppMesh::VirtualNode
+    Properties:
+      MeshName: brighid-mesh
+      MeshOwner: !ImportValue cfn-metadata:SharedAccountId
+      VirtualNodeName: !Ref MeshNodeName
+      Spec:
+        Listeners:
+          - PortMapping:
+              Port: 80
+              Protocol: http
+            HealthCheck:
+              UnhealthyThreshold: 3
+              HealthyThreshold: 5
+              TimeoutMillis: 30000
+              Path: /healthcheck
+              Protocol: http
+              IntervalMillis: 30000
+        ServiceDiscovery:
+          AWSCloudMap:
+            NamespaceName: !ImportValue brighid-infrastructure:ServiceRegistryName
+            ServiceName: commands
+
+  MeshGatewayRoute:
+    Type: Custom::MeshGatewayRoute
+    Properties:
+      ServiceToken: !ImportValue cfn-gateway-route-resource:GatewayRouteLambdaArn
+      MeshName: brighid-mesh
+      MeshOwner: !ImportValue cfn-metadata:SharedAccountId
+      VirtualGatewayName: internet
+      GatewayRouteName: !Ref MeshNodeName
+      Spec:
+        HttpRoute:
+          Action:
+            Target:
+              VirtualService:
+                VirtualServiceName: !GetAtt MeshService.VirtualServiceName
+          Match:
+            Prefix: /
+            Hostname:
+              Exact: !Ref DomainName
+
   ServiceRegistryRecord:
     Type: AWS::ServiceDiscovery::Service
     Properties:
@@ -112,10 +173,27 @@ Resources:
       TaskRoleArn: !GetAtt TaskRole.Arn
       RequiresCompatibilities:
         - FARGATE
+      ProxyConfiguration:
+        Type: APPMESH
+        ContainerName: envoy
+        ProxyConfigurationProperties:
+          - Name: IgnoredUID
+            Value: "1337"
+          - Name: ProxyIngressPort
+            Value: "15000"
+          - Name: ProxyEgressPort
+            Value: "15001"
+          - Name: AppPorts
+            Value: "80"
+          - Name: EgressIgnoredIPs
+            Value: 169.254.170.2,169.254.169.254
       ContainerDefinitions:
         - Name: commands
           Essential: true
           Image: !Ref Image
+          DependsOn:
+            - ContainerName: envoy
+              Condition: HEALTHY
           PortMappings:
             - ContainerPort: 80
           LogConfiguration:
@@ -137,6 +215,36 @@ Resources:
               Value: !Ref OpenIdMetadataAddress
             - Name: Auth__ValidIssuer
               Value: !Ref OpenIdValidIssuer
+        - Name: envoy
+          Image: !Ref EnvoyImage
+          Essential: true
+          User: "1337"
+          Ulimits:
+            - Name: nofile
+              HardLimit: 15000
+              SoftLimit: 15000
+          PortMappings:
+            - ContainerPort: 9901
+            - ContainerPort: 15000
+            - ContainerPort: 15001
+          HealthCheck:
+            Command:
+              - CMD-SHELL
+              - curl -s http://localhost:9901/server_info | grep state | grep -q LIVE
+            Interval: 5
+            Timeout: 2
+            Retries: 3
+          LogConfiguration:
+            LogDriver: awslogs
+            Options:
+              awslogs-group: !Ref LogGroup
+              awslogs-region: !Ref AWS::Region
+              awslogs-stream-prefix: brighid
+          Environment:
+            - Name: APPMESH_RESOURCE_ARN
+              Value: !Sub
+                - mesh/brighid-mesh@${SharedAccountId}/virtualNode/${MeshNode.VirtualNodeName}
+                - SharedAccountId: !ImportValue cfn-metadata:SharedAccountId
 
   TaskRole:
     Type: AWS::IAM::Role
