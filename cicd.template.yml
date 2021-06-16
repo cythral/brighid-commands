@@ -69,7 +69,7 @@ Resources:
     Type: AWS::ElasticLoadBalancingV2::ListenerRule
     Properties:
       ListenerArn: !ImportValue cfn-gateway:HttpsListenerArn
-      Priority: 21
+      Priority: 22
       Actions:
         - Type: forward
           TargetGroupArn: !ImportValue cfn-gateway:MeshTargetGroupArn
