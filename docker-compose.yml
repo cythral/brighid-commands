@@ -1,12 +1,24 @@
 version: "3.4"
 services:
+  traefik:
+    image: traefik:v2.4
+    command:
+      - --api.insecure=true
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+    ports:
+      - 80:80
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+
   adapter:
     image: mcr.microsoft.com/dotnet/sdk:5.0.300
     entrypoint: dotnet watch --project src/Service run
     working_dir: /app
     restart: unless-stopped
     ports:
-      - 80:80
+      - "80"
     volumes:
       - ./:/app
       - ~/.aws:/root/.aws
@@ -19,6 +31,12 @@ services:
       Database__Name: ${DB_NAME}
       Database__User: ${DB_USER}
       Database__Password: ${DB_PASSWORD}
+      SkipSwagger: "true"
+    labels:
+      - traefik.enable=true
+      - traefik.http.routers.adapter.rule=Host(`localhost`)
+      - traefik.http.routers.adapter.entrypoints=web
+      - traefik.http.services.adapter.loadbalancer.server.scheme=h2c
 
   db:
     image: mariadb/server:10.4

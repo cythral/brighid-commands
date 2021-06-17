@@ -29,7 +29,15 @@ namespace Brighid.Commands
                 .ConfigureWebHostDefaults(builder =>
                 {
                     builder.UseStartup<Startup>();
-                    builder.UseUrls("http://0.0.0.0:80");
+                    builder.ConfigureKestrel((context, options) =>
+                    {
+                        var section = context.Configuration.GetSection("Commands");
+                        var serviceOptions = section.Get<ServiceOptions>() ?? new ServiceOptions();
+                        options.ListenAnyIP(serviceOptions.Port, listenOptions =>
+                        {
+                            listenOptions.Protocols = serviceOptions.Protocols;
+                        });
+                    });
                 });
         }
     }
