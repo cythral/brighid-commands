@@ -30,6 +30,31 @@ namespace Brighid.Commands.Commands
     public class DefaultCommandServiceTests
     {
         [TestFixture]
+        public class ListTests
+        {
+            [Test, Auto]
+            public async Task ShouldReturnAListOfCommandsFromTheRepository(
+                [Frozen] Command[] commands,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                repository.List(Any<CancellationToken>()).Returns(commands);
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                var result = await service.List(cancellationToken);
+
+                result.Should().BeEquivalentTo(commands);
+                await repository.Received().List(Is(cancellationToken));
+            }
+        }
+
+        [TestFixture]
         public class EnsureCommandIsAccessibleToPrincipalTests
         {
             [Test, Auto]

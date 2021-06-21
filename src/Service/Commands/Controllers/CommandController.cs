@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -38,6 +39,19 @@ namespace Brighid.Commands.Commands
             this.service = service;
             this.repository = repository;
             this.logger = logger;
+        }
+
+        /// <summary>
+        /// Get a list of commands.
+        /// </summary>
+        /// <returns>A list of commands.</returns>
+        [Authorize]
+        [HttpGet(Name = "Commands:List")]
+        public async Task<ActionResult<IEnumerable<Command>>> List()
+        {
+            HttpContext.RequestAborted.ThrowIfCancellationRequested();
+            var commands = await service.List(HttpContext.RequestAborted);
+            return Ok(commands);
         }
 
         /// <summary>

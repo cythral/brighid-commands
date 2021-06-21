@@ -13,13 +13,20 @@ namespace Brighid.Commands.Commands
     /// <inheritdoc />
     public class DefaultCommandRepository : ICommandRepository
     {
-        private readonly DatabaseContext databaseContext;
-        private readonly Func<DatabaseContext, string, IAsyncEnumerable<Command?>> findCommandByNameCompiledQuery = EF.CompileAsyncQuery<DatabaseContext, string, Command?>(
+        private static readonly Func<DatabaseContext, IAsyncEnumerable<Command>> ListCompiledQuery = EF.CompileAsyncQuery<DatabaseContext, Command>(
+            (context) =>
+                from command in context.Commands.AsQueryable()
+                select command
+        );
+
+        private static readonly Func<DatabaseContext, string, IAsyncEnumerable<Command?>> FindCommandByNameCompiledQuery = EF.CompileAsyncQuery<DatabaseContext, string, Command?>(
             (context, name) =>
                 from command in context.Commands.AsQueryable()
                 where command.Name == name
                 select command
         );
+
+        private readonly DatabaseContext databaseContext;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultCommandRepository"/> class.
@@ -30,16 +37,18 @@ namespace Brighid.Commands.Commands
             this.databaseContext = databaseContext;
         }
 
-        /// <summary>
-        /// Find a command by its name.
-        /// </summary>
-        /// <param name="name">The name of the command to find.</param>
-        /// <param name="cancellationToken">Token used to cancel the operation.</param>
-        /// <returns>The resulting command.</returns>
+        /// <inheritdoc />
+        public async Task<IEnumerable<Command>> List(CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return await ListCompiledQuery(databaseContext).ToListAsync(cancellationToken);
+        }
+
+        /// <inheritdoc />
         public async Task<Command> FindCommandByName(string name, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var result = await findCommandByNameCompiledQuery(databaseContext, name).FirstOrDefaultAsync(cancellationToken);
+            var result = await FindCommandByNameCompiledQuery(databaseContext, name).FirstOrDefaultAsync(cancellationToken);
             return result ?? throw new CommandNotFoundException(name);
         }
     }
