@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Linq;
 
 using Brighid.Commands.Database;
 
@@ -8,6 +7,7 @@ using Destructurama;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -56,6 +56,10 @@ namespace Brighid.Commands
             services.ConfigureDatabaseServices(configuration);
             services.ConfigureCommandServices();
             services.ConfigureAuthServices(configuration.GetSection("Auth").Bind);
+            services.Configure<ForwardedHeadersOptions>(options =>
+            {
+                options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+            });
         }
 
         /// <summary>
@@ -76,19 +80,8 @@ namespace Brighid.Commands
 
             if (environment.IsEnvironment("local"))
             {
-                databaseContext.Database.MigrateAsync().GetAwaiter().GetResult();
+                databaseContext.Database.Migrate();
             }
-
-            app.Use(async (context, next) =>
-            {
-                context.Request.Headers.TryGetValue("x-forwarded-for", out var forwardedForAddressValues);
-                if (forwardedForAddressValues.Any())
-                {
-                    context.Request.Scheme = "https";
-                }
-
-                await next();
-            });
 
             app.UseSwagger(options => options.PreSerializeFilters.Add(ConfigureSwaggerPreserializeFilter));
             app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Brighid Commands Swagger"));

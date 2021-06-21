@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
@@ -17,6 +18,7 @@ namespace Brighid.Commands.Commands
         private readonly IUtilsFactory utilsFactory;
         private readonly ICommandCache commandCache;
         private readonly ICommandPackageDownloader downloader;
+        private readonly IServiceScopeFactory serviceScopeFactory;
         private readonly ILogger<DefaultCommandService> logger;
         private readonly ILoggerFactory loggerFactory;
 
@@ -26,12 +28,14 @@ namespace Brighid.Commands.Commands
         /// <param name="utilsFactory">Factory to create utils with.</param>
         /// <param name="commandCache">Cache for name to command lookups.</param>
         /// <param name="downloader">Service for downloading command packages with.</param>
+        /// <param name="serviceScopeFactory">Factory to create service scopes with.</param>
         /// <param name="logger">Logger used to log info to some destination(s).</param>
         /// <param name="loggerFactory">Logger factory to inject into the command's service collection.</param>
         public DefaultCommandService(
             IUtilsFactory utilsFactory,
             ICommandCache commandCache,
             ICommandPackageDownloader downloader,
+            IServiceScopeFactory serviceScopeFactory,
             ILogger<DefaultCommandService> logger,
             ILoggerFactory loggerFactory
         )
@@ -39,8 +43,18 @@ namespace Brighid.Commands.Commands
             this.utilsFactory = utilsFactory;
             this.commandCache = commandCache;
             this.downloader = downloader;
+            this.serviceScopeFactory = serviceScopeFactory;
             this.logger = logger;
             this.loggerFactory = loggerFactory;
+        }
+
+        /// <inheritdoc />
+        public async Task<IEnumerable<Command>> List(CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            using var scope = serviceScopeFactory.CreateScope();
+            var repository = scope.ServiceProvider.GetRequiredService<ICommandRepository>();
+            return await repository.List(cancellationToken);
         }
 
         /// <inheritdoc />

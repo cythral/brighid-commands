@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,6 +12,13 @@ namespace Brighid.Commands.Commands
     /// </summary>
     public interface ICommandService
     {
+        /// <summary>
+        /// Get a list of all commands.
+        /// </summary>
+        /// <param name="cancellationToken">Token used to cancel the operation.</param>
+        /// <returns>The list of commands.</returns>
+        Task<IEnumerable<Command>> List(CancellationToken cancellationToken = default);
+
         /// <summary>
         /// Loads an embedded command into the assembly load context.
         /// </summary>

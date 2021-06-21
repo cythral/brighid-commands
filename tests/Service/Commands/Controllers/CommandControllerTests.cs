@@ -25,6 +25,29 @@ namespace Brighid.Commands.Commands
     public class CommandControllerTests
     {
         [TestFixture]
+        public class ListTests
+        {
+            [Test, Auto]
+            public async Task ShouldReturnListOfCommandsFromService(
+                HttpContext httpContext,
+                [Frozen] Command[] commands,
+                [Frozen] ICommandService service,
+                [Target] CommandController controller
+            )
+            {
+                service.List(Any<CancellationToken>()).Returns(commands);
+
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                var result = (await controller.List()).Result;
+
+                result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeEquivalentTo(commands);
+
+                await service.Received().List(Is(httpContext.RequestAborted));
+            }
+        }
+
+        [TestFixture]
         public class GetCommandParseInfo
         {
             [Test, Auto]
