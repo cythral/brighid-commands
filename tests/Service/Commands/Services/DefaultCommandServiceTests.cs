@@ -12,6 +12,7 @@ using Amazon.S3;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
+using Brighid.Commands.Auth;
 using Brighid.Commands.Core;
 
 using FluentAssertions;
@@ -80,7 +81,110 @@ namespace Brighid.Commands.Commands
 
                 result.Should().BeSameAs(request);
                 result.OwnerId.Should().Be(ownerId);
-                await repository.Received().Add(Is(result), Is(cancellationToken));
+                repository.Received().Add(Is(result));
+                await repository.Received().Save(Is(cancellationToken));
+            }
+        }
+
+        [TestFixture]
+        public class DeleteByNameTests
+        {
+            [Test, Auto]
+            public async Task ShouldFindCommandInDatabase(
+                string name,
+                ClaimsIdentity identity,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                var result = await service.DeleteByName(name, principal, cancellationToken);
+
+                result.Should().Be(command);
+                await repository.Received().FindCommandByName(name, cancellationToken);
+            }
+
+            [Test, Auto]
+            public async Task ShouldDeleteCommandFromTheDatabase(
+                string name,
+                ClaimsIdentity identity,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                await service.DeleteByName(name, principal, cancellationToken);
+
+                repository.Received().Delete(command);
+                await repository.Received().Save(Is(cancellationToken));
+            }
+
+            [Test, Auto]
+            public async Task ShouldNotDeleteCommandIfPrincipalDoesntOwnCommandAndIsNotAnAdministrator(
+                string name,
+                ClaimsPrincipal principal,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                Func<Task> func = () => service.DeleteByName(name, principal, cancellationToken);
+
+                await func.Should().ThrowAsync<AccessDeniedException>();
+                repository.DidNotReceive().Delete(command);
+                await repository.DidNotReceive().Save(Is(cancellationToken));
+            }
+
+            [Test, Auto]
+            public async Task ShouldDeleteCommandIfPrincipalDoesntOwnCommandButIsAnAdministrator(
+                string name,
+                ClaimsIdentity identity,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, Guid.NewGuid().ToString()));
+                identity.AddClaim(new Claim(ClaimTypes.Role, "Administrator"));
+                var principal = new ClaimsPrincipal(identity);
+
+                await service.DeleteByName(name, principal, cancellationToken);
+
+                repository.Received().Delete(command);
                 await repository.Received().Save(Is(cancellationToken));
             }
         }

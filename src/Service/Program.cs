@@ -21,24 +21,24 @@ namespace Brighid.Commands
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host.CreateDefaultBuilder(args)
-                .UseSerilog(dispose: true)
-                .ConfigureHostConfiguration(config =>
+            .UseSerilog(dispose: true)
+            .ConfigureHostConfiguration(config =>
+            {
+                config.AddEnvironmentVariables();
+            })
+            .ConfigureWebHostDefaults(builder =>
+            {
+                builder.UseStartup<Startup>();
+                builder.ConfigureKestrel((context, options) =>
                 {
-                    config.AddEnvironmentVariables();
-                })
-                .ConfigureWebHostDefaults(builder =>
-                {
-                    builder.UseStartup<Startup>();
-                    builder.ConfigureKestrel((context, options) =>
+                    var section = context.Configuration.GetSection("Commands");
+                    var serviceOptions = section.Get<ServiceOptions>() ?? new ServiceOptions();
+                    options.ListenAnyIP(serviceOptions.Port, listenOptions =>
                     {
-                        var section = context.Configuration.GetSection("Commands");
-                        var serviceOptions = section.Get<ServiceOptions>() ?? new ServiceOptions();
-                        options.ListenAnyIP(serviceOptions.Port, listenOptions =>
-                        {
-                            listenOptions.Protocols = serviceOptions.Protocols;
-                        });
+                        listenOptions.Protocols = serviceOptions.Protocols;
                     });
                 });
+            });
         }
     }
 }
