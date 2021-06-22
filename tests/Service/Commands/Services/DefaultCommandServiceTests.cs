@@ -55,6 +55,37 @@ namespace Brighid.Commands.Commands
         }
 
         [TestFixture]
+        public class CreateTests
+        {
+            [Test, Auto]
+            public async Task ShouldCreateANewCommandWithTheOwnerIdSetToPrincipalsId(
+                Guid ownerId,
+                CommandRequest request,
+                ClaimsIdentity identity,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                var principal = new ClaimsPrincipal(identity);
+                identity.AddClaim(new Claim(ClaimTypes.Name, ownerId.ToString()));
+
+                var result = await service.Create(request, principal, cancellationToken);
+
+                result.Should().BeSameAs(request);
+                result.OwnerId.Should().Be(ownerId);
+                await repository.Received().Add(Is(result), Is(cancellationToken));
+                await repository.Received().Save(Is(cancellationToken));
+            }
+        }
+
+        [TestFixture]
         public class EnsureCommandIsAccessibleToPrincipalTests
         {
             [Test, Auto]

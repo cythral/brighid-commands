@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Runtime.CompilerServices;
@@ -55,6 +56,22 @@ namespace Brighid.Commands.Commands
             using var scope = serviceScopeFactory.CreateScope();
             var repository = scope.ServiceProvider.GetRequiredService<ICommandRepository>();
             return await repository.List(cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public async Task<Command> Create(CommandRequest command, ClaimsPrincipal principal, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            using var scope = serviceScopeFactory.CreateScope();
+            var repository = scope.ServiceProvider.GetRequiredService<ICommandRepository>();
+
+            var mappedCommand = (Command)command;
+            mappedCommand.OwnerId = Guid.Parse(principal.Identity!.Name!);
+            Console.WriteLine(principal.Identity!.Name!);
+
+            await repository.Add(mappedCommand, cancellationToken);
+            await repository.Save(cancellationToken);
+            return mappedCommand;
         }
 
         /// <inheritdoc />

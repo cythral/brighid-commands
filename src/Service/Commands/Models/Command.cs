@@ -26,6 +26,11 @@ namespace Brighid.Commands.Commands
         public Guid Id { get; set; } = Guid.NewGuid();
 
         /// <summary>
+        /// Gets or sets the ID of the command owner.
+        /// </summary>
+        public Guid OwnerId { get; set; } = Guid.NewGuid();
+
+        /// <summary>
         /// Gets or sets the type of command this is.
         /// </summary>
         public CommandType Type { get; set; }
