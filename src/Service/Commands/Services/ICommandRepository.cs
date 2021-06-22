@@ -13,9 +13,13 @@ namespace Brighid.Commands.Commands
         /// Add a command to the change tracker (will not be persisted to the database until save is called.)
         /// </summary>
         /// <param name="command">The command to add to the database.</param>
-        /// <param name="cancellationToken">Token used to cancel the operation.</param>
-        /// <returns>The resulting task.</returns>
-        Task Add(Command command, CancellationToken cancellationToken = default);
+        void Add(Command command);
+
+        /// <summary>
+        /// Delete a command.
+        /// </summary>
+        /// <param name="command">The command to delete.</param>
+        void Delete(Command command);
 
         /// <summary>
         /// Save changes to the database.

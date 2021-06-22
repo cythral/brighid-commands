@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
+using Brighid.Commands.Auth;
 using Brighid.Commands.Core;
 
 using FluentAssertions;
@@ -67,6 +68,71 @@ namespace Brighid.Commands.Commands
                 .Which.Value.Should().Be(command);
 
                 await service.Received().Create(Is(request), Is(httpContext.User), Is(cancellationToken));
+            }
+        }
+
+        [TestFixture]
+        public class DeleteCommandTests
+        {
+            [Test, Auto]
+            public async Task ShouldDeleteACommand(
+                string name,
+                HttpContext httpContext,
+                [Frozen] Command command,
+                [Frozen] ICommandService service,
+                [Target] CommandController controller,
+                CancellationToken cancellationToken
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                var result = (await controller.DeleteCommand(name)).Result;
+
+                result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().Be(command);
+
+                await service.Received().DeleteByName(Is(name), Is(httpContext.User), Is(cancellationToken));
+            }
+
+            [Test, Auto]
+            public async Task ShouldReturnForbiddenIfServiceThrowsAccessDenied(
+                string name,
+                string message,
+                HttpContext httpContext,
+                [Frozen] Command command,
+                [Frozen] ICommandService service,
+                [Target] CommandController controller,
+                CancellationToken cancellationToken
+            )
+            {
+                service.DeleteByName(Any<string>(), Any<ClaimsPrincipal>(), Any<CancellationToken>()).Throws(new AccessDeniedException(message));
+
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                var result = (await controller.DeleteCommand(name)).Result;
+
+                result.Should().BeOfType<ForbidResult>();
+
+                await service.Received().DeleteByName(Is(name), Is(httpContext.User), Is(cancellationToken));
+            }
+
+            [Test, Auto]
+            public async Task ShouldReturnNotFoundIfServiceThrowsCommandNotFound(
+                string name,
+                string message,
+                HttpContext httpContext,
+                [Frozen] Command command,
+                [Frozen] ICommandService service,
+                [Target] CommandController controller,
+                CancellationToken cancellationToken
+            )
+            {
+                service.DeleteByName(Any<string>(), Any<ClaimsPrincipal>(), Any<CancellationToken>()).Throws(new CommandNotFoundException(name));
+
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                var result = (await controller.DeleteCommand(name)).Result;
+
+                result.Should().BeOfType<NotFoundResult>();
+
+                await service.Received().DeleteByName(Is(name), Is(httpContext.User), Is(cancellationToken));
             }
         }
 

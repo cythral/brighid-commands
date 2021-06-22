@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 
+using Brighid.Commands.Auth;
 using Brighid.Commands.Core;
 
 using Microsoft.AspNetCore.Authorization;
@@ -66,6 +67,32 @@ namespace Brighid.Commands.Commands
             HttpContext.RequestAborted.ThrowIfCancellationRequested();
             var result = await service.Create(request, HttpContext.User, HttpContext.RequestAborted);
             return Ok(result);
+        }
+
+        /// <summary>
+        /// Delete a command by its name.
+        /// </summary>
+        /// <param name="name">Name of the command to delete.</param>
+        /// <returns>The deleted command.</returns>
+        [Authorize(Roles = "CommandManager,Administrator")]
+        [HttpDelete("{name}", Name = "Commands:DeleteCommand")]
+        public async Task<ActionResult<Command>> DeleteCommand(string name)
+        {
+            HttpContext.RequestAborted.ThrowIfCancellationRequested();
+
+            try
+            {
+                var result = await service.DeleteByName(name, HttpContext.User, HttpContext.RequestAborted);
+                return Ok(result);
+            }
+            catch (CommandNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (AccessDeniedException)
+            {
+                return Forbid();
+            }
         }
 
         /// <summary>

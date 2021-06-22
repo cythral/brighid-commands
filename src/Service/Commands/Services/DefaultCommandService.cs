@@ -6,6 +6,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Brighid.Commands.Auth;
 using Brighid.Commands.Core;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -67,11 +68,29 @@ namespace Brighid.Commands.Commands
 
             var mappedCommand = (Command)command;
             mappedCommand.OwnerId = Guid.Parse(principal.Identity!.Name!);
-            Console.WriteLine(principal.Identity!.Name!);
 
-            await repository.Add(mappedCommand, cancellationToken);
+            repository.Add(mappedCommand);
             await repository.Save(cancellationToken);
             return mappedCommand;
+        }
+
+        /// <inheritdoc />
+        public async Task<Command> DeleteByName(string name, ClaimsPrincipal principal, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            using var scope = serviceScopeFactory.CreateScope();
+            var repository = scope.ServiceProvider.GetRequiredService<ICommandRepository>();
+            var command = await repository.FindCommandByName(name, cancellationToken);
+
+            if (!Guid.TryParse(principal.Identity?.Name, out var principalId)
+                || (principalId != command.OwnerId && !principal.IsInRole("Administrator")))
+            {
+                throw new AccessDeniedException("You do not own this command.");
+            }
+
+            repository.Delete(command);
+            await repository.Save(cancellationToken);
+            return command;
         }
 
         /// <inheritdoc />

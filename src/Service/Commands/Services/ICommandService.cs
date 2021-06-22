@@ -29,6 +29,15 @@ namespace Brighid.Commands.Commands
         Task<Command> Create(CommandRequest command, ClaimsPrincipal principal, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Delete a command by its name.
+        /// </summary>
+        /// <param name="name">The name of the command to delete.</param>
+        /// <param name="principal">The principal to delete the command for.</param>
+        /// <param name="cancellationToken">Token used to cancel the operation.</param>
+        /// <returns>The deleted command.</returns>
+        Task<Command> DeleteByName(string name, ClaimsPrincipal principal, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Loads an embedded command into the assembly load context.
         /// </summary>
         /// <param name="command">The command to load.</param>

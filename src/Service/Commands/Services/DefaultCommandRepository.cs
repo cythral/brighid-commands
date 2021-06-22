@@ -38,10 +38,15 @@ namespace Brighid.Commands.Commands
         }
 
         /// <inheritdoc />
-        public async Task Add(Command command, CancellationToken cancellationToken = default)
+        public void Add(Command command)
         {
-            cancellationToken.ThrowIfCancellationRequested();
-            await databaseContext.AddAsync(command, cancellationToken);
+            databaseContext.Add(command);
+        }
+
+        /// <inheritdoc />
+        public void Delete(Command command)
+        {
+            databaseContext.Remove(command);
         }
 
         /// <inheritdoc />
