@@ -59,7 +59,7 @@ namespace Brighid.Commands.Commands
         /// </summary>
         /// <param name="request">Request object describing the command to create.</param>
         /// <returns>The resulting command.</returns>
-        // [Authorize(Roles = "CommandManager,Administrator")]
+        [Authorize(Roles = "CommandManager,Administrator")]
         [HttpPost(Name = "Commands:CreateCommand")]
         public async Task<ActionResult<Command>> CreateCommand([FromBody] CommandRequest request)
         {
