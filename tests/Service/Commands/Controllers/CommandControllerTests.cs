@@ -48,6 +48,29 @@ namespace Brighid.Commands.Commands
         }
 
         [TestFixture]
+        public class CreateCommandTests
+        {
+            [Test, Auto]
+            public async Task ShouldCreateACommand(
+                HttpContext httpContext,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] ICommandService service,
+                [Target] CommandController controller,
+                CancellationToken cancellationToken
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                var result = (await controller.CreateCommand(request)).Result;
+
+                result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().Be(command);
+
+                await service.Received().Create(Is(request), Is(httpContext.User), Is(cancellationToken));
+            }
+        }
+
+        [TestFixture]
         public class GetCommandParseInfo
         {
             [Test, Auto]

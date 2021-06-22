@@ -55,6 +55,20 @@ namespace Brighid.Commands.Commands
         }
 
         /// <summary>
+        /// Creates a new command.
+        /// </summary>
+        /// <param name="request">Request object describing the command to create.</param>
+        /// <returns>The resulting command.</returns>
+        // [Authorize(Roles = "CommandManager,Administrator")]
+        [HttpPost(Name = "Commands:CreateCommand")]
+        public async Task<ActionResult<Command>> CreateCommand([FromBody] CommandRequest request)
+        {
+            HttpContext.RequestAborted.ThrowIfCancellationRequested();
+            var result = await service.Create(request, HttpContext.User, HttpContext.RequestAborted);
+            return Ok(result);
+        }
+
+        /// <summary>
         /// Get command parser restrictions.
         /// </summary>
         /// <param name="name">The name of the command to get info for.</param>

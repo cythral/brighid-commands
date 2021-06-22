@@ -20,6 +20,15 @@ namespace Brighid.Commands.Commands
         Task<IEnumerable<Command>> List(CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Create a new command for the given <paramref name="principal" />.
+        /// </summary>
+        /// <param name="command">Request info to use when creating the command.</param>
+        /// <param name="principal">The principal to create the command for.</param>
+        /// <param name="cancellationToken">Token used to cancel the operation.</param>
+        /// <returns>The resulting command.</returns>
+        Task<Command> Create(CommandRequest command, ClaimsPrincipal principal, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Loads an embedded command into the assembly load context.
         /// </summary>
         /// <param name="command">The command to load.</param>

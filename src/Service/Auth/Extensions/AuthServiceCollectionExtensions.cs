@@ -1,4 +1,6 @@
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 using Brighid.Commands.Auth;
 
@@ -22,6 +24,9 @@ namespace Microsoft.Extensions.DependencyInjection
             var authOptions = new AuthOptions();
             configure(authOptions);
 
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap[JwtRegisteredClaimNames.Sub] = ClaimTypes.Name;
+
             services.AddAuthentication(options =>
             {
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -31,12 +36,14 @@ namespace Microsoft.Extensions.DependencyInjection
                 options.SaveToken = true;
                 options.RefreshOnIssuerKeyNotFound = true;
                 options.RequireHttpsMetadata = authOptions.MetadataAddress.Scheme == "https";
+                options.BackchannelHttpHandler = new Http2AuthMessageHandler();
                 options.MetadataAddress = authOptions.MetadataAddress.ToString();
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     RequireSignedTokens = true,
                     ValidateIssuerSigningKey = true,
                     RequireExpirationTime = true,
+                    ValidateLifetime = true,
                     ValidateAudience = false,
                     ValidateIssuer = true,
                     ValidIssuer = authOptions.ValidIssuer,

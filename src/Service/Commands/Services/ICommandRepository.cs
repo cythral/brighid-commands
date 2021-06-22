@@ -10,6 +10,21 @@ namespace Brighid.Commands.Commands
     public interface ICommandRepository
     {
         /// <summary>
+        /// Add a command to the change tracker (will not be persisted to the database until save is called.)
+        /// </summary>
+        /// <param name="command">The command to add to the database.</param>
+        /// <param name="cancellationToken">Token used to cancel the operation.</param>
+        /// <returns>The resulting task.</returns>
+        Task Add(Command command, CancellationToken cancellationToken = default);
+
+        /// <summary>
+        /// Save changes to the database.
+        /// </summary>
+        /// <param name="cancellationToken">Token used to cancel the operation.</param>
+        /// <returns>The resulting task.</returns>
+        Task Save(CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Lists available commands.
         /// </summary>
         /// <param name="cancellationToken">Token used to cancel the operation.</param>
