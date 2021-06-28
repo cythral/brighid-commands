@@ -70,6 +70,33 @@ namespace Brighid.Commands.Commands
         }
 
         /// <summary>
+        /// Update a command by its name.
+        /// </summary>
+        /// <param name="name">Name of the command to update.</param>
+        /// <param name="request">Request object describing the data to update the command with.</param>
+        /// <returns>The deleted command.</returns>
+        [Authorize(Roles = "CommandManager,Administrator")]
+        [HttpPut("{name}", Name = "Commands:UpdateCommand")]
+        public async Task<ActionResult<Command>> UpdateCommand(string name, [FromBody] CommandRequest request)
+        {
+            HttpContext.RequestAborted.ThrowIfCancellationRequested();
+
+            try
+            {
+                var result = await service.UpdateByName(name, request, HttpContext.User, HttpContext.RequestAborted);
+                return Ok(result);
+            }
+            catch (CommandNotFoundException)
+            {
+                return NotFound();
+            }
+            catch (AccessDeniedException)
+            {
+                return Forbid();
+            }
+        }
+
+        /// <summary>
         /// Delete a command by its name.
         /// </summary>
         /// <param name="name">Name of the command to delete.</param>

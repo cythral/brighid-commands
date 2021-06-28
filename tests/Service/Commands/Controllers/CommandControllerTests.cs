@@ -72,6 +72,74 @@ namespace Brighid.Commands.Commands
         }
 
         [TestFixture]
+        public class UpdateCommandTests
+        {
+            [Test, Auto]
+            public async Task ShouldUpdateACommand(
+                string name,
+                HttpContext httpContext,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] ICommandService service,
+                [Target] CommandController controller,
+                CancellationToken cancellationToken
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                var result = (await controller.UpdateCommand(name, request)).Result;
+
+                result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().Be(command);
+
+                await service.Received().UpdateByName(Is(name), Is(request), Is(httpContext.User), Is(cancellationToken));
+            }
+
+            [Test, Auto]
+            public async Task ShouldReturnForbiddenIfServiceThrowsAccessDenied(
+                string name,
+                string message,
+                HttpContext httpContext,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] ICommandService service,
+                [Target] CommandController controller,
+                CancellationToken cancellationToken
+            )
+            {
+                service.UpdateByName(Any<string>(), Any<CommandRequest>(), Any<ClaimsPrincipal>(), Any<CancellationToken>()).Throws(new AccessDeniedException(message));
+
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                var result = (await controller.UpdateCommand(name, request)).Result;
+
+                result.Should().BeOfType<ForbidResult>();
+
+                await service.Received().UpdateByName(Is(name), Is(request), Is(httpContext.User), Is(cancellationToken));
+            }
+
+            [Test, Auto]
+            public async Task ShouldReturnNotFoundIfServiceThrowsCommandNotFound(
+                string name,
+                string message,
+                HttpContext httpContext,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] ICommandService service,
+                [Target] CommandController controller,
+                CancellationToken cancellationToken
+            )
+            {
+                service.UpdateByName(Any<string>(), Any<CommandRequest>(), Any<ClaimsPrincipal>(), Any<CancellationToken>()).Throws(new CommandNotFoundException(name));
+
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                var result = (await controller.UpdateCommand(name, request)).Result;
+
+                result.Should().BeOfType<NotFoundResult>();
+
+                await service.Received().UpdateByName(Is(name), Is(request), Is(httpContext.User), Is(cancellationToken));
+            }
+        }
+
+        [TestFixture]
         public class DeleteCommandTests
         {
             [Test, Auto]
