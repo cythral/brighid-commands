@@ -29,6 +29,16 @@ namespace Brighid.Commands.Commands
         Task<Command> Create(CommandRequest command, ClaimsPrincipal principal, CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Updates a command by name for the given <paramref name="principal" />.
+        /// </summary>
+        /// <param name="name">The name of the command to update.</param>
+        /// <param name="command">The updated command info.</param>
+        /// <param name="principal">The principal/user to update the command for.</param>
+        /// <param name="cancellationToken">Token used to cancel the operation.</param>
+        /// <returns>The updated command.</returns>
+        Task<Command> UpdateByName(string name, CommandRequest command, ClaimsPrincipal principal, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Delete a command by its name.
         /// </summary>
         /// <param name="name">The name of the command to delete.</param>

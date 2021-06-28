@@ -75,18 +75,40 @@ namespace Brighid.Commands.Commands
         }
 
         /// <inheritdoc />
+        public async Task<Command> UpdateByName(string name, CommandRequest request, ClaimsPrincipal principal, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            using var scope = serviceScopeFactory.CreateScope();
+            var repository = scope.ServiceProvider.GetRequiredService<ICommandRepository>();
+
+            var command = await repository.FindCommandByName(name, cancellationToken);
+            EnsurePrincipalOwnsCommandOrIsAnAdministrator(command, principal);
+
+            command.Type = request.Type;
+            command.Name = request.Name;
+            command.RequiredRole = request.RequiredRole;
+            command.Checksum = request.Checksum;
+            command.Description = request.Description;
+            command.DownloadURL = request.DownloadURL;
+            command.AssemblyName = request.AssemblyName;
+            command.TypeName = request.TypeName;
+            command.IsEnabled = request.IsEnabled;
+            command.ArgCount = request.ArgCount;
+            command.ValidOptions = request.ValidOptions;
+
+            await repository.Save(cancellationToken);
+            return command;
+        }
+
+        /// <inheritdoc />
         public async Task<Command> DeleteByName(string name, ClaimsPrincipal principal, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             using var scope = serviceScopeFactory.CreateScope();
             var repository = scope.ServiceProvider.GetRequiredService<ICommandRepository>();
-            var command = await repository.FindCommandByName(name, cancellationToken);
 
-            if (!Guid.TryParse(principal.Identity?.Name, out var principalId)
-                || (principalId != command.OwnerId && !principal.IsInRole("Administrator")))
-            {
-                throw new AccessDeniedException("You do not own this command.");
-            }
+            var command = await repository.FindCommandByName(name, cancellationToken);
+            EnsurePrincipalOwnsCommandOrIsAnAdministrator(command, principal);
 
             repository.Delete(command);
             await repository.Save(cancellationToken);
@@ -127,6 +149,16 @@ namespace Brighid.Commands.Commands
             var loadedCommand = provider.GetRequiredService<ICommandRunner>();
             commandCache.Add(command.Name!, loadedCommand);
             return loadedCommand;
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void EnsurePrincipalOwnsCommandOrIsAnAdministrator(Command command, ClaimsPrincipal principal)
+        {
+            if (!Guid.TryParse(principal.Identity?.Name, out var principalId)
+                || (principalId != command.OwnerId && !principal.IsInRole("Administrator")))
+            {
+                throw new AccessDeniedException("You do not own this command.");
+            }
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]

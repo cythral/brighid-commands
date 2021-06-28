@@ -87,6 +87,397 @@ namespace Brighid.Commands.Commands
         }
 
         [TestFixture]
+        public class UpdateByNameTests
+        {
+            [Test, Auto]
+            public async Task ShouldFindCommandInDatabase(
+                string name,
+                CommandRequest request,
+                ClaimsIdentity identity,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                var result = await service.UpdateByName(name, request, principal, cancellationToken);
+
+                result.Should().Be(command);
+                await repository.Received().FindCommandByName(name, cancellationToken);
+            }
+
+            [Test, Auto]
+            public async Task ShouldUpdateCommandType(
+                string name,
+                ClaimsIdentity identity,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                request.Type = (CommandType)(-1);
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                var result = await service.UpdateByName(name, request, principal, cancellationToken);
+
+                result.Should().BeSameAs(command);
+                command.Type.Should().Be(request.Type);
+            }
+
+            [Test, Auto]
+            public async Task ShouldUpdateCommandName(
+                string name,
+                ClaimsIdentity identity,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                var result = await service.UpdateByName(name, request, principal, cancellationToken);
+
+                result.Should().BeSameAs(command);
+                command.Name.Should().Be(request.Name);
+            }
+
+            [Test, Auto]
+            public async Task ShouldUpdateCommandRequiredRole(
+                string name,
+                ClaimsIdentity identity,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                var result = await service.UpdateByName(name, request, principal, cancellationToken);
+
+                result.Should().BeSameAs(command);
+                command.RequiredRole.Should().Be(request.RequiredRole);
+            }
+
+            [Test, Auto]
+            public async Task ShouldUpdateCommandChecksum(
+                string name,
+                ClaimsIdentity identity,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                var result = await service.UpdateByName(name, request, principal, cancellationToken);
+
+                result.Should().BeSameAs(command);
+                command.Checksum.Should().Be(request.Checksum);
+            }
+
+            [Test, Auto]
+            public async Task ShouldUpdateCommandDescription(
+                string name,
+                ClaimsIdentity identity,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                var result = await service.UpdateByName(name, request, principal, cancellationToken);
+
+                result.Should().BeSameAs(command);
+                command.Description.Should().Be(request.Description);
+            }
+
+            [Test, Auto]
+            public async Task ShouldUpdateCommandDownloadUrl(
+                string name,
+                ClaimsIdentity identity,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                var result = await service.UpdateByName(name, request, principal, cancellationToken);
+
+                result.Should().BeSameAs(command);
+                command.DownloadURL.Should().Be(request.DownloadURL);
+            }
+
+            [Test, Auto]
+            public async Task ShouldUpdateCommandAssemblyName(
+                string name,
+                ClaimsIdentity identity,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                var result = await service.UpdateByName(name, request, principal, cancellationToken);
+
+                result.Should().BeSameAs(command);
+                command.AssemblyName.Should().Be(request.AssemblyName);
+            }
+
+            [Test, Auto]
+            public async Task ShouldUpdateCommandTypeName(
+                string name,
+                ClaimsIdentity identity,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                var result = await service.UpdateByName(name, request, principal, cancellationToken);
+
+                result.Should().BeSameAs(command);
+                command.TypeName.Should().Be(request.TypeName);
+            }
+
+            [Test, Auto]
+            public async Task ShouldUpdateCommandEnabledState(
+                string name,
+                ClaimsIdentity identity,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                var result = await service.UpdateByName(name, request, principal, cancellationToken);
+
+                result.Should().BeSameAs(command);
+                command.IsEnabled.Should().Be(request.IsEnabled);
+            }
+
+            [Test, Auto]
+            public async Task ShouldUpdateCommandArgCount(
+                string name,
+                ClaimsIdentity identity,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                var result = await service.UpdateByName(name, request, principal, cancellationToken);
+
+                result.Should().BeSameAs(command);
+                command.ArgCount.Should().Be(request.ArgCount);
+            }
+
+            [Test, Auto]
+            public async Task ShouldUpdateCommandValidOptions(
+                string name,
+                ClaimsIdentity identity,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                var result = await service.UpdateByName(name, request, principal, cancellationToken);
+
+                result.Should().BeSameAs(command);
+                command.ValidOptions.Should().BeEquivalentTo(request.ValidOptions);
+            }
+
+            [Test, Auto]
+            public async Task ShouldSaveCommandInTheDatabase(
+                string name,
+                ClaimsIdentity identity,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                await service.UpdateByName(name, request, principal, cancellationToken);
+
+                await repository.Received().Save(Is(cancellationToken));
+            }
+
+            [Test, Auto]
+            public async Task ShouldNotUpdateCommandIfPrincipalDoesntOwnCommandAndIsNotAnAdministrator(
+                string name,
+                ClaimsPrincipal principal,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                Func<Task> func = () => service.UpdateByName(name, request, principal, cancellationToken);
+
+                await func.Should().ThrowAsync<AccessDeniedException>();
+                await repository.DidNotReceive().Save(Is(cancellationToken));
+            }
+
+            [Test, Auto]
+            public async Task ShouldUpdateCommandIfPrincipalDoesntOwnCommandButIsAnAdministrator(
+                string name,
+                ClaimsIdentity identity,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, Guid.NewGuid().ToString()));
+                identity.AddClaim(new Claim(ClaimTypes.Role, "Administrator"));
+                var principal = new ClaimsPrincipal(identity);
+
+                await service.UpdateByName(name, request, principal, cancellationToken);
+
+                await repository.Received().Save(Is(cancellationToken));
+            }
+        }
+
+        [TestFixture]
         public class DeleteByNameTests
         {
             [Test, Auto]
