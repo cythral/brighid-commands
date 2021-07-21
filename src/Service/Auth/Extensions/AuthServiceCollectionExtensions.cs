@@ -46,6 +46,7 @@ namespace Microsoft.Extensions.DependencyInjection
                     ValidateLifetime = true,
                     ValidateAudience = false,
                     ValidateIssuer = true,
+                    RoleClaimType = "role",
                     ValidIssuer = authOptions.ValidIssuer,
                     ClockSkew = TimeSpan.FromMinutes(authOptions.ClockSkew),
                 };
