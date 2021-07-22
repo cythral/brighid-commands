@@ -108,15 +108,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.0.39",
-        "contentHash": "G8+hyyov3ju/4M9SdwaZhGEdYhUdp+KptrKXy9Jmjzj44MZ+wqbmxbTYc5szOTXbmx5N/b+IJM18dUUciDEnkw=="
+        "resolved": "3.7.1",
+        "contentHash": "VWnzRxzrMedMJr6Xkl1/HFzgYfRuT3rkUGhp4rqOkXgutaMoNk8HV+6TfjmAhz99CmTV23RxSMUwGwPfIrxy5w=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.1.9",
-        "contentHash": "/By+6cP5F0NJVLLqMbExw4HRBLORt4mQbKJpmJWoR+dKMI+h+6//Ax7P48xT+VHIbgNV9l9SR9XavLsItDgFMw==",
+        "resolved": "3.7.1.16",
+        "contentHash": "i1mXpprIPCkmqeO0x1Y31wDnRYF2KFmGHA6/04pRrwykm3URPcna3uklF170UXyp+WeqRSS5nRfj0erLDV8CTA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.0.39, 4.0.0)"
+          "AWSSDK.Core": "[3.7.1, 4.0.0)"
         }
       },
       "Castle.Core": {
@@ -159,8 +159,8 @@
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "Transitive",
-        "resolved": "5.0.7",
-        "contentHash": "80zYklKE6CZZswm5zjCUNbDx2Pavt45qfmVWLY1Heoe7GiJsPGGs9odgmsUFZ75bq4D6F4ZwK0LOam1TGUlHCg==",
+        "resolved": "5.0.8",
+        "contentHash": "5XuTlEkJe7tzY1UQ0FndajTv/SB4PPaYRaAokZVGevoHTkioEF2bbvPxhrqaYr7ayHaN1KItzKsAwMWGil6wRg==",
         "dependencies": {
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.7.1"
         }
@@ -1248,10 +1248,10 @@
       "service": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.S3": "3.7.1.9",
+          "AWSSDK.S3": "3.7.1.16",
           "Core": "1.0.0",
           "Destructurama.Attributed": "2.0.0",
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "5.0.7",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "5.0.8",
           "Microsoft.EntityFrameworkCore.Design": "5.0.8",
           "Pomelo.EntityFrameworkCore.MySql": "5.0.1",
           "Serilog.AspNetCore": "4.1.0",
