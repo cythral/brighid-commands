@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -89,6 +90,7 @@ namespace Brighid.Commands.Commands
         /// Gets or sets the command runner.
         /// </summary>
         [NotMapped]
+        [JsonIgnore]
         public ICommandRunner? Runner { get; set; }
 
         /// <summary>
