@@ -217,7 +217,7 @@ namespace Brighid.Commands.Commands
                 var result = await service.UpdateByName(name, request, principal, cancellationToken);
 
                 result.Should().BeSameAs(command);
-                command.Checksum.Should().Be(request.Checksum);
+                command.EmbeddedLocation!.Checksum.Should().Be(request.EmbeddedLocation!.Checksum);
             }
 
             [Test, Auto]
@@ -269,7 +269,7 @@ namespace Brighid.Commands.Commands
                 var result = await service.UpdateByName(name, request, principal, cancellationToken);
 
                 result.Should().BeSameAs(command);
-                command.DownloadURL.Should().Be(request.DownloadURL);
+                command.EmbeddedLocation!.DownloadURL.Should().Be(request.EmbeddedLocation!.DownloadURL);
             }
 
             [Test, Auto]
@@ -295,7 +295,7 @@ namespace Brighid.Commands.Commands
                 var result = await service.UpdateByName(name, request, principal, cancellationToken);
 
                 result.Should().BeSameAs(command);
-                command.AssemblyName.Should().Be(request.AssemblyName);
+                command.EmbeddedLocation!.AssemblyName.Should().Be(request.EmbeddedLocation!.AssemblyName);
             }
 
             [Test, Auto]
@@ -321,7 +321,7 @@ namespace Brighid.Commands.Commands
                 var result = await service.UpdateByName(name, request, principal, cancellationToken);
 
                 result.Should().BeSameAs(command);
-                command.TypeName.Should().Be(request.TypeName);
+                command.EmbeddedLocation!.TypeName.Should().Be(request.EmbeddedLocation!.TypeName);
             }
 
             [Test, Auto]
@@ -661,7 +661,7 @@ namespace Brighid.Commands.Commands
 
                 await service.LoadEmbedded(command, cancellationToken);
 
-                await downloader.Received().DownloadCommandPackageFromS3(Is(command.DownloadURL!), Is(command.AssemblyName!), Is(cancellationToken));
+                await downloader.Received().DownloadCommandPackageFromS3(Is(command.EmbeddedLocation!.DownloadURL!), Is(command.EmbeddedLocation!.AssemblyName!), Is(cancellationToken));
             }
 
             [Test, Auto]

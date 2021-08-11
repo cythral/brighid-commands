@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
@@ -47,29 +48,14 @@ namespace Brighid.Commands.Commands
         public string? RequiredRole { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the checksum of the command's contents.
-        /// </summary>
-        public string? Checksum { get; set; }
-
-        /// <summary>
         /// Gets or sets the description of the command.
         /// </summary>
         public string? Description { get; set; }
 
         /// <summary>
-        /// Gets or sets the URL where the command's package can be downloaded from.
+        /// Gets or sets the location of an embedded command.
         /// </summary>
-        public string? DownloadURL { get; set; }
-
-        /// <summary>
-        /// Gets or sets the name of the assembly within the package that the command lives in.
-        /// </summary>
-        public string? AssemblyName { get; set; }
-
-        /// <summary>
-        /// Gets or sets the fully-qualified name of the command type within the assembly.
-        /// </summary>
-        public string? TypeName { get; set; }
+        public EmbeddedCommandLocation? EmbeddedLocation { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether or not this command is enabled.
@@ -119,6 +105,13 @@ namespace Brighid.Commands.Commands
                 .HasConversion(new ValueConverter<List<string>, string>(
                     list => string.Join(';', list),
                     @string => @string.Split(';', StringSplitOptions.TrimEntries).ToList()
+                ));
+
+                builder
+                .Property(command => command.EmbeddedLocation)
+                .HasConversion(new ValueConverter<EmbeddedCommandLocation?, string>(
+                    location => JsonSerializer.Serialize(location, null),
+                    @string => JsonSerializer.Deserialize<EmbeddedCommandLocation>(@string, null)
                 ));
             }
         }

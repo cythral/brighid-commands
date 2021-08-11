@@ -87,14 +87,19 @@ namespace Brighid.Commands.Commands
             command.Type = request.Type;
             command.Name = request.Name;
             command.RequiredRole = request.RequiredRole;
-            command.Checksum = request.Checksum;
             command.Description = request.Description;
-            command.DownloadURL = request.DownloadURL;
-            command.AssemblyName = request.AssemblyName;
-            command.TypeName = request.TypeName;
             command.IsEnabled = request.IsEnabled;
             command.ArgCount = request.ArgCount;
             command.ValidOptions = request.ValidOptions;
+
+            if (request.EmbeddedLocation != null)
+            {
+                command.EmbeddedLocation ??= new EmbeddedCommandLocation();
+                command.EmbeddedLocation.Checksum = request.EmbeddedLocation.Checksum;
+                command.EmbeddedLocation.DownloadURL = request.EmbeddedLocation.DownloadURL;
+                command.EmbeddedLocation.AssemblyName = request.EmbeddedLocation.AssemblyName;
+                command.EmbeddedLocation.TypeName = request.EmbeddedLocation.TypeName;
+            }
 
             await repository.Save(cancellationToken);
             return command;
@@ -133,8 +138,8 @@ namespace Brighid.Commands.Commands
                 return cachedCommand;
             }
 
-            var assembly = await downloader.DownloadCommandPackageFromS3(command.DownloadURL!, command.AssemblyName!, cancellationToken);
-            var type = GetTypeFromAssembly(assembly, command.TypeName!, command.Name!);
+            var assembly = await downloader.DownloadCommandPackageFromS3(command.EmbeddedLocation!.DownloadURL!, command.EmbeddedLocation.AssemblyName!, cancellationToken);
+            var type = GetTypeFromAssembly(assembly, command.EmbeddedLocation.TypeName!, command.Name!);
             var services = utilsFactory.CreateServiceCollection();
             services.AddSingleton(typeof(ICommandStartup), type.StartupType);
             services.AddSingleton(loggerFactory);
