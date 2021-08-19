@@ -5,6 +5,6 @@
   "DatabasePassword": "AQICAHj/2SUStzyXNMLx0/GX2lnjChwPoR4BUvoYRIybQNwYyQGdj9szLLnZfFzppIvTqsd7AAAAcjBwBgkqhkiG9w0BBwagYzBhAgEAMFwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM9L/bzYvrFU5E0DWoAgEQgC8cLQ/kOYpl6A9C1C5sTrZMeLmhw1I6ZAWijjLWnYNb5UFJSAS5Vfq7SPj+AUiOCw==",
   "OpenIdMetadataAddress": "http://identity.brigh.id/.well-known/openid-configuration",
   "OpenIdValidIssuer": "https://identity.brigh.id/",
-  "EnvoyImage": "840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.18.3.0-prod",
+  "EnvoyImage": "840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.19.0.0-prod",
   "MeshNodeName": "commands-prod"
 }
