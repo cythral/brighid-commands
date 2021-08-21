@@ -2,9 +2,12 @@
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
 using Serilog;
+
+using Environments = Brighid.Commands.Constants.Environments;
 
 #pragma warning disable SA1600, CS1591
 
@@ -22,21 +25,35 @@ namespace Brighid.Commands
         {
             return Host.CreateDefaultBuilder(args)
             .UseSerilog(dispose: true)
-            .ConfigureHostConfiguration(config =>
+            .ConfigureHostConfiguration(ConfigureHostConfiguration)
+            .UseDefaultServiceProvider(ConfigureServiceProvider)
+            .ConfigureWebHostDefaults(ConfigureWebHostDefaults);
+        }
+
+        public static void ConfigureHostConfiguration(IConfigurationBuilder builder)
+        {
+            builder.AddEnvironmentVariables();
+        }
+
+        public static void ConfigureServiceProvider(HostBuilderContext context, ServiceProviderOptions options)
+        {
+            if (context.HostingEnvironment.IsEnvironment(Environments.Local) || context.HostingEnvironment.IsEnvironment(Environments.Dev))
             {
-                config.AddEnvironmentVariables();
-            })
-            .ConfigureWebHostDefaults(builder =>
+                options.ValidateScopes = true;
+                options.ValidateOnBuild = true;
+            }
+        }
+
+        public static void ConfigureWebHostDefaults(IWebHostBuilder builder)
+        {
+            builder.UseStartup<Startup>();
+            builder.ConfigureKestrel((context, options) =>
             {
-                builder.UseStartup<Startup>();
-                builder.ConfigureKestrel((context, options) =>
+                var section = context.Configuration.GetSection("Commands");
+                var serviceOptions = section.Get<ServiceOptions>() ?? new ServiceOptions();
+                options.ListenAnyIP(serviceOptions.Port, listenOptions =>
                 {
-                    var section = context.Configuration.GetSection("Commands");
-                    var serviceOptions = section.Get<ServiceOptions>() ?? new ServiceOptions();
-                    options.ListenAnyIP(serviceOptions.Port, listenOptions =>
-                    {
-                        listenOptions.Protocols = serviceOptions.Protocols;
-                    });
+                    listenOptions.Protocols = serviceOptions.Protocols;
                 });
             });
         }
