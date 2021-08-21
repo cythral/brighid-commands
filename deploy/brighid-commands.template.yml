@@ -36,6 +36,13 @@ Parameters:
     Type: String
     Description: Name to use for the node in the App Mesh.
 
+  EnvironmentName:
+    Type: String
+    Description: Name of the environment being deployed to.
+    AllowedValues:
+      - dev
+      - prod
+
 Resources:
   MeshService:
     Type: AWS::AppMesh::VirtualService
@@ -172,6 +179,8 @@ Resources:
               awslogs-region: !Ref AWS::Region
               awslogs-stream-prefix: brighid
           Environment:
+            - Name: ASPNETCORE_ENVIRONMENT
+              Value: !Ref EnvironmentName
             - Name: Database__Host
               Value: !ImportValue mutedac:ClusterAddress
             - Name: Database__Name

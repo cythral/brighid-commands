@@ -6,5 +6,6 @@
   "OpenIdMetadataAddress": "http://identity.brigh.id/.well-known/openid-configuration",
   "OpenIdValidIssuer": "https://identity.brigh.id/",
   "EnvoyImage": "840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.19.0.0-prod",
-  "MeshNodeName": "commands-prod"
+  "MeshNodeName": "commands-prod",
+  "EnvironmentName": "prod"
 }

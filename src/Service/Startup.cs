@@ -17,6 +17,8 @@ using Microsoft.OpenApi.Models;
 
 using Serilog;
 
+using Environments = Brighid.Commands.Constants.Environments;
+
 namespace Brighid.Commands
 {
     /// <summary>
@@ -78,7 +80,7 @@ namespace Brighid.Commands
         {
             logger.LogInformation("Starting. Environment: {@environment}", environment.EnvironmentName);
 
-            if (environment.IsEnvironment("local"))
+            if (environment.IsEnvironment(Environments.Local))
             {
                 databaseContext.Database.Migrate();
             }
