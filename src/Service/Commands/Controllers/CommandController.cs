@@ -60,7 +60,7 @@ namespace Brighid.Commands.Service
         /// </summary>
         /// <param name="request">Request object describing the command to create.</param>
         /// <returns>The resulting command.</returns>
-        [Authorize]
+        [Authorize(Roles = "CommandManager,Administrator")]
         [HttpPost(Name = "Commands:CreateCommand")]
         public async Task<ActionResult<Command>> CreateCommand([FromBody] CommandRequest request)
         {
@@ -75,7 +75,7 @@ namespace Brighid.Commands.Service
         /// <param name="name">Name of the command to update.</param>
         /// <param name="request">Request object describing the data to update the command with.</param>
         /// <returns>The deleted command.</returns>
-        [Authorize]
+        [Authorize(Roles = "CommandManager,Administrator")]
         [HttpPut("{name}", Name = "Commands:UpdateCommand")]
         public async Task<ActionResult<Command>> UpdateCommand(string name, [FromBody] CommandRequest request)
         {
@@ -101,7 +101,7 @@ namespace Brighid.Commands.Service
         /// </summary>
         /// <param name="name">Name of the command to delete.</param>
         /// <returns>The deleted command.</returns>
-        [Authorize]
+        [Authorize(Roles = "CommandManager,Administrator")]
         [HttpDelete("{name}", Name = "Commands:DeleteCommand")]
         public async Task<ActionResult<Command>> DeleteCommand(string name)
         {
@@ -121,8 +121,6 @@ namespace Brighid.Commands.Service
                 return Forbid();
             }
         }
-
-#pragma warning disable IDE0060
 
         /// <summary>
         /// Get command parameters.
