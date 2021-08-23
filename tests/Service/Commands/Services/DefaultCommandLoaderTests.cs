@@ -15,7 +15,7 @@ using NUnit.Framework;
 
 using static NSubstitute.Arg;
 
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     public class DefaultCommandLoaderTests
     {

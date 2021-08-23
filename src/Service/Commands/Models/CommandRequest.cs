@@ -1,6 +1,6 @@
 using System;
 
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     /// <summary>
     /// Request to create or update a command.

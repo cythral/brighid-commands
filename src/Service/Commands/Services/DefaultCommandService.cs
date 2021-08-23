@@ -12,7 +12,7 @@ using Brighid.Commands.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     /// <inheritdoc />
     public class DefaultCommandService : ICommandService

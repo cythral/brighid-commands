@@ -2,7 +2,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Brighid.Commands.Commands;
+using Brighid.Commands.Service;
 
 using Microsoft.EntityFrameworkCore;
 

@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     /// <inheritdoc />
     public class DefaultCommandLoader : ICommandLoader

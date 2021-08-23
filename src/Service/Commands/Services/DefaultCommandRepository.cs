@@ -8,7 +8,7 @@ using Brighid.Commands.Database;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     /// <inheritdoc />
     public class DefaultCommandRepository : ICommandRepository

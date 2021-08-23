@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     /// <summary>
     /// Represents a request to execute a command.

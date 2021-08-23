@@ -1,4 +1,4 @@
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     /// <summary>
     /// Represents info about an S3 URI.

@@ -1,6 +1,6 @@
 using Amazon.S3;
 
-using Brighid.Commands.Commands;
+using Brighid.Commands.Service;
 
 namespace Microsoft.Extensions.DependencyInjection
 {

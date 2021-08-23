@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 using Brighid.Commands.Core;
 
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     /// <summary>
     /// Service to manage commands with.

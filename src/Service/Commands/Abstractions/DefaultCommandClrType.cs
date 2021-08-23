@@ -3,7 +3,7 @@ using System.Reflection;
 
 using Brighid.Commands.Core;
 
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     /// <inheritdoc />
     public class DefaultCommandClrType : ICommandClrType
