@@ -20,6 +20,15 @@ namespace Brighid.Commands.Service
         Task<IEnumerable<Command>> List(CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Get a command by its name for the given <paramref name="principal" />.
+        /// </summary>
+        /// <param name="name">The name of the command to retrieve.</param>
+        /// <param name="principal">The principal that is requesting the command.</param>
+        /// <param name="cancellationToken">Token used to cancel the operation.</param>
+        /// <returns>The resulting command.</returns>
+        Task<Command> GetByName(string name, ClaimsPrincipal principal, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Create a new command for the given <paramref name="principal" />.
         /// </summary>
         /// <param name="command">Request info to use when creating the command.</param>

@@ -60,7 +60,7 @@ namespace Brighid.Commands.Service
         /// </summary>
         /// <param name="request">Request object describing the command to create.</param>
         /// <returns>The resulting command.</returns>
-        [Authorize(Roles = "CommandManager,Administrator")]
+        [Authorize]
         [HttpPost(Name = "Commands:CreateCommand")]
         public async Task<ActionResult<Command>> CreateCommand([FromBody] CommandRequest request)
         {
@@ -75,7 +75,7 @@ namespace Brighid.Commands.Service
         /// <param name="name">Name of the command to update.</param>
         /// <param name="request">Request object describing the data to update the command with.</param>
         /// <returns>The deleted command.</returns>
-        [Authorize(Roles = "CommandManager,Administrator")]
+        [Authorize]
         [HttpPut("{name}", Name = "Commands:UpdateCommand")]
         public async Task<ActionResult<Command>> UpdateCommand(string name, [FromBody] CommandRequest request)
         {
@@ -101,7 +101,7 @@ namespace Brighid.Commands.Service
         /// </summary>
         /// <param name="name">Name of the command to delete.</param>
         /// <returns>The deleted command.</returns>
-        [Authorize(Roles = "CommandManager,Administrator")]
+        [Authorize]
         [HttpDelete("{name}", Name = "Commands:DeleteCommand")]
         public async Task<ActionResult<Command>> DeleteCommand(string name)
         {
@@ -119,6 +119,34 @@ namespace Brighid.Commands.Service
             catch (AccessDeniedException)
             {
                 return Forbid();
+            }
+        }
+
+#pragma warning disable IDE0060
+
+        /// <summary>
+        /// Get command parameters.
+        /// </summary>
+        /// <param name="name">The name of the command to get parameters for.</param>
+        /// <returns>The parameters that belong to the requested command.</returns>
+        [Authorize]
+        [HttpGet("{name}/parameters", Name = "Commands:GetCommandParameters")]
+        public async Task<ActionResult<IEnumerable<CommandParameter>>> GetCommandParameters(string name)
+        {
+            HttpContext.RequestAborted.ThrowIfCancellationRequested();
+
+            try
+            {
+                var command = await service.GetByName(name, HttpContext.User, HttpContext.RequestAborted);
+                return Ok(command.Parameters);
+            }
+            catch (CommandRequiresRoleException)
+            {
+                return Forbid();
+            }
+            catch (CommandNotFoundException)
+            {
+                return NotFound();
             }
         }
 

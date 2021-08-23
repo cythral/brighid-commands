@@ -56,6 +56,64 @@ namespace Brighid.Commands.Service
         }
 
         [TestFixture]
+        public class GetByNameTests
+        {
+            [Test, Auto]
+            public async Task ShouldFetchTheCommandFromTheRepository(
+                string name,
+                string requiredRole,
+                Guid ownerId,
+                ClaimsIdentity identity,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                command.RequiredRole = requiredRole;
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                var principal = new ClaimsPrincipal(identity);
+                identity.AddClaim(new Claim(ClaimTypes.Name, ownerId.ToString()));
+                identity.AddClaim(new Claim(ClaimTypes.Role, requiredRole));
+
+                var result = await service.GetByName(name, principal, cancellationToken);
+
+                result.Should().Be(command);
+                await repository.Received().FindCommandByName(Is(name), Is(cancellationToken));
+            }
+
+            [Test, Auto]
+            public async Task ShouldThrowCommandRequiresRoleIfCommandNotAccessibleToUser(
+                string name,
+                string requiredRole,
+                Guid ownerId,
+                ClaimsIdentity identity,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                command.RequiredRole = requiredRole;
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                var principal = new ClaimsPrincipal(identity);
+                Func<Task> func = () => service.GetByName(name, principal, cancellationToken);
+
+                await func.Should().ThrowAsync<CommandRequiresRoleException>();
+            }
+        }
+
+        [TestFixture]
         public class CreateTests
         {
             [Test, Auto]
@@ -83,6 +141,86 @@ namespace Brighid.Commands.Service
                 result.OwnerId.Should().Be(ownerId);
                 repository.Received().Add(Is(result));
                 await repository.Received().Save(Is(cancellationToken));
+            }
+
+            [Test, Auto]
+            public async Task ShouldThrowIfDuplicateParametersWereGiven(
+                string commandName,
+                string parameterName,
+                Guid ownerId,
+                CommandRequest request,
+                ClaimsIdentity identity,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                request.Name = commandName;
+                request.Parameters = new[]
+                {
+                    new CommandParameter(parameterName),
+                    new CommandParameter("a"),
+                    new CommandParameter(parameterName),
+                    new CommandParameter("b"),
+                };
+
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                var principal = new ClaimsPrincipal(identity);
+                identity.AddClaim(new Claim(ClaimTypes.Name, ownerId.ToString()));
+
+                Func<Task> func = () => service.Create(request, principal, cancellationToken);
+
+                var exception = (await func.Should().ThrowAsync<DuplicateCommandParameterException>()).Which;
+                exception.CommandName.Should().Be(commandName);
+                exception.ParameterName.Should().Be(parameterName);
+
+                repository.DidNotReceive().Add(Any<Command>());
+                await repository.DidNotReceive().Save(Is(cancellationToken));
+            }
+
+            [Test, Auto]
+            public async Task ShouldThrowIfDuplicateArgumentIndexesWereGiven(
+                string commandName,
+                byte argumentIndex,
+                Guid ownerId,
+                CommandRequest request,
+                ClaimsIdentity identity,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                request.Name = commandName;
+                request.Parameters = new[]
+                {
+                    new CommandParameter("a", argumentIndex: argumentIndex),
+                    new CommandParameter("b"),
+                    new CommandParameter("c", argumentIndex: argumentIndex),
+                    new CommandParameter("b"),
+                };
+
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                var principal = new ClaimsPrincipal(identity);
+                identity.AddClaim(new Claim(ClaimTypes.Name, ownerId.ToString()));
+
+                Func<Task> func = () => service.Create(request, principal, cancellationToken);
+
+                var exception = (await func.Should().ThrowAsync<DuplicateArgumentIndexException>()).Which;
+                exception.CommandName.Should().Be(commandName);
+                exception.ArgumentIndex.Should().Be(argumentIndex);
+
+                repository.DidNotReceive().Add(Any<Command>());
+                await repository.DidNotReceive().Save(Is(cancellationToken));
             }
         }
 
@@ -113,6 +251,84 @@ namespace Brighid.Commands.Service
 
                 result.Should().Be(command);
                 await repository.Received().FindCommandByName(name, cancellationToken);
+            }
+
+            [Test, Auto]
+            public async Task ShouldThrowIfDuplicateParametersWereGiven(
+                string name,
+                string parameterName,
+                CommandRequest request,
+                ClaimsIdentity identity,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                request.Name = name;
+                request.Parameters = new[]
+                {
+                    new CommandParameter(parameterName),
+                    new CommandParameter("a"),
+                    new CommandParameter(parameterName),
+                    new CommandParameter("b"),
+                };
+
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                Func<Task> func = () => service.UpdateByName(name, request, principal, cancellationToken);
+
+                var exception = (await func.Should().ThrowAsync<DuplicateCommandParameterException>()).Which;
+                exception.CommandName.Should().Be(name);
+                exception.ParameterName.Should().Be(parameterName);
+
+                await repository.DidNotReceive().FindCommandByName(name, cancellationToken);
+            }
+
+            [Test, Auto]
+            public async Task ShouldThrowIfDuplicateArgumentIndexesWereGiven(
+                string name,
+                byte argumentIndex,
+                CommandRequest request,
+                ClaimsIdentity identity,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                request.Name = name;
+                request.Parameters = new[]
+                {
+                    new CommandParameter("a", argumentIndex: argumentIndex),
+                    new CommandParameter("b"),
+                    new CommandParameter("c", argumentIndex: argumentIndex),
+                    new CommandParameter("b"),
+                };
+
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                Func<Task> func = () => service.UpdateByName(name, request, principal, cancellationToken);
+
+                var exception = (await func.Should().ThrowAsync<DuplicateArgumentIndexException>()).Which;
+                exception.CommandName.Should().Be(name);
+                exception.ArgumentIndex.Should().Be(argumentIndex);
+
+                await repository.DidNotReceive().FindCommandByName(name, cancellationToken);
             }
 
             [Test, Auto]

@@ -58,6 +58,11 @@ namespace Brighid.Commands.Service
         public EmbeddedCommandLocation? EmbeddedLocation { get; set; }
 
         /// <summary>
+        /// Gets or sets the command's parameters.
+        /// </summary>
+        public IEnumerable<CommandParameter> Parameters { get; set; } = Array.Empty<CommandParameter>();
+
+        /// <summary>
         /// Gets or sets a value indicating whether or not this command is enabled.
         /// </summary>
         public bool IsEnabled { get; set; }
@@ -112,6 +117,13 @@ namespace Brighid.Commands.Service
                 .HasConversion(new ValueConverter<EmbeddedCommandLocation?, string>(
                     location => JsonSerializer.Serialize(location, null),
                     @string => JsonSerializer.Deserialize<EmbeddedCommandLocation>(@string, null)
+                ));
+
+                builder
+                .Property(command => command.Parameters)
+                .HasConversion(new ValueConverter<IEnumerable<CommandParameter>, string>(
+                    location => JsonSerializer.Serialize(location, null),
+                    @string => JsonSerializer.Deserialize<CommandParameter[]>(@string, null) ?? Array.Empty<CommandParameter>()
                 ));
             }
         }

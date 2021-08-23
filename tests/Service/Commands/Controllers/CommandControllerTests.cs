@@ -205,6 +205,29 @@ namespace Brighid.Commands.Service
         }
 
         [TestFixture]
+        public class GetCommandParameters
+        {
+            [Test, Auto]
+            public async Task ShouldReturnParameters(
+                string name,
+                HttpContext httpContext,
+                [Frozen] Command command,
+                [Frozen, Substitute] ICommandService service,
+                [Target] CommandController controller
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+
+                var result = (await controller.GetCommandParameters(name)).Result;
+
+                result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeEquivalentTo(command.Parameters);
+
+                await service.Received().GetByName(Is(name), Is(httpContext.User), Is(httpContext.RequestAborted));
+            }
+        }
+
+        [TestFixture]
         public class GetCommandParseInfo
         {
             [Test, Auto]
