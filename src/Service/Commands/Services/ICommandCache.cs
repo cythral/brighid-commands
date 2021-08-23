@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 using Brighid.Commands.Core;
 
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     /// <summary>
     /// Cache for commands when looking up by name.

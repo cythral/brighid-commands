@@ -14,7 +14,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     /// <summary>
     /// Represents a command that can be executed.
@@ -56,6 +56,11 @@ namespace Brighid.Commands.Commands
         /// Gets or sets the location of an embedded command.
         /// </summary>
         public EmbeddedCommandLocation? EmbeddedLocation { get; set; }
+
+        /// <summary>
+        /// Gets or sets the command's parameters.
+        /// </summary>
+        public IEnumerable<CommandParameter> Parameters { get; set; } = Array.Empty<CommandParameter>();
 
         /// <summary>
         /// Gets or sets a value indicating whether or not this command is enabled.
@@ -112,6 +117,13 @@ namespace Brighid.Commands.Commands
                 .HasConversion(new ValueConverter<EmbeddedCommandLocation?, string>(
                     location => JsonSerializer.Serialize(location, null),
                     @string => JsonSerializer.Deserialize<EmbeddedCommandLocation>(@string, null)
+                ));
+
+                builder
+                .Property(command => command.Parameters)
+                .HasConversion(new ValueConverter<IEnumerable<CommandParameter>, string>(
+                    location => JsonSerializer.Serialize(location, null),
+                    @string => JsonSerializer.Deserialize<CommandParameter[]>(@string, null) ?? Array.Empty<CommandParameter>()
                 ));
             }
         }

@@ -11,7 +11,7 @@ using AutoFixture;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
-using Brighid.Commands.Commands;
+using Brighid.Commands.Service;
 
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.DependencyInjection;

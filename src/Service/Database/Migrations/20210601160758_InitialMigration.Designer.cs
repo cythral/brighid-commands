@@ -21,7 +21,7 @@ namespace Brighid.Commands.Database
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.6");
 
-            modelBuilder.Entity("Brighid.Commands.Commands.Command", b =>
+            modelBuilder.Entity("Brighid.Commands.Service.Command", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()

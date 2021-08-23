@@ -9,7 +9,7 @@ using Amazon.S3;
 
 using Microsoft.Extensions.Options;
 
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     /// <inheritdoc />
     public class DefaultCommandPackageDownloader : ICommandPackageDownloader

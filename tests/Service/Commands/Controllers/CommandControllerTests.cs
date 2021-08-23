@@ -21,7 +21,7 @@ using NUnit.Framework;
 
 using static NSubstitute.Arg;
 
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     public class CommandControllerTests
     {
@@ -201,6 +201,29 @@ namespace Brighid.Commands.Commands
                 result.Should().BeOfType<NotFoundResult>();
 
                 await service.Received().DeleteByName(Is(name), Is(httpContext.User), Is(cancellationToken));
+            }
+        }
+
+        [TestFixture]
+        public class GetCommandParameters
+        {
+            [Test, Auto]
+            public async Task ShouldReturnParameters(
+                string name,
+                HttpContext httpContext,
+                [Frozen] Command command,
+                [Frozen, Substitute] ICommandService service,
+                [Target] CommandController controller
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+
+                var result = (await controller.GetCommandParameters(name)).Result;
+
+                result.Should().BeOfType<OkObjectResult>()
+                .Which.Value.Should().BeEquivalentTo(command.Parameters);
+
+                await service.Received().GetByName(Is(name), Is(httpContext.User), Is(httpContext.RequestAborted));
             }
         }
 

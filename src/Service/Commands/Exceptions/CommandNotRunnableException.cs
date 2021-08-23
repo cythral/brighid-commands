@@ -1,6 +1,6 @@
 using System;
 
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     /// <summary>
     /// Exception thrown when a non-runnable command tries to run.

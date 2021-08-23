@@ -1,6 +1,6 @@
 using System;
 
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     /// <summary>
     /// Exception that is thrown when a command type is not supported.

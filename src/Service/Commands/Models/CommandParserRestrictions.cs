@@ -1,6 +1,6 @@
 using System;
 
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     /// <summary>
     /// Restrictions to impart on command parsers for a particular command.

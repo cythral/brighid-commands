@@ -12,7 +12,7 @@ using Brighid.Commands.Core;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
-namespace Brighid.Commands.Commands
+namespace Brighid.Commands.Service
 {
     /// <inheritdoc />
     public class DefaultCommandService : ICommandService
@@ -60,11 +60,24 @@ namespace Brighid.Commands.Commands
         }
 
         /// <inheritdoc />
+        public async Task<Command> GetByName(string name, ClaimsPrincipal principal, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            using var scope = serviceScopeFactory.CreateScope();
+            var repository = scope.ServiceProvider.GetRequiredService<ICommandRepository>();
+            var command = await repository.FindCommandByName(name, cancellationToken);
+            EnsureCommandIsAccessibleToPrincipal(command, principal);
+            return command;
+        }
+
+        /// <inheritdoc />
         public async Task<Command> Create(CommandRequest command, ClaimsPrincipal principal, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             using var scope = serviceScopeFactory.CreateScope();
             var repository = scope.ServiceProvider.GetRequiredService<ICommandRepository>();
+
+            ValidateParameters(command);
 
             var mappedCommand = (Command)command;
             mappedCommand.OwnerId = Guid.Parse(principal.Identity!.Name!);
@@ -80,6 +93,8 @@ namespace Brighid.Commands.Commands
             cancellationToken.ThrowIfCancellationRequested();
             using var scope = serviceScopeFactory.CreateScope();
             var repository = scope.ServiceProvider.GetRequiredService<ICommandRepository>();
+
+            ValidateParameters(request);
 
             var command = await repository.FindCommandByName(name, cancellationToken);
             EnsurePrincipalOwnsCommandOrIsAnAdministrator(command, principal);
@@ -121,6 +136,7 @@ namespace Brighid.Commands.Commands
         }
 
         /// <inheritdoc />
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void EnsureCommandIsAccessibleToPrincipal(Command command, ClaimsPrincipal principal)
         {
             if (command.RequiredRole != null && !principal.IsInRole(command.RequiredRole))
@@ -163,6 +179,33 @@ namespace Brighid.Commands.Commands
                 || (principalId != command.OwnerId && !principal.IsInRole("Administrator")))
             {
                 throw new AccessDeniedException("You do not own this command.");
+            }
+        }
+
+        /// <summary>
+        /// Validates a command's parameters against the following rules:
+        /// - should not contain multiple parameters with the same name.
+        /// - should not contain multiple parameters with the same argument index.
+        /// </summary>
+        /// <param name="command">The command to validate parameters for.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private static void ValidateParameters(Command command)
+        {
+            var existingNames = new HashSet<string>();
+            var existingArgIndexes = new HashSet<byte>();
+
+            foreach (var parameter in command.Parameters)
+            {
+                if (!existingNames.Add(parameter.Name))
+                {
+                    throw new DuplicateCommandParameterException(command.Name, parameter.Name);
+                }
+
+                var argumentIndex = parameter.ArgumentIndex;
+                if (argumentIndex.HasValue && !existingArgIndexes.Add(argumentIndex.Value))
+                {
+                    throw new DuplicateArgumentIndexException(command.Name, argumentIndex.Value);
+                }
             }
         }
 
