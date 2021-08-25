@@ -1,3 +1,4 @@
+using System.ComponentModel;
 using System.Text.Json.Serialization;
 
 namespace Brighid.Commands.Service
@@ -31,24 +32,28 @@ namespace Brighid.Commands.Service
         /// Gets the name of the command parameter.
         /// </summary>
         [JsonPropertyName("n")]
+        [DisplayName(nameof(Name))]
         public string Name { get; init; }
 
         /// <summary>
         /// Gets the description of the command parameter.
         /// </summary>
         [JsonPropertyName("d")]
+        [DisplayName(nameof(Description))]
         public string? Description { get; init; }
 
         /// <summary>
         /// Gets the type of the command parameter.
         /// </summary>
         [JsonPropertyName("t")]
+        [DisplayName(nameof(Type))]
         public CommandParameterType Type { get; init; }
 
         /// <summary>
         /// Gets the argument index, if this parameter can be used as an argument.
         /// </summary>
         [JsonPropertyName("i")]
+        [DisplayName(nameof(ArgumentIndex))]
         public byte? ArgumentIndex { get; init; }
     }
 }
