@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 
 using Brighid.Commands.Database;
+using Brighid.Commands.Service;
 
 using Destructurama;
 
@@ -54,7 +55,7 @@ namespace Brighid.Commands
             services.Configure<ServiceOptions>(configuration.GetSection("Commands"));
             services.AddHealthChecks();
             services.AddControllers();
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(options => options.SchemaFilter<DisplayNameFilter>());
             services.ConfigureDatabaseServices(configuration);
             services.ConfigureCommandServices();
             services.ConfigureAuthServices(configuration.GetSection("Auth").Bind);
