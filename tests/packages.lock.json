@@ -102,15 +102,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.3.1",
-        "contentHash": "GlBdORaC5c25QVU7P3ZiVsJXeH23HWx0ywd8g8DRL482lW1G6SJTprHCBtj8m4ZOVoiWVu2ZdxDh5QskkADisw=="
+        "resolved": "3.7.3.2",
+        "contentHash": "RUOdW7X0z63wE15f+SqQe7nQg7m4l6eyegjwEZSNhYBGbkGl5lIMPHLf3BS2NX7OiMJKHiAXrJM4hWhdVViblA=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.2.1",
-        "contentHash": "YrpNP2L/pmv6GqrBHfh/EMinz5JG5sR342A4T+yef5fNBuUqxmMfJ4c/kXCMpl9rTpeIt4g/Wf1DeOa47yf/QQ==",
+        "resolved": "3.7.2.2",
+        "contentHash": "hPXEqxacY1zlNgR6rXvjGehPXMXg6QGTyT9MSBS26WuAd7o/K1RRhM8+rw1GntGz4J8ZAAF/fzAM1lCD6uAhnQ==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.3.1, 4.0.0)"
+          "AWSSDK.Core": "[3.7.3.2, 4.0.0)"
         }
       },
       "Castle.Core": {
@@ -1242,7 +1242,7 @@
       "service": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.S3": "3.7.2.1",
+          "AWSSDK.S3": "3.7.2.2",
           "Core": "1.0.0",
           "Destructurama.Attributed": "2.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "5.0.9",
