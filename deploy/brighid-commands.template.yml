@@ -8,6 +8,10 @@ Parameters:
     Type: String
     Description: URI of the Docker Image to pull.
 
+  DatabaseHost:
+    Type: String
+    Description: The hostname of the database to use.
+
   DatabaseName:
     Type: String
     Description: The name of the database to use.
@@ -182,7 +186,7 @@ Resources:
             - Name: ASPNETCORE_ENVIRONMENT
               Value: !Ref EnvironmentName
             - Name: Database__Host
-              Value: !ImportValue mutedac:ClusterAddress
+              Value: !Ref DatabaseHost
             - Name: Database__Name
               Value: !Ref DatabaseName
             - Name: Database__User
