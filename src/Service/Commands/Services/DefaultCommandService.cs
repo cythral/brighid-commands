@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Brighid.Commands.Auth;
-using Brighid.Commands.Core;
+using Brighid.Commands.Sdk;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -155,21 +154,16 @@ namespace Brighid.Commands.Service
             }
 
             var assembly = await downloader.DownloadCommandPackageFromS3(command.EmbeddedLocation!.DownloadURL!, command.EmbeddedLocation.AssemblyName!, cancellationToken);
-            var type = GetTypeFromAssembly(assembly, command.EmbeddedLocation.TypeName!, command.Name!);
+            var registratorType = assembly.GetType(command.EmbeddedLocation.TypeName, false) ?? throw new CommandNotFoundException(command.Name);
+            var registrator = (ICommandRegistrator)(Activator.CreateInstance(registratorType, Array.Empty<object>()) ?? throw new CommandNotFoundException(command.Name));
+
             var services = utilsFactory.CreateServiceCollection();
-            services.AddSingleton(typeof(ICommandStartup), type.StartupType);
             services.AddSingleton(loggerFactory);
             services.AddLogging();
 
-            var intermediateProvider = services.BuildServiceProvider();
-            var startup = intermediateProvider.GetRequiredService<ICommandStartup>();
-            startup.ConfigureServices(services);
-            services.AddSingleton(typeof(ICommandRunner), type.CommandType);
-
-            var provider = services.BuildServiceProvider();
-            var loadedCommand = provider.GetRequiredService<ICommandRunner>();
-            commandCache.Add(command.Name!, loadedCommand);
-            return loadedCommand;
+            var runner = registrator.Register(services);
+            commandCache.Add(command.Name, runner);
+            return runner;
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -207,13 +201,6 @@ namespace Brighid.Commands.Service
                     throw new DuplicateArgumentIndexException(command.Name, argumentIndex.Value);
                 }
             }
-        }
-
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        private ICommandClrType GetTypeFromAssembly(Assembly assembly, string typeName, string commandName)
-        {
-            var type = assembly.GetType(typeName, true) ?? throw new CommandNotFoundException(commandName);
-            return utilsFactory.CreateCommandClrType(type, commandName);
         }
     }
 }

@@ -18,6 +18,8 @@ using Microsoft.OpenApi.Models;
 
 using Serilog;
 
+using Swashbuckle.AspNetCore.SwaggerGen;
+
 using Environments = Brighid.Commands.Constants.Environments;
 
 namespace Brighid.Commands
@@ -55,7 +57,7 @@ namespace Brighid.Commands
             services.Configure<ServiceOptions>(configuration.GetSection("Commands"));
             services.AddHealthChecks();
             services.AddControllers();
-            services.AddSwaggerGen(options => options.SchemaFilter<DisplayNameFilter>());
+            services.AddSwaggerGen(ConfigureSwaggerGenOptions);
             services.ConfigureDatabaseServices(configuration);
             services.ConfigureCommandServices();
             services.ConfigureAuthServices(configuration.GetSection("Auth").Bind);
@@ -63,6 +65,16 @@ namespace Brighid.Commands
             {
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
+        }
+
+        /// <summary>
+        /// Configures Swagger Generation Options.
+        /// </summary>
+        /// <param name="options">The options to configure.</param>
+        public void ConfigureSwaggerGenOptions(SwaggerGenOptions options)
+        {
+            options.SchemaFilter<DisplayNameFilter>();
+            options.OperationFilter<ExecuteCommandFilter>();
         }
 
         /// <summary>

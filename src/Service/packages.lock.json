@@ -11,6 +11,15 @@
           "AWSSDK.Core": "[3.7.3.30, 4.0.0)"
         }
       },
+      "Brighid.Commands.Sdk.Core": {
+        "type": "Direct",
+        "requested": "[0.1.0-beta2, )",
+        "resolved": "0.1.0-beta2",
+        "contentHash": "aZGQpVXsiSem7uzAGgWPyRzMsiwBoD6YJRhJcMQwIhYUdy3TxezkydLSQb9D9YPywl2ClMo9rdwbodvXME8wEw==",
+        "dependencies": {
+          "Microsoft.Extensions.DependencyInjection": "5.0.2"
+        }
+      },
       "Destructurama.Attributed": {
         "type": "Direct",
         "requested": "[3.0.0, )",
@@ -950,12 +959,6 @@
           "System.Text.Encoding": "4.0.11",
           "System.Threading": "4.0.11",
           "System.Xml.ReaderWriter": "4.0.11"
-        }
-      },
-      "core": {
-        "type": "Project",
-        "dependencies": {
-          "Microsoft.Extensions.DependencyInjection": "5.0.2"
         }
       }
     }

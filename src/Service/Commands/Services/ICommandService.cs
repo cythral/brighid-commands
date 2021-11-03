@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Brighid.Commands.Core;
+using Brighid.Commands.Sdk;
 
 namespace Brighid.Commands.Service
 {

@@ -8,17 +8,17 @@ namespace Brighid.Commands.Service
         /// <summary>
         /// Gets or sets the URL where the command's package can be downloaded from.
         /// </summary>
-        public string? DownloadURL { get; set; }
+        public string DownloadURL { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the name of the assembly within the package that the command lives in.
         /// </summary>
-        public string? AssemblyName { get; set; }
+        public string AssemblyName { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the fully-qualified name of the command type within the assembly.
         /// </summary>
-        public string? TypeName { get; set; }
+        public string TypeName { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the checksum of the command's contents.

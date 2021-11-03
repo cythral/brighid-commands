@@ -44,14 +44,6 @@ namespace Brighid.Commands.Service
         IServiceCollection CreateServiceCollection();
 
         /// <summary>
-        /// Creates a new <see cref="ICommandClrType" /> abstraction over the given <paramref name="commandType" />.
-        /// </summary>
-        /// <param name="commandType">The command's real type to abstract over.</param>
-        /// <param name="name">The name of the command.</param>
-        /// <returns>The abstracted command clr type.</returns>
-        ICommandClrType CreateCommandClrType(Type commandType, string name);
-
-        /// <summary>
         /// Extract a zip file to the given <paramref name="directory" />.
         /// </summary>
         /// <param name="zipFile">Zip file to extract.</param>

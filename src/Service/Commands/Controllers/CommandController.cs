@@ -3,7 +3,7 @@ using System.Net;
 using System.Threading.Tasks;
 
 using Brighid.Commands.Auth;
-using Brighid.Commands.Core;
+using Brighid.Commands.Sdk;
 
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -46,7 +46,6 @@ namespace Brighid.Commands.Service
         /// Get a list of commands.
         /// </summary>
         /// <returns>A list of commands.</returns>
-        [Authorize]
         [HttpGet(Name = "Commands:List")]
         public async Task<ActionResult<IEnumerable<Command>>> List()
         {
@@ -186,12 +185,12 @@ namespace Brighid.Commands.Service
         /// Executes a command.
         /// </summary>
         /// <param name="name">The name of the command to execute.</param>
-        /// <param name="request">Options to use when running the command.</param>
         /// <returns>The HTTP Response.</returns>
         [HttpPost("{name}/execute", Name = "Commands:ExecuteCommand")]
+        [ReadableBodyStream]
         [ProducesResponseType(typeof(ExecuteCommandResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ExecuteCommandResponse), (int)HttpStatusCode.Accepted)]
-        public async Task<ActionResult<ExecuteCommandResponse>> Execute(string name, [FromBody] ExecuteCommandRequest request)
+        public async Task<ActionResult<ExecuteCommandResponse>> Execute(string name)
         {
             HttpContext.RequestAborted.ThrowIfCancellationRequested();
 
@@ -201,11 +200,7 @@ namespace Brighid.Commands.Service
                 service.EnsureCommandIsAccessibleToPrincipal(command, HttpContext.User);
                 await loader.LoadCommand(command, HttpContext.RequestAborted);
 
-                var context = new CommandContext
-                {
-                    Arguments = request.Arguments,
-                    Options = request.Options,
-                };
+                var context = new CommandContext(HttpContext.Request.Body, HttpContext.User, null!, null!);
 
                 // Embedded Commands are typically very fast once loaded into the Assembly Load Context.
                 // Save a call to the response topic + its transformer by just returning immediately and delegating
@@ -214,7 +209,7 @@ namespace Brighid.Commands.Service
                 if (command.Type == CommandType.Embedded)
                 {
                     var result = await command.Run(context, HttpContext.RequestAborted);
-                    var okResponse = new ExecuteCommandResponse { Response = result, ReplyImmediately = true };
+                    var okResponse = new ExecuteCommandResponse { Response = result.Message, ReplyImmediately = true };
                     return Ok(okResponse);
                 }
 

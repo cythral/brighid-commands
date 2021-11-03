@@ -1,7 +1,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 
-using Brighid.Commands.Core;
+using Brighid.Commands.Sdk;
 
 using Microsoft.Extensions.Logging;
 
@@ -10,8 +10,8 @@ namespace Brighid.Commands.TestCommands
     /// <summary>
     /// Ping command.
     /// </summary>
-    [CommandStartup(typeof(PingCommandStartup))]
-    public class PingCommand : ICommandRunner
+    [Command("ping")]
+    public class PingCommand : ICommand<PingCommandRequest>
     {
         private readonly ILogger<PingCommand> logger;
 
@@ -27,10 +27,10 @@ namespace Brighid.Commands.TestCommands
         }
 
         /// <inheritdoc />
-        public Task<string> Run(CommandContext context, CancellationToken cancellationToken = default)
+        public Task<CommandResult> Run(CommandContext<PingCommandRequest> context, CancellationToken cancellationToken = default)
         {
             logger.LogInformation("Received command request: {@context}", context);
-            return Task.FromResult("Pong");
+            return Task.FromResult(new CommandResult("Pong"));
         }
     }
 }

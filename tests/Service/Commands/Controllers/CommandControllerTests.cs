@@ -7,7 +7,7 @@ using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
 using Brighid.Commands.Auth;
-using Brighid.Commands.Core;
+using Brighid.Commands.Sdk;
 
 using FluentAssertions;
 
@@ -331,7 +331,7 @@ namespace Brighid.Commands.Service
             )
             {
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
-                await controller.Execute(commandName, request);
+                await controller.Execute(commandName);
 
                 await repository.Received().FindCommandByName(Is(commandName), Is(httpContext.RequestAborted));
             }
@@ -347,7 +347,7 @@ namespace Brighid.Commands.Service
             )
             {
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
-                await controller.Execute(commandName, request);
+                await controller.Execute(commandName);
 
                 await loader.Received().LoadCommand(Is(command), Is(httpContext.RequestAborted));
             }
@@ -363,13 +363,10 @@ namespace Brighid.Commands.Service
             )
             {
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
-                await controller.Execute(commandName, request);
+                await controller.Execute(commandName);
 
                 await runner.Received().Run(
-                    Is<CommandContext>(context =>
-                        context.Options == request.Options &&
-                        context.Arguments == request.Arguments
-                    ),
+                    Is<CommandContext>(context => context.InputStream == httpContext.Request.Body),
                     Is(httpContext.RequestAborted)
                 );
             }
@@ -387,7 +384,7 @@ namespace Brighid.Commands.Service
             {
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 command.Type = (CommandType)(-1);
-                var result = (await controller.Execute(commandName, request)).Result;
+                var result = (await controller.Execute(commandName)).Result;
 
                 result.Should().BeOfType<AcceptedResult>();
                 result.As<AcceptedResult>()
@@ -400,7 +397,7 @@ namespace Brighid.Commands.Service
             [Test, Auto]
             public async Task ShouldReturnOkWithResult(
                 string commandName,
-                string commandOutput,
+                CommandResult commandOutput,
                 HttpContext httpContext,
                 ExecuteCommandRequest request,
                 [Frozen] ICommandRunner command,
@@ -410,20 +407,20 @@ namespace Brighid.Commands.Service
             {
                 command.Run(Any<CommandContext>(), Any<CancellationToken>()).Returns(commandOutput);
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
-                var result = (await controller.Execute(commandName, request)).Result;
+                var result = (await controller.Execute(commandName)).Result;
 
                 var response = result.Should().BeOfType<OkObjectResult>().Which
                 .Value.Should().BeOfType<ExecuteCommandResponse>()
                 .Which;
 
                 response.ReplyImmediately.Should().BeTrue();
-                response.Response.Should().Be(commandOutput);
+                response.Response.Should().Be(commandOutput.Message);
             }
 
             [Test, Auto]
             public async Task ShouldReturnForbiddenIfUserDoesntHaveAccessToCommand(
                 string commandName,
-                string commandOutput,
+                CommandResult commandOutput,
                 HttpContext httpContext,
                 ExecuteCommandRequest request,
                 [Frozen] Command command,
@@ -437,7 +434,7 @@ namespace Brighid.Commands.Service
 
                 service.When(svc => svc.EnsureCommandIsAccessibleToPrincipal(Any<Command>(), Any<ClaimsPrincipal>())).Throw(new CommandRequiresRoleException(command));
 
-                var result = (await controller.Execute(commandName, request)).Result;
+                var result = (await controller.Execute(commandName)).Result;
 
                 result.Should().BeOfType<ForbidResult>();
             }
@@ -455,7 +452,7 @@ namespace Brighid.Commands.Service
 
                 repository.FindCommandByName(Any<string>(), Any<CancellationToken>()).Throws(new CommandNotFoundException(commandName));
 
-                var result = (await controller.Execute(commandName, request)).Result;
+                var result = (await controller.Execute(commandName)).Result;
 
                 result.Should().BeOfType<NotFoundResult>();
             }
