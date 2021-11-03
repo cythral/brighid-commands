@@ -1,6 +1,5 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Security.Claims;
 using System.Text;
@@ -13,7 +12,7 @@ using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
 using Brighid.Commands.Auth;
-using Brighid.Commands.Core;
+using Brighid.Commands.Sdk;
 
 using FluentAssertions;
 
@@ -863,7 +862,6 @@ namespace Brighid.Commands.Service
                 MemoryStream fileStream,
                 [Frozen] S3UriInfo s3UriInfo,
                 [Frozen, Substitute] Assembly assembly,
-                [Frozen, Substitute] ICommandClrType commandClrType,
                 [Frozen, Substitute] ICommandPackageDownloader downloader,
                 [Frozen, Substitute] IUtilsFactory utilsFactory,
                 [Target] DefaultCommandService service,
@@ -871,9 +869,7 @@ namespace Brighid.Commands.Service
             )
             {
                 using var responseStream = new MemoryStream(Encoding.UTF8.GetBytes(contents));
-                assembly.GetType(Any<string>(), Any<bool>()).Returns(typeof(TestCommand));
-                commandClrType.StartupType.Returns(typeof(TestStartup));
-                commandClrType.CommandType.Returns(typeof(TestCommand));
+                assembly.GetType(Any<string>(), Any<bool>()).Returns(typeof(TestCommandRegistrator));
 
                 await service.LoadEmbedded(command, cancellationToken);
 
@@ -901,42 +897,12 @@ namespace Brighid.Commands.Service
             }
 
             [Test, Auto]
-            public async Task ShouldRunTheStartupClass(
-                string contents,
-                Command command,
-                MemoryStream fileStream,
-                CommandStartupAttribute startupAttribute,
-                [Frozen] IServiceCollection services,
-                [Frozen] ICommandClrType commandType,
-                [Frozen, Substitute] Assembly assembly,
-                [Frozen] S3UriInfo s3UriInfo,
-                [Frozen, Substitute] IAmazonS3 s3Client,
-                [Frozen, Substitute] IUtilsFactory utilsFactory,
-                [Target] DefaultCommandService service,
-                CancellationToken cancellationToken
-            )
-            {
-                commandType.StartupType.Returns(typeof(TestStartup));
-                commandType.CommandType.Returns(typeof(TestCommand));
-
-                await service.LoadEmbedded(command, cancellationToken);
-
-                var query = from svc in services
-                            where svc.ImplementationType == typeof(TestDummyClass)
-                            select svc;
-
-                query.Should().HaveCount(1);
-            }
-
-            [Test, Auto]
             public async Task ShouldAddTheCommandToTheCache(
                 string contents,
                 Command command,
                 MemoryStream fileStream,
-                CommandStartupAttribute startupAttribute,
                 [Frozen] ICommandCache cache,
                 [Frozen] IServiceCollection services,
-                [Frozen] ICommandClrType commandType,
                 [Frozen, Substitute] Assembly assembly,
                 [Frozen] S3UriInfo s3UriInfo,
                 [Frozen, Substitute] IAmazonS3 s3Client,
@@ -945,13 +911,11 @@ namespace Brighid.Commands.Service
                 CancellationToken cancellationToken
             )
             {
-                assembly.GetType(Any<string>(), Any<bool>()).Returns(typeof(TestCommand));
-                commandType.StartupType.Returns(typeof(TestStartup));
-                commandType.CommandType.Returns(typeof(TestCommand));
+                assembly.GetType(Any<string>(), Any<bool>()).Returns(typeof(TestCommandRegistrator));
 
                 await service.LoadEmbedded(command, cancellationToken);
 
-                cache.Should().ContainKey(command.Name!).WhichValue.Should().BeOfType<TestCommand>();
+                cache.Should().ContainKey(command.Name!).WhichValue.Should().BeOfType<TestCommandRunner>();
             }
 
             private class TestStartup : ICommandStartup
@@ -971,9 +935,17 @@ namespace Brighid.Commands.Service
                 }
             }
 
-            private class TestCommand : ICommandRunner
+            private class TestCommandRegistrator : ICommandRegistrator
             {
-                public Task<string> Run(CommandContext context, CancellationToken cancellationToken = default)
+                public ICommandRunner Register(IServiceCollection services)
+                {
+                    return new TestCommandRunner();
+                }
+            }
+
+            private class TestCommandRunner : ICommandRunner
+            {
+                public Task<CommandResult> Run(CommandContext context, CancellationToken cancellationToken = default)
                 {
                     throw new NotImplementedException();
                 }

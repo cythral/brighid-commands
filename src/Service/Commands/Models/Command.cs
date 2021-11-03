@@ -8,7 +8,7 @@ using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Brighid.Commands.Core;
+using Brighid.Commands.Sdk;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -90,7 +90,7 @@ namespace Brighid.Commands.Service
         /// <param name="context">The command context to use.</param>
         /// <param name="cancellationToken">Token to cancel the operation.</param>
         /// <returns>The command's output.</returns>
-        public virtual Task<string> Run(CommandContext context, CancellationToken cancellationToken = default)
+        public virtual Task<CommandResult> Run(CommandContext context, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             return Runner != null

@@ -40,12 +40,6 @@ namespace Brighid.Commands.Service
         }
 
         /// <inheritdoc />
-        public ICommandClrType CreateCommandClrType(Type commandType, string name)
-        {
-            return new DefaultCommandClrType(commandType, name);
-        }
-
-        /// <inheritdoc />
         public Assembly LoadAssemblyFromFile(string name, string location)
         {
             var loadContext = new AssemblyLoadContext(name);

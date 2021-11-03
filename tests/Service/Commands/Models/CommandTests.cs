@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
-using Brighid.Commands.Core;
+using Brighid.Commands.Sdk;
 
 using FluentAssertions;
 

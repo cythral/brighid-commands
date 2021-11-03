@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-using Brighid.Commands.Core;
+using Brighid.Commands.Sdk;
 
 namespace Brighid.Commands.Service
 {
