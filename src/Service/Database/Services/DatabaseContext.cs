@@ -54,7 +54,7 @@ namespace Brighid.Commands.Database
         /// <returns>The resulting task.</returns>
         public virtual Task ReloadEntity<TEntity>(TEntity entity, CancellationToken cancellationToken = default)
         {
-            return Entry(entity).ReloadAsync(cancellationToken);
+            return Entry(entity!).ReloadAsync(cancellationToken);
         }
 
         /// <inheritdoc />
