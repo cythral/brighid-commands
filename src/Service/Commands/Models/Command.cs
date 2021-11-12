@@ -115,15 +115,15 @@ namespace Brighid.Commands.Service
                 builder
                 .Property(command => command.EmbeddedLocation)
                 .HasConversion(new ValueConverter<EmbeddedCommandLocation?, string>(
-                    location => JsonSerializer.Serialize(location, null),
-                    @string => JsonSerializer.Deserialize<EmbeddedCommandLocation>(@string, null)
+                    location => JsonSerializer.Serialize(location, (JsonSerializerOptions?)null),
+                    @string => JsonSerializer.Deserialize<EmbeddedCommandLocation>(@string, (JsonSerializerOptions?)null)
                 ));
 
                 builder
                 .Property(command => command.Parameters)
                 .HasConversion(new ValueConverter<IEnumerable<CommandParameter>, string>(
-                    location => JsonSerializer.Serialize(location, null),
-                    @string => JsonSerializer.Deserialize<CommandParameter[]>(@string, null) ?? Array.Empty<CommandParameter>()
+                    location => JsonSerializer.Serialize(location, (JsonSerializerOptions?)null),
+                    @string => JsonSerializer.Deserialize<CommandParameter[]>(@string, (JsonSerializerOptions?)null) ?? Array.Empty<CommandParameter>()
                 ));
             }
         }
