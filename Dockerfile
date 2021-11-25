@@ -10,6 +10,7 @@ COPY ./bin/Service/${CONFIGURATION}/linux-musl-x64/publish ./
 
 RUN \
     mkdir -p /var/brighid/commands && \
+    chown brighid /var/brighid/commands && \
     setcap 'cap_net_bind_service=+ep' /app/Service
 
 EXPOSE 80
