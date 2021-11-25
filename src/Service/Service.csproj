@@ -31,12 +31,12 @@
 
     <Message Text="Generating Swagger..." Importance="High" />
     <Exec Command="docker pull $(DotnetDockerImage)" StandardOutputImportance="Low" />
-    <Exec Command="docker run --rm -itd -v $(MSBuildThisFileDirectory)../../:/app -w /app $(DotnetDockerImage)" ConsoleToMsBuild="true" StandardOutputImportance="Low">
+    <Exec Command="docker run --rm -id -v $(MSBuildThisFileDirectory)../../:/app -w /app $(DotnetDockerImage)" ConsoleToMsBuild="true" StandardOutputImportance="Low">
       <Output TaskParameter="ConsoleOutput" PropertyName="ContainerId" />
     </Exec>
 
-    <Exec Command="docker exec -it $(ContainerId) dotnet tool restore" StandardOutputImportance="Low" />
-    <Exec Command="docker exec -it $(ContainerId) dotnet swagger tofile --output $(RelativeOutputPath)swagger.json --host https://commands.brigh.id $(RelativeOutputPath)/Service.dll v1" />
+    <Exec Command="docker exec -i $(ContainerId) dotnet tool restore" StandardOutputImportance="Low" />
+    <Exec Command="docker exec -i $(ContainerId) dotnet swagger tofile --output $(RelativeOutputPath)swagger.json --host https://commands.brigh.id $(RelativeOutputPath)/Service.dll v1" />
     <Exec Command="docker stop $(ContainerId)" StandardOutputImportance="Low" />
   </Target>
 
