@@ -8,7 +8,9 @@ WORKDIR /app
 COPY ./entrypoint.sh /
 COPY ./bin/Service/${CONFIGURATION}/linux-musl-x64/publish ./
 
-RUN setcap 'cap_net_bind_service=+ep' /app/Service
+RUN \
+    mkdir -p /var/brighid/commands && \
+    setcap 'cap_net_bind_service=+ep' /app/Service
 
 EXPOSE 80
 ENTRYPOINT [ "/entrypoint.sh" ]
