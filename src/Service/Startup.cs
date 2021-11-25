@@ -92,6 +92,7 @@ namespace Brighid.Commands
         )
         {
             logger.LogInformation("Starting. Environment: {@environment}", environment.EnvironmentName);
+            databaseContext.Database.OpenConnection();
 
             if (environment.IsEnvironment(Environments.Local))
             {
