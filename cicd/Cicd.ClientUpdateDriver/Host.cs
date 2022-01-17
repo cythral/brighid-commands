@@ -49,6 +49,25 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
             var email = "52382196+brighid-bot@users.noreply.github.com";
             var branch = $"swagger-updates/{options.Version}";
 
+            await Step($"Login to GitHub CLI", async () =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var command = new Command(
+                    command: "gh auth login",
+                    options: new Dictionary<string, object>
+                    {
+                        ["--with-token"] = true,
+                    }
+                );
+
+                await command.RunOrThrowError(
+                    errorMessage: "Could not login to GitHub CLI.",
+                    input: Environment.GetEnvironmentVariable("GH_TOKEN"),
+                    cancellationToken: cancellationToken
+                );
+            });
+
             await Step($"Clone Client Repository", async () =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -73,25 +92,6 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
                 );
 
                 Directory.SetCurrentDirectory(outputDirectory);
-            });
-
-            await Step($"Login to GitHub CLI", async () =>
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var command = new Command(
-                    command: "gh auth login",
-                    options: new Dictionary<string, object>
-                    {
-                        ["--with-token"] = true,
-                    }
-                );
-
-                await command.RunOrThrowError(
-                    errorMessage: "Could not login to GitHub CLI.",
-                    input: Environment.GetEnvironmentVariable("GH_TOKEN"),
-                    cancellationToken: cancellationToken
-                );
             });
 
             await Step($"Display GitHub Auth Status", async () =>
