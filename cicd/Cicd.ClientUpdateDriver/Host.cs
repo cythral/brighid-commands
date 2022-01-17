@@ -222,7 +222,7 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
                     command: "git push",
                     options: new Dictionary<string, object>
                     {
-                        ["--set-upstream"] = true,
+                        ["--verbose"] = true,
                     },
                     arguments: new[]
                     {
