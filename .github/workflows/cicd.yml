@@ -100,8 +100,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          fetch-depth: 0
           token: ${{ secrets.GH_TOKEN }}
+          persist-credentials: true
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -116,6 +116,8 @@ jobs:
         run: dotnet --info
 
       - name: Update Client
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           dotnet run \
             --project cicd/Cicd.ClientUpdateDriver/Cicd.ClientUpdateDriver.csproj -- \
