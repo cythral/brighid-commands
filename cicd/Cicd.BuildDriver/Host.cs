@@ -243,8 +243,6 @@ namespace Brighid.Commands.Cicd.BuildDriver
             var parameters = new Dictionary<string, string>
             {
                 ["Image"] = imageTag,
-                ["DotnetVersion"] = DotnetSdkVersionAttribute.ThisAssemblyDotnetSdkVersion,
-                ["LambdajectionVersion"] = LambdajectionVersionAttribute.ThisAssemblyLambdajectionVersion,
             };
 
             foreach (var (parameterName, parameterDefinition) in config.Parameters)
