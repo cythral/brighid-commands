@@ -99,9 +99,6 @@ jobs:
     concurrency: update-client
     steps:
       - uses: actions/checkout@v2
-        with:
-          token: ${{ secrets.GH_TOKEN }}
-          persist-credentials: true
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1

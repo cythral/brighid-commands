@@ -54,8 +54,6 @@ namespace Brighid.Commands.Cicd.Utils
 
             startInfo = new ProcessStartInfo(commandParts[0], string.Join(' ', args))
             {
-                RedirectStandardInput = true,
-                RedirectStandardOutput = true,
                 StandardInputEncoding = Encoding.ASCII,
             };
         }
@@ -71,8 +69,11 @@ namespace Brighid.Commands.Cicd.Utils
         public async Task<string> RunOrThrowError(string errorMessage, string? input = null, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            using var process = Process.Start(startInfo)!;
 
+            startInfo.RedirectStandardInput = input != null;
+            startInfo.RedirectStandardOutput = true;
+
+            using var process = Process.Start(startInfo)!;
             if (input != null)
             {
                 await process!.StandardInput.WriteAsync(input);
@@ -81,7 +82,6 @@ namespace Brighid.Commands.Cicd.Utils
             }
 
             await process.WaitForExitAsync(cancellationToken);
-
             var output = await process!.StandardOutput.ReadToEndAsync();
             Console.Write(output);
 
