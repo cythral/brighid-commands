@@ -53,6 +53,11 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
+                if (Directory.Exists(outputDirectory))
+                {
+                    Directory.Delete(outputDirectory, true);
+                }
+
                 var command = new Command(
                     command: "git clone",
                     arguments: new[]
@@ -61,8 +66,6 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
                         outputDirectory,
                     }
                 );
-
-                Directory.Delete(outputDirectory, true);
 
                 await command.RunOrThrowError(
                     errorMessage: "Could not clone client repository.",
