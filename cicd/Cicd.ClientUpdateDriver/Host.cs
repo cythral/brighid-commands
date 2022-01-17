@@ -59,10 +59,10 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
                 }
 
                 var command = new Command(
-                    command: "git clone",
+                    command: "gh repo clone",
                     arguments: new[]
                     {
-                        "https://github.com/cythral/brighid-commands-client.git",
+                        "cythral/brighid-commands-client",
                         outputDirectory,
                     }
                 );
