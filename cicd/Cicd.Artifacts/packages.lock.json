@@ -14,11 +14,11 @@
       },
       "Constructs": {
         "type": "Direct",
-        "requested": "[10.0.28, )",
-        "resolved": "10.0.28",
-        "contentHash": "jkbnuKOHNZKEQ9cvSVhj+XzuSSEjximgjtvlEebm3MAuuNf8cApNBdTTkVKBMTp3XCAfm3SNdX4V0ED/BKxk/w==",
+        "requested": "[10.0.36, )",
+        "resolved": "10.0.36",
+        "contentHash": "ab58lerZhSepMypRwDQgAlzWxckTf/W87AmmGucLyAt3uY/wVXxtfU6BiQ8O/YbUWAJXdmNywwhZ6Bw8I2jQ1A==",
         "dependencies": {
-          "Amazon.JSII.Runtime": "[1.52.0, 2.0.0)"
+          "Amazon.JSII.Runtime": "[1.52.1, 2.0.0)"
         }
       },
       "StyleCop.Analyzers": {
