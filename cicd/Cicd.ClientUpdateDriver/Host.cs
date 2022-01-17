@@ -75,27 +75,6 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
                 Directory.SetCurrentDirectory(outputDirectory);
             });
 
-            await Step($"Setup Git Credential Store", async () =>
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var command = new Command(
-                    command: "git config",
-                    arguments: new[]
-                    {
-                        "credential.helper",
-                        "store",
-                    }
-                );
-
-                await command.RunOrThrowError(
-                    errorMessage: "Could not setup git credential helper.",
-                    cancellationToken: cancellationToken
-                );
-
-                Console.WriteLine($"Set git credential.helper to: store");
-            });
-
             await Step($"Display GitHub Auth Status", async () =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
