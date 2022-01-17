@@ -55,6 +55,7 @@ namespace Brighid.Commands.Cicd.Utils
             startInfo = new ProcessStartInfo(commandParts[0], string.Join(' ', args))
             {
                 RedirectStandardInput = true,
+                RedirectStandardOutput = true,
                 StandardInputEncoding = Encoding.ASCII,
                 UseShellExecute = false,
             };
@@ -68,7 +69,7 @@ namespace Brighid.Commands.Cicd.Utils
         /// <param name="cancellationToken">Token used to cancel the operation.</param>
         /// <returns>The resulting task.</returns>
         /// <exception cref="Exception">Thrown if the command fails.</exception>
-        public async Task RunOrThrowError(string errorMessage, string? input = null, CancellationToken cancellationToken = default)
+        public async Task<string> RunOrThrowError(string errorMessage, string? input = null, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             using var process = Process.Start(startInfo)!;
@@ -82,10 +83,12 @@ namespace Brighid.Commands.Cicd.Utils
 
             await process.WaitForExitAsync(cancellationToken);
 
-            if (process.ExitCode != 0)
-            {
-                throw new Exception(errorMessage);
-            }
+            var output = await process!.StandardOutput.ReadToEndAsync();
+            Console.Write(output);
+
+            return process.ExitCode == 0
+                ? output
+                : throw new Exception(errorMessage);
         }
     }
 }
