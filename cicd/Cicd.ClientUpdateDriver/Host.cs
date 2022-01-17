@@ -298,24 +298,6 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
                 Console.WriteLine("Setup PR to squash-merge automatically once commit checks pass.");
             });
 
-            await Step($"[Cleanup] Logout of GitHub CLI", async () =>
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var command = new Command(
-                    command: "gh auth logout",
-                    options: new Dictionary<string, object>
-                    {
-                        ["--hostname"] = "github.com",
-                    }
-                );
-
-                await command.RunOrThrowError(
-                    errorMessage: "Could not logout of Github CLI.",
-                    cancellationToken: cancellationToken
-                );
-            });
-
             lifetime.StopApplication();
         }
 
