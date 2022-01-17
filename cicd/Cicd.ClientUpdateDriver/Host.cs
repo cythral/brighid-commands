@@ -68,6 +68,20 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
                 );
             });
 
+            await Step($"Display GitHub Auth Status", async () =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var command = new Command(
+                    command: "gh auth status"
+                );
+
+                await command.RunOrThrowError(
+                    errorMessage: "Could not retrieve github CLI authentication status.",
+                    cancellationToken: cancellationToken
+                );
+            });
+
             await Step($"Clone Client Repository", async () =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -92,20 +106,6 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
                 );
 
                 Directory.SetCurrentDirectory(outputDirectory);
-            });
-
-            await Step($"Display GitHub Auth Status", async () =>
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var command = new Command(
-                    command: "gh auth status"
-                );
-
-                await command.RunOrThrowError(
-                    errorMessage: "Could not retrieve github CLI authentication status.",
-                    cancellationToken: cancellationToken
-                );
             });
 
             await Step($"Setup Git Username", async () =>
