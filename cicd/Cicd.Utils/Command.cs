@@ -52,10 +52,7 @@ namespace Brighid.Commands.Cicd.Utils
                 args.AddRange(arguments);
             }
 
-            startInfo = new ProcessStartInfo(commandParts[0], string.Join(' ', args))
-            {
-                StandardInputEncoding = Encoding.ASCII,
-            };
+            startInfo = new ProcessStartInfo(commandParts[0], string.Join(' ', args));
         }
 
         /// <summary>
@@ -70,10 +67,15 @@ namespace Brighid.Commands.Cicd.Utils
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            startInfo.RedirectStandardInput = input != null;
-            startInfo.RedirectStandardOutput = true;
+            if (input != null)
+            {
+                startInfo.RedirectStandardInput = input != null;
+                startInfo.StandardInputEncoding = Encoding.ASCII;
+            }
 
+            startInfo.RedirectStandardOutput = true;
             using var process = Process.Start(startInfo)!;
+
             if (input != null)
             {
                 await process!.StandardInput.WriteAsync(input);
