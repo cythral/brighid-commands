@@ -89,6 +89,27 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
                 Directory.SetCurrentDirectory(outputDirectory);
             });
 
+            await Step($"Setup Git Username Credential", async () =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var command = new Command(
+                    command: "git config",
+                    arguments: new[]
+                    {
+                        "credential.username",
+                        "brighid-bot",
+                    }
+                );
+
+                await command.RunOrThrowError(
+                    errorMessage: "Could not set git username.",
+                    cancellationToken: cancellationToken
+                );
+
+                Console.WriteLine($"Set git username to: {username}");
+            });
+
             await Step($"Setup Git Username", async () =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
