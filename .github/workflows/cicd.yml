@@ -116,7 +116,7 @@ jobs:
 
       - name: Update Client
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          BRIGHID_GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           dotnet run \
             --project cicd/Cicd.ClientUpdateDriver/Cicd.ClientUpdateDriver.csproj -- \
