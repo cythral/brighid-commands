@@ -228,7 +228,8 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
                     {
                         "origin",
                         branch,
-                    }
+                    },
+                    useShellExecute: true
                 );
 
                 await command.RunOrThrowError(
