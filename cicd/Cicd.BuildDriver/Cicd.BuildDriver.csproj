@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="ProjectRootDirectory">
+            <_Parameter1>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../../'))</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.104" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+        <PackageReference Include="YamlDotNet" Version="11.2.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="../../src/Service/Service.csproj" ReferenceOutputAssembly="false" Targets="Publish" />
+        <ProjectReference Include="../../tests/Tests.csproj" ReferenceOutputAssembly="false" Targets="Publish" />
+        <ProjectReference Include="../Cicd.Utils/Cicd.Utils.csproj" />
+    </ItemGroup>
+</Project>
