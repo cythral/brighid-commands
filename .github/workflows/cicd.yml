@@ -115,6 +115,8 @@ jobs:
         run: dotnet --info
 
       - name: Update Client
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           dotnet run \
             --project cicd/Cicd.ClientUpdateDriver/Cicd.ClientUpdateDriver.csproj -- \
