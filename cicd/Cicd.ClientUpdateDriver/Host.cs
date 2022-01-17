@@ -233,7 +233,6 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
 
                 await command.RunOrThrowError(
                     errorMessage: "Could not push changes to remote repository.",
-                    useShellExecute: true,
                     cancellationToken: cancellationToken
                 );
             });
