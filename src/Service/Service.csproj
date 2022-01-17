@@ -27,6 +27,8 @@
     <PropertyGroup>
       <DotnetDockerImage>mcr.microsoft.com/dotnet/sdk:$(NETCoreSdkVersion)-alpine3.14</DotnetDockerImage>
       <RelativeOutputPath>$([MSBuild]::MakeRelative('$(MSBuildThisFileDirectory)../../', $(OutputPath)))</RelativeOutputPath>
+      <SwaggerOutputPath Condition="'$(SwaggerOutputPath)' == ''">$(OutputPath)</SwaggerOutputPath>
+      <RelativeSwaggerOutputPath>$([MSBuild]::MakeRelative('$(MSBuildThisFileDirectory)../../', $(SwaggerOutputPath)))</RelativeSwaggerOutputPath>
     </PropertyGroup>
 
     <Message Text="Generating Swagger..." Importance="High" />
@@ -36,7 +38,7 @@
     </Exec>
 
     <Exec Command="docker exec -i $(ContainerId) dotnet tool restore" StandardOutputImportance="Low" />
-    <Exec Command="docker exec -i $(ContainerId) dotnet swagger tofile --output $(RelativeOutputPath)swagger.json --host https://commands.brigh.id $(RelativeOutputPath)/Service.dll v1" />
+    <Exec Command="docker exec -i $(ContainerId) dotnet swagger tofile --output $(RelativeSwaggerOutputPath)swagger.json --host https://commands.brigh.id $(RelativeOutputPath)/Service.dll v1" />
     <Exec Command="docker stop $(ContainerId)" StandardOutputImportance="Low" />
   </Target>
 

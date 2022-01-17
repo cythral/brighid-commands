@@ -1,12 +1,14 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk" InitialTargets="SetupCicd">
     <PropertyGroup>
         <OutputType>Exe</OutputType>
+        <ProjectRootDirectory>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../../'))</ProjectRootDirectory>
+        <CicdOutputFolder>$(ProjectRootDirectory)bin/Cicd/</CicdOutputFolder>
         <ValidateExecutableReferencesMatchSelfContained>false</ValidateExecutableReferencesMatchSelfContained>
     </PropertyGroup>
 
     <ItemGroup>
         <AssemblyAttribute Include="ProjectRootDirectory">
-            <_Parameter1>$([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)../../'))</_Parameter1>
+            <_Parameter1>$(ProjectRootDirectory)</_Parameter1>
         </AssemblyAttribute>
     </ItemGroup>
 
@@ -17,8 +19,12 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="../../src/Service/Service.csproj" ReferenceOutputAssembly="false" Targets="Publish" />
+        <ProjectReference Include="../../src/Service/Service.csproj" ReferenceOutputAssembly="false" Targets="Publish" Properties="SwaggerOutputPath=$(CicdOutputFolder)" />
         <ProjectReference Include="../../tests/Tests.csproj" ReferenceOutputAssembly="false" Targets="Publish" />
         <ProjectReference Include="../Cicd.Utils/Cicd.Utils.csproj" />
     </ItemGroup>
+
+    <Target Name="SetupCicd">
+        <MakeDir Directories="$(CicdOutputFolder)" />
+    </Target>
 </Project>
