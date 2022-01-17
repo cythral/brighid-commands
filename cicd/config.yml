@@ -1,0 +1,46 @@
+Tags:
+  Name: Brighid Commands
+  Owner: Cythral
+  Contact:Name: Talen Fisher
+  Contact:Email: talen.fisher@cythral.com
+
+Parameters:
+  EnvironmentName:
+    Dev: dev
+    Prod: prod
+
+  DomainName:
+    Dev: commands.dev.brigh.id
+    Prod: commands.brigh.id
+
+  DatabaseHost:
+    Dev: db.dev.brigh.id
+    Prod: db.brigh.id
+
+  DatabaseUser:
+    Dev: brighid-commands
+    Prod: brighid-commands
+
+  DatabaseName:
+    Dev: brighid-commands
+    Prod: brighid-commands
+
+  DatabasePassword:
+    Dev: AQICAHjCPp/4JJqnSjdP1A4JZ+E3yC2Gqmk9GshiMiqu57jujwG1ay6aLj6UdPxsd3Krb78bAAAAczBxBgkqhkiG9w0BBwagZDBiAgEAMF0GCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMgop9c6x0m3vxCpdTAgEQgDCdLC0bmInFoRZm1F0zexSOGRZY/WhYYTO0g83YjCj9yRmpcCdHSIS/ZGKRvPkhxGo=
+    Prod: AQICAHj/2SUStzyXNMLx0/GX2lnjChwPoR4BUvoYRIybQNwYyQGdj9szLLnZfFzppIvTqsd7AAAAcjBwBgkqhkiG9w0BBwagYzBhAgEAMFwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM9L/bzYvrFU5E0DWoAgEQgC8cLQ/kOYpl6A9C1C5sTrZMeLmhw1I6ZAWijjLWnYNb5UFJSAS5Vfq7SPj+AUiOCw==
+
+  OpenIdMetadataAddress:
+    Dev: http://identity.dev.brigh.id/.well-known/openid-configuration
+    Prod: http://identity.brigh.id/.well-known/openid-configuration
+
+  OpenIdValidIssuer:
+    Dev: https://identity.dev.brigh.id/
+    Prod: https://identity.brigh.id/
+
+  EnvoyImage:
+    Dev: 840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.19.1.1-prod
+    Prod: 840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.19.1.1-prod
+
+  MeshNodeName:
+    Dev: commands-dev
+    Prod: commands-prod

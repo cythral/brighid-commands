@@ -5,7 +5,7 @@ using System.Linq;
 
 using Microsoft.Extensions.Logging;
 
-namespace Brighid.Discord
+namespace Brighid.Commands
 {
     /// <summary>
     /// Logger class that uses category names based on the <see cref="LogCategoryAttribute" />.

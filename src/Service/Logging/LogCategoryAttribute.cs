@@ -1,6 +1,6 @@
 using System;
 
-namespace Brighid.Discord
+namespace Brighid.Commands
 {
     /// <summary>
     /// Attribute to specify what log category should be used.

@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "dependencies": {
+    "net6.0": {
+      "AWSSDK.ECR": {
+        "type": "Direct",
+        "requested": "[3.7.2.10, )",
+        "resolved": "3.7.2.10",
+        "contentHash": "qHLBXDLwom8QqVMyNx81W1ZuJydUCugFS2iZyFPtXR97MedUe5acvuIg3Srzp5efhqXQO4gFc5xsGrCpUtiNVQ==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.5.12, 4.0.0)"
+        }
+      },
+      "StyleCop.Analyzers": {
+        "type": "Direct",
+        "requested": "[1.2.0-beta.354, )",
+        "resolved": "1.2.0-beta.354",
+        "contentHash": "oDSJNxnEvIzAQTkpkc/FnJP4dQ7TV6fHMsI+2ckU5DOaMiwiEfh1fawMsSqz2bCoNwbTt9lS6MgYvyVKujNJoA==",
+        "dependencies": {
+          "StyleCop.Analyzers.Unstable": "1.2.0.354"
+        }
+      },
+      "AWSSDK.Core": {
+        "type": "Transitive",
+        "resolved": "3.7.5.12",
+        "contentHash": "sdDnnZP5NsnUDnWBefpAABzRVMS01HShPNC8/o+giiabj/NEI1wkPl9+PhpiDa3fKMZDQ0q/4t3/XpBH/9jiRA=="
+      },
+      "StyleCop.Analyzers.Unstable": {
+        "type": "Transitive",
+        "resolved": "1.2.0.354",
+        "contentHash": "/3RlM31XbJ02gaWh7dVumWOyMvGHswb/zygGJXd9oEJMRyyYc/HFJlAC5gBPxvi9cB4CMvIyyUTmZz5VLKwTvg=="
+      }
+    }
+  }
+}
