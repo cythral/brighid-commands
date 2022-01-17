@@ -60,15 +60,18 @@ namespace Brighid.Commands.Cicd.Utils
         /// </summary>
         /// <param name="errorMessage">The error message to include in the exception if the command fails.</param>
         /// <param name="input">Text to write to standard input.</param>
+        /// <param name="useShellExecute">Whether or not to use the shell to execute the command.</param>
         /// <param name="cancellationToken">Token used to cancel the operation.</param>
         /// <returns>The resulting task.</returns>
         /// <exception cref="Exception">Thrown if the command fails.</exception>
-        public async Task<string> RunOrThrowError(string errorMessage, string? input = null, CancellationToken cancellationToken = default)
+        public async Task<string> RunOrThrowError(string errorMessage, string? input = null, bool useShellExecute = false, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
+            startInfo.UseShellExecute = useShellExecute;
 
             if (input != null)
             {
+                startInfo.UseShellExecute = false;
                 startInfo.RedirectStandardInput = input != null;
                 startInfo.StandardInputEncoding = Encoding.ASCII;
             }
