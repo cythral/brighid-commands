@@ -89,7 +89,7 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
                 Directory.SetCurrentDirectory(outputDirectory);
             });
 
-            await Step($"Setup Git Username Credential", async () =>
+            await Step($"Setup Git Credential Helper", async () =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -97,8 +97,8 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
                     command: "git config",
                     arguments: new[]
                     {
-                        "credential.username",
-                        "brighid-bot",
+                        "credential.helper",
+                        "\"!gh auth git-credential\"",
                     }
                 );
 
