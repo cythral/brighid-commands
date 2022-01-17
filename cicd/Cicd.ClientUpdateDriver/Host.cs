@@ -75,6 +75,25 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
                 Directory.SetCurrentDirectory(outputDirectory);
             });
 
+            await Step($"Login to GitHub CLI", async () =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var command = new Command(
+                    command: "gh auth login",
+                    options: new Dictionary<string, object>
+                    {
+                        ["--with-token"] = true,
+                    }
+                );
+
+                await command.RunOrThrowError(
+                    errorMessage: "Could not login to GitHub CLI.",
+                    input: Environment.GetEnvironmentVariable("GITHUB_TOKEN"),
+                    cancellationToken: cancellationToken
+                );
+            });
+
             await Step($"Display GitHub Auth Status", async () =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -228,8 +247,7 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
                     {
                         "origin",
                         branch,
-                    },
-                    useShellExecute: true
+                    }
                 );
 
                 await command.RunOrThrowError(
@@ -276,6 +294,24 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
                 );
 
                 Console.WriteLine("Setup PR to squash-merge automatically once commit checks pass.");
+            });
+
+            await Step($"[Cleanup] Logout of GitHub CLI", async () =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var command = new Command(
+                    command: "gh auth logout",
+                    options: new Dictionary<string, object>
+                    {
+                        ["--hostname"] = "github.com",
+                    }
+                );
+
+                await command.RunOrThrowError(
+                    errorMessage: "Could not logout of Github CLI.",
+                    cancellationToken: cancellationToken
+                );
             });
 
             lifetime.StopApplication();

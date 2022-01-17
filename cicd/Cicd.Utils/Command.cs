@@ -20,12 +20,10 @@ namespace Brighid.Commands.Cicd.Utils
         /// <param name="command">The command to run.</param>
         /// <param name="options">Options to use for the command.</param>
         /// <param name="arguments">Arguments to pass to the command.</param>
-        /// <param name="useShellExecute">Whether or not to execute the command using the default configured shell.</param>
         public Command(
             string command,
             IDictionary<string, object>? options = null,
-            string[]? arguments = null,
-            bool useShellExecute = false
+            string[]? arguments = null
         )
         {
             var commandParts = command.Split(' ');
@@ -59,7 +57,6 @@ namespace Brighid.Commands.Cicd.Utils
                 RedirectStandardInput = true,
                 RedirectStandardOutput = true,
                 StandardInputEncoding = Encoding.ASCII,
-                UseShellExecute = useShellExecute,
             };
         }
 
