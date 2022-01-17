@@ -89,7 +89,7 @@ namespace Brighid.Commands.Cicd.ClientUpdateDriver
 
                 await command.RunOrThrowError(
                     errorMessage: "Could not login to GitHub CLI.",
-                    input: Environment.GetEnvironmentVariable("GITHUB_TOKEN"),
+                    input: Environment.GetEnvironmentVariable("GH_TOKEN"),
                     cancellationToken: cancellationToken
                 );
             });
