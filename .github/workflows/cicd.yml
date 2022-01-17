@@ -18,7 +18,7 @@ env:
   DOTNET_SYSTEM_GLOBALIZATION_PREDEFINED_CULTURES_ONLY: "false"
 
 permissions:
-  contents: read
+  contents: write
   id-token: write
 
 jobs:
@@ -101,6 +101,7 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          token: ${{ secrets.GH_TOKEN }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -115,8 +116,6 @@ jobs:
         run: dotnet --info
 
       - name: Update Client
-        env:
-          BRIGHID_GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
           dotnet run \
             --project cicd/Cicd.ClientUpdateDriver/Cicd.ClientUpdateDriver.csproj -- \
