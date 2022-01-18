@@ -26,6 +26,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       artifacts-location: ${{ steps.build.outputs.artifacts-location }}
+      version: ${{ steps.build.outputs.version }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -121,7 +122,7 @@ jobs:
           dotnet run \
             --project cicd/Cicd.ClientUpdateDriver/Cicd.ClientUpdateDriver.csproj -- \
             --artifacts-location ${{ needs.build.outputs.artifacts-location }} \
-            --version ${{ github.run_number }}
+            --version ${{ needs.build.outputs.version }}
 
   deploy-prod:
     runs-on: ubuntu-latest

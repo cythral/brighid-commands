@@ -196,6 +196,7 @@ namespace Brighid.Commands.Cicd.BuildDriver
 
             Console.WriteLine();
             Console.WriteLine($"::set-output name=artifacts-location::s3://{outputs.BucketName}/{options.Version}");
+            Console.WriteLine($"::set-output name=version::{ThisAssembly.AssemblyVersion}");
 
             lifetime.StopApplication();
         }
