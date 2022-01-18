@@ -73,6 +73,7 @@ namespace Brighid.Commands
         /// <param name="options">The options to configure.</param>
         public void ConfigureSwaggerGenOptions(SwaggerGenOptions options)
         {
+            options.SwaggerDoc($"v1", new OpenApiInfo { Version = ThisAssembly.AssemblyVersion });
             options.SchemaFilter<DisplayNameFilter>();
             options.OperationFilter<ExecuteCommandFilter>();
         }
