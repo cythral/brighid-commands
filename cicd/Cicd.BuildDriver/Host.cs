@@ -104,7 +104,7 @@ namespace Brighid.Commands.Cicd.BuildDriver
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var command = new Command(
-                    command: "docker build",
+                    command: "docker buildx build",
                     options: new Dictionary<string, object>
                     {
                         ["--tag"] = tag,
