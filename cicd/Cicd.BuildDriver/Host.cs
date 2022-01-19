@@ -127,8 +127,8 @@ namespace Brighid.Commands.Cicd.BuildDriver
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                await CreateConfigFile("dev", tag, cancellationToken);
-                await CreateConfigFile("prod", tag, cancellationToken);
+                await CreateConfigFile("Development", tag, cancellationToken);
+                await CreateConfigFile("Production", tag, cancellationToken);
             });
 
             await Step("Package Template", async () =>
