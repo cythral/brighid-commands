@@ -86,6 +86,8 @@ jobs:
     with:
       version: ${{ needs.build.outputs.version }}
       artifacts-location: ${{ needs.build.outputs.artifacts-location }}
+    secrets:
+      role: ${{ secrets.AWS_SHARED_ROLE }}
 
   deploy-prod:
     uses: cythral/brighid-commands/.github/workflows/deploy.yml@master

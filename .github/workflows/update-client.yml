@@ -1,6 +1,11 @@
 name: Update Client
 on:
   workflow_call:
+    secrets:
+      role:
+        description: Role to use when updating the client.
+        required: true
+
     inputs:
       version:
         description: The version of the client to use.
@@ -24,7 +29,7 @@ jobs:
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
-          role-to-assume: ${{ secrets.AWS_SHARED_ROLE }}
+          role-to-assume: ${{ secrets.role }}
           aws-region: us-east-1
 
       - name: Setup .NET Core
