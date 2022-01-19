@@ -9,7 +9,7 @@ on:
     inputs:
       environment:
         description: Environment to use for this deployment.
-        type: environment
+        type: string
         required: true
 
       artifacts-location:
