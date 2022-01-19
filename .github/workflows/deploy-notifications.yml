@@ -3,7 +3,7 @@ on: deployment_status
 jobs:
   approval-request:
     runs-on: ubuntu-latest
-    if: ${{ github.event.deployment_status.state == "pending" && github.event.deployment.environment == "Production" }}
+    if: ${{ github.event.deployment_status.state == 'pending' && github.event.deployment.environment == 'Production' }}
     steps:
       - name: Discord Failure Notification
         uses: Ilshidur/action-discord@master
