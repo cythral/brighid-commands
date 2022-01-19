@@ -6,41 +6,41 @@ Tags:
 
 Parameters:
   EnvironmentName:
-    Dev: dev
-    Prod: prod
+    Development: dev
+    Production: prod
 
   DomainName:
-    Dev: commands.dev.brigh.id
-    Prod: commands.brigh.id
+    Development: commands.dev.brigh.id
+    Production: commands.brigh.id
 
   DatabaseHost:
-    Dev: db.dev.brigh.id
-    Prod: db.brigh.id
+    Development: db.dev.brigh.id
+    Production: db.brigh.id
 
   DatabaseUser:
-    Dev: brighid-commands
-    Prod: brighid-commands
+    Development: brighid-commands
+    Production: brighid-commands
 
   DatabaseName:
-    Dev: brighid-commands
-    Prod: brighid-commands
+    Development: brighid-commands
+    Production: brighid-commands
 
   DatabasePassword:
-    Dev: AQICAHjCPp/4JJqnSjdP1A4JZ+E3yC2Gqmk9GshiMiqu57jujwG1ay6aLj6UdPxsd3Krb78bAAAAczBxBgkqhkiG9w0BBwagZDBiAgEAMF0GCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMgop9c6x0m3vxCpdTAgEQgDCdLC0bmInFoRZm1F0zexSOGRZY/WhYYTO0g83YjCj9yRmpcCdHSIS/ZGKRvPkhxGo=
-    Prod: AQICAHj/2SUStzyXNMLx0/GX2lnjChwPoR4BUvoYRIybQNwYyQGdj9szLLnZfFzppIvTqsd7AAAAcjBwBgkqhkiG9w0BBwagYzBhAgEAMFwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM9L/bzYvrFU5E0DWoAgEQgC8cLQ/kOYpl6A9C1C5sTrZMeLmhw1I6ZAWijjLWnYNb5UFJSAS5Vfq7SPj+AUiOCw==
+    Development: AQICAHjCPp/4JJqnSjdP1A4JZ+E3yC2Gqmk9GshiMiqu57jujwG1ay6aLj6UdPxsd3Krb78bAAAAczBxBgkqhkiG9w0BBwagZDBiAgEAMF0GCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQMgop9c6x0m3vxCpdTAgEQgDCdLC0bmInFoRZm1F0zexSOGRZY/WhYYTO0g83YjCj9yRmpcCdHSIS/ZGKRvPkhxGo=
+    Production: AQICAHj/2SUStzyXNMLx0/GX2lnjChwPoR4BUvoYRIybQNwYyQGdj9szLLnZfFzppIvTqsd7AAAAcjBwBgkqhkiG9w0BBwagYzBhAgEAMFwGCSqGSIb3DQEHATAeBglghkgBZQMEAS4wEQQM9L/bzYvrFU5E0DWoAgEQgC8cLQ/kOYpl6A9C1C5sTrZMeLmhw1I6ZAWijjLWnYNb5UFJSAS5Vfq7SPj+AUiOCw==
 
   OpenIdMetadataAddress:
-    Dev: http://identity.dev.brigh.id/.well-known/openid-configuration
-    Prod: http://identity.brigh.id/.well-known/openid-configuration
+    Development: http://identity.dev.brigh.id/.well-known/openid-configuration
+    Production: http://identity.brigh.id/.well-known/openid-configuration
 
   OpenIdValidIssuer:
-    Dev: https://identity.dev.brigh.id/
-    Prod: https://identity.brigh.id/
+    Development: https://identity.dev.brigh.id/
+    Production: https://identity.brigh.id/
 
   EnvoyImage:
-    Dev: 840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.19.1.1-prod
-    Prod: 840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.19.1.1-prod
+    Development: 840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.19.1.1-prod
+    Production: 840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:v1.19.1.1-prod
 
   MeshNodeName:
-    Dev: commands-dev
-    Prod: commands-prod
+    Development: commands-dev
+    Production: commands-prod

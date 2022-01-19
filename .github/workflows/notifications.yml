@@ -1,11 +1,11 @@
-name: Deploy Notifications
+name: Notifications
 on: deployment_status
 jobs:
   approval-request:
     runs-on: ubuntu-latest
     if: ${{ github.event.deployment_status.state == 'waiting' && github.event.deployment.environment == 'Production' }}
     steps:
-      - name: Discord Failure Notification
+      - name: Request Deployment Approval
         uses: Ilshidur/action-discord@master
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
@@ -13,8 +13,8 @@ jobs:
             [
               {
                 "title": "[${{ github.repository }}] Requires Deployment Approval",
-                "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                "url": "${{ github.event.deployment_status.target_url }}",
                 "description": "${{ github.repository }} requires approval for deployment to production.",
-                "color": 12720135
+                "color": 15105570
               }
             ]

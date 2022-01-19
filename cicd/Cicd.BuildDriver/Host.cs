@@ -242,8 +242,8 @@ namespace Brighid.Commands.Cicd.BuildDriver
             {
                 var parameterValue = environment switch
                 {
-                    "dev" => parameterDefinition.Dev,
-                    "prod" => parameterDefinition.Prod,
+                    "Development" => parameterDefinition.Development,
+                    "Production" => parameterDefinition.Production,
                     _ => throw new NotSupportedException(),
                 };
 
