@@ -109,6 +109,8 @@ namespace Brighid.Commands.Cicd.BuildDriver
                     {
                         ["--tag"] = tag,
                         ["--file"] = $"{ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory}Dockerfile",
+                        ["--cache-from"] = "type=gha,scope=brighid-commands",
+                        ["--cache-to"] = "type=gha,scope=brighid-commands",
                     },
                     arguments: new[] { ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory }
                 );
