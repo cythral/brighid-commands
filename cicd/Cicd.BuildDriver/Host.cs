@@ -179,8 +179,11 @@ namespace Brighid.Commands.Cicd.BuildDriver
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                var command = new Command("docker logout", arguments: new[] { outputs.ImageRepositoryUri });
-                await command.RunOrThrowError("Could not logout of ECR.");
+                var ecrLogoutCommand = new Command("docker logout", arguments: new[] { outputs.ImageRepositoryUri });
+                await ecrLogoutCommand.RunOrThrowError("Could not logout of ECR.");
+
+                var publicEcrLogoutCommand = new Command("docker logout", arguments: new[] { "public.ecr.aws" });
+                await publicEcrLogoutCommand.RunOrThrowError("Could not logout of ECR.");
             });
 
             Console.WriteLine();
