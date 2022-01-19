@@ -99,7 +99,7 @@ namespace Brighid.Commands.Cicd.BuildDriver
                 await ecrUtils.DockerLogin(outputs.ImageRepositoryUri, cancellationToken);
             });
 
-            await Step("Building Docker Image", async () =>
+            await Step("Build & Push Docker Image", async () =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
@@ -111,27 +111,13 @@ namespace Brighid.Commands.Cicd.BuildDriver
                         ["--file"] = $"{ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory}Dockerfile",
                         ["--cache-from"] = "type=gha,scope=brighid-commands",
                         ["--cache-to"] = "type=gha,scope=brighid-commands",
+                        ["--push"] = true,
                     },
                     arguments: new[] { ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory }
                 );
 
                 await command.RunOrThrowError(
                     errorMessage: "Failed to build Docker Image.",
-                    cancellationToken: cancellationToken
-                );
-            });
-
-            await Step("Pushing Docker Image", async () =>
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var command = new Command(
-                    command: "docker push",
-                    arguments: new[] { tag }
-                );
-
-                await command.RunOrThrowError(
-                    errorMessage: "Failed to push Docker Image.",
                     cancellationToken: cancellationToken
                 );
             });
