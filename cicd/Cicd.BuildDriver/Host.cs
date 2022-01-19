@@ -97,6 +97,7 @@ namespace Brighid.Commands.Cicd.BuildDriver
             {
                 cancellationToken.ThrowIfCancellationRequested();
                 await ecrUtils.DockerLogin(outputs.ImageRepositoryUri, cancellationToken);
+                await ecrUtils.PublicDockerLogin(cancellationToken);
             });
 
             await Step("Build & Push Docker Image", async () =>
