@@ -6,6 +6,10 @@ on:
         description: Role to use when updating the client.
         required: true
 
+      token:
+        description: Github Token to use for pushing commits to the client repository.
+        required: true
+
     inputs:
       version:
         description: The version of the client to use.
@@ -40,7 +44,7 @@ jobs:
 
       - name: Update Client
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.token }}
         run: |
           dotnet run \
             --project cicd/Cicd.ClientUpdateDriver/Cicd.ClientUpdateDriver.csproj -- \
