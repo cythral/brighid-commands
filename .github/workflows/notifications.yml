@@ -36,7 +36,7 @@ jobs:
 
       - name: Notify Deployment Success
         uses: Ilshidur/action-discord@master
-        if: ${{ github.event.deployment_status.state == 'active' }}
+        if: ${{ github.event.deployment_status.state == 'success' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_EMBEDS: |
