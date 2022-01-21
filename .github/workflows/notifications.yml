@@ -1,12 +1,12 @@
 name: Notifications
 on: deployment_status
 jobs:
-  approval-request:
+  notifications:
     runs-on: ubuntu-latest
-    if: ${{ github.event.deployment_status.state == 'waiting' && github.event.deployment.environment == 'Production' }}
     steps:
       - name: Request Deployment Approval
         uses: Ilshidur/action-discord@master
+        if: ${{ github.event.deployment_status.state == 'waiting' && github.event.deployment.environment == 'Production' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_EMBEDS: |
@@ -19,12 +19,9 @@ jobs:
               }
             ]
 
-  failure-notification:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.deployment_status.state == 'failure' }}
-    steps:
       - name: Notify Deployment Failure
         uses: Ilshidur/action-discord@master
+        if: ${{ github.event.deployment_status.state == 'waiting' && github.event.deployment.environment == 'Production' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_EMBEDS: |
@@ -34,5 +31,20 @@ jobs:
                 "url": "${{ github.event.deployment_status.target_url }}",
                 "description": "${{ github.repository }} failed to deploy to ${{ github.event.deployment.environment }}.",
                 "color": 12720135
+              }
+            ]
+
+      - name: Notify Deployment Success
+        uses: Ilshidur/action-discord@master
+        if: ${{ github.event.deployment_status.state == 'active' }}
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_EMBEDS: |
+            [
+              {
+                "title": "[${{ github.repository }}] ${{ github.event.deployment.environment }} Deployment Succeeded",
+                "url": "${{ github.event.deployment_status.target_url }}",
+                "description": "Successfully deployed ${{ github.repository }} to ${{ github.event.deployment.environment }}.",
+                "color": 3066993
               }
             ]
