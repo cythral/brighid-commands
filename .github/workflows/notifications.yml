@@ -21,7 +21,7 @@ jobs:
 
       - name: Notify Deployment Failure
         uses: Ilshidur/action-discord@master
-        if: ${{ github.event.deployment_status.state == 'waiting' && github.event.deployment.environment == 'Production' }}
+        if: ${{ github.event.deployment_status.state == 'failure' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_EMBEDS: |
