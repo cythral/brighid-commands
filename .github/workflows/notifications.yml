@@ -1,12 +1,12 @@
 name: Notifications
 on: deployment_status
 jobs:
-  notify:
+  approval-request:
     runs-on: ubuntu-latest
+    if: ${{ github.event.deployment_status.state == 'waiting' && github.event.deployment.environment == 'Production' }}
     steps:
       - name: Request Deployment Approval
         uses: Ilshidur/action-discord@master
-        if: ${{ github.event.deployment_status.state == 'waiting' && github.event.deployment.environment == 'Production' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_EMBEDS: |
@@ -14,29 +14,17 @@ jobs:
               {
                 "title": "[${{ github.repository }}] Requires Deployment Approval",
                 "url": "${{ github.event.deployment_status.target_url }}",
-                "description": "**${{ github.repository }}** requires approval for deployment to production.\n**Changes:** ${{ github.event.deployment.description }}",
+                "description": "${{ github.repository }} requires approval for deployment to production.",
                 "color": 15105570
               }
             ]
 
-      - name: Notify Deployment Success
-        uses: Ilshidur/action-discord@master
-        if: ${{ github.event.deployment_status.state == 'active' }}
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_EMBEDS: |
-            [
-              {
-                "title": "[${{ github.repository }}] Successfully Deployed to ${{ github.event.deployment.environment }}",
-                "url": "${{ github.event.deployment_status.target_url }}",
-                "description": "Successfully deployed **${{ github.repository }}** to ${{ github.event.deployment.environment }}.\n**Changes:** ${{ github.event.deployment.description }}",
-                "color": 3066993
-              }
-            ]
-
+  failure-notification:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.deployment_status.state == 'failure' }}
+    steps:
       - name: Notify Deployment Failure
         uses: Ilshidur/action-discord@master
-        if: ${{ github.event.deployment_status.state == 'failure' }}
         env:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
           DISCORD_EMBEDS: |
@@ -44,19 +32,7 @@ jobs:
               {
                 "title": "[${{ github.repository }}] ${{ github.event.deployment.environment }} Deployment Failure",
                 "url": "${{ github.event.deployment_status.target_url }}",
-                "description": "**${{ github.repository }}** failed to deploy to ${{ github.event.deployment.environment }}.\n**Changes:** ${{ github.event.deployment.description }}",
+                "description": "${{ github.repository }} failed to deploy to ${{ github.event.deployment.environment }}.",
                 "color": 12720135
               }
             ]
-
-  success-notification:
-    runs-on: ubuntu-latest
-    if: ${{ github.event.deployment_status.state == 'failure' }}
-    steps:
-      - name: Notify Deployment Success
-        uses:
-
-  failure-notification:
-    runs-on: ubuntu-latest
-
-    steps:

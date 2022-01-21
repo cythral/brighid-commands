@@ -7,10 +7,6 @@ on:
         required: true
 
     inputs:
-      description:
-        description: A description of the changes being deployed.
-        type: string
-
       environment:
         description: Environment to use for this deployment.
         type: string
@@ -24,9 +20,7 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    environment:
-      name: ${{ inputs.environment }}
-      description: ${{ inputs.description }}
+    environment: ${{ inputs.environment }}
     concurrency: ${{ inputs.environment }}
     steps:
       - uses: actions/checkout@v2
