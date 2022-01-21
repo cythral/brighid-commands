@@ -70,6 +70,21 @@ jobs:
             --logger trx \
             --no-build
 
+      - name: Discord Failure Notification
+        uses: Ilshidur/action-discord@master
+        if: failure() && (github.event_name == 'push' || github.event_name == 'schedule')
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_EMBEDS: |
+            [
+              {
+                "title": "[${{ github.repository }}] Build Failed",
+                "url": "https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}",
+                "description": "An error occurred while building ${{ github.repository }}.",
+                "color": 12720135
+              }
+            ]
+
   deploy-dev:
     uses: cythral/brighid-commands/.github/workflows/deploy.yml@master
     needs: build
