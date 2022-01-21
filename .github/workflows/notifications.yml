@@ -19,21 +19,6 @@ jobs:
               }
             ]
 
-      - name: Notify Deployment Failure
-        uses: Ilshidur/action-discord@master
-        if: ${{ github.event.deployment_status.state == 'failure' }}
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-          DISCORD_EMBEDS: |
-            [
-              {
-                "title": "[${{ github.repository }}] ${{ github.event.deployment.environment }} Deployment Failure",
-                "url": "${{ github.event.deployment_status.target_url }}",
-                "description": "${{ github.repository }} failed to deploy to ${{ github.event.deployment.environment }}.",
-                "color": 12720135
-              }
-            ]
-
       - name: Notify Deployment Success
         uses: Ilshidur/action-discord@master
         if: ${{ github.event.deployment_status.state == 'success' }}

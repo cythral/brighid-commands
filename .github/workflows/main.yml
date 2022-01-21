@@ -93,6 +93,7 @@ jobs:
       artifacts-location: ${{ needs.build.outputs.artifacts-location }}
     secrets:
       role: ${{ secrets.AWS_DEV_ROLE }}
+      discord-webhook: ${{ secrets.DISCORD_WEBHOOK }}
 
   update-client:
     uses: cythral/brighid-commands/.github/workflows/update-client.yml@master
@@ -117,3 +118,4 @@ jobs:
       artifacts-location: ${{ needs.build.outputs.artifacts-location }}
     secrets:
       role: ${{ secrets.AWS_PROD_ROLE }}
+      discord-webhook: ${{ secrets.DISCORD_WEBHOOK }}
