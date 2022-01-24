@@ -148,40 +148,6 @@ namespace Brighid.Commands.Service
         }
 
         /// <summary>
-        /// Get command parser restrictions.
-        /// </summary>
-        /// <param name="name">The name of the command to get info for.</param>
-        /// <returns>The HTTP Response.</returns>
-        [Authorize]
-        [HttpGet("{name}/parser-restrictions", Name = "Commands:GetCommandParserRestrictions")]
-        public async Task<ActionResult<CommandParserRestrictions>> GetCommandParserRestrictions(string name)
-        {
-            HttpContext.RequestAborted.ThrowIfCancellationRequested();
-
-            try
-            {
-                var command = await repository.FindCommandByName(name, HttpContext.RequestAborted);
-                service.EnsureCommandIsAccessibleToPrincipal(command, HttpContext.User);
-
-                var parseInfo = new CommandParserRestrictions
-                {
-                    ArgCount = command.ArgCount,
-                    ValidOptions = command.ValidOptions.ToArray(),
-                };
-
-                return Ok(parseInfo);
-            }
-            catch (CommandRequiresRoleException)
-            {
-                return Forbid();
-            }
-            catch (CommandNotFoundException)
-            {
-                return NotFound();
-            }
-        }
-
-        /// <summary>
         /// Executes a command.
         /// </summary>
         /// <param name="name">The name of the command to execute.</param>
