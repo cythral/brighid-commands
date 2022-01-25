@@ -108,15 +108,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.6",
-        "contentHash": "uQUS+Vi3qIb8Ea/SXkuq8g2aQXO3VGGASOpXkoI8MkopdhhKhF13gysYftciG4Ye7xw4Lsz5Aimilzlho0fSAA=="
+        "resolved": "3.7.6.1",
+        "contentHash": "J5Mk74ntMUhKvJOHZs7N0XWDUHaogr57nHts8hkswlioy+bKdojck3iMhsvX4IrxVJb6ZXTmQDkjN4RvdouJxg=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.7.15",
-        "contentHash": "ghuUFDibHQBOuz2xMG+NmIX47gXHK4VNweTyB85cXsL8ZMEqjTjnkzT556gWq71qUNMMf8/p+bn1nxMNWNR8hA==",
+        "resolved": "3.7.7.16",
+        "contentHash": "fbYK2kHO7Bpj9eA4+htrS9oIIoKMiTwVPHKf2jiQ0UQx1N4hNWMZtsQMumY0P0wInZnMxeoCGj2AnK/m4NAYhA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.6, 4.0.0)"
+          "AWSSDK.Core": "[3.7.6.1, 4.0.0)"
         }
       },
       "Brighid.Commands.Sdk.Core": {
@@ -1277,7 +1277,7 @@
       "service": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.S3": "3.7.7.15",
+          "AWSSDK.S3": "3.7.7.16",
           "Brighid.Commands.Sdk.Core": "0.1.0-beta4",
           "Destructurama.Attributed": "3.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.1",
