@@ -9,6 +9,13 @@ namespace Brighid.Commands.Service
     public interface ICommandLoader
     {
         /// <summary>
+        /// Loads all embedded commands.
+        /// </summary>
+        /// <param name="cancellationToken">Token used to cancel the operation.</param>
+        /// <returns>The resulting task.</returns>
+        Task LoadAllEmbeddedCommands(CancellationToken cancellationToken);
+
+        /// <summary>
         /// Loads a command by name.
         /// </summary>
         /// <param name="command">Command to load.</param>

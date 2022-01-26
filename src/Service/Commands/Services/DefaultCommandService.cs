@@ -59,6 +59,15 @@ namespace Brighid.Commands.Service
         }
 
         /// <inheritdoc />
+        public async Task<IEnumerable<Command>> ListByType(CommandType type, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            using var scope = serviceScopeFactory.CreateScope();
+            var repository = scope.ServiceProvider.GetRequiredService<ICommandRepository>();
+            return await repository.ListByType(type, cancellationToken);
+        }
+
+        /// <inheritdoc />
         public async Task<Command> GetByName(string name, ClaimsPrincipal principal, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();

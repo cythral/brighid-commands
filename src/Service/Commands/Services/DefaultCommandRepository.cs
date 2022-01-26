@@ -19,6 +19,13 @@ namespace Brighid.Commands.Service
                 select command
         );
 
+        private static readonly Func<DatabaseContext, CommandType, IAsyncEnumerable<Command>> ListByTypeCompiledQuery = EF.CompileAsyncQuery<DatabaseContext, CommandType, Command>(
+            (context, type) =>
+                from command in context.Commands.AsQueryable()
+                where command.Type == type
+                select command
+        );
+
         private static readonly Func<DatabaseContext, string, IAsyncEnumerable<Command?>> FindCommandByNameCompiledQuery = EF.CompileAsyncQuery<DatabaseContext, string, Command?>(
             (context, name) =>
                 from command in context.Commands.AsQueryable()
@@ -61,6 +68,13 @@ namespace Brighid.Commands.Service
         {
             cancellationToken.ThrowIfCancellationRequested();
             return await ListCompiledQuery(databaseContext).ToListAsync(cancellationToken);
+        }
+
+        /// <inheritdoc />
+        public async Task<IEnumerable<Command>> ListByType(CommandType commandType, CancellationToken cancellationToken = default)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            return await ListByTypeCompiledQuery(databaseContext, commandType).ToListAsync(cancellationToken);
         }
 
         /// <inheritdoc />

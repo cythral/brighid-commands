@@ -55,6 +55,32 @@ namespace Brighid.Commands.Service
         }
 
         [TestFixture]
+        public class ListByTypeTests
+        {
+            [Test, Auto]
+            public async Task ShouldReturnAListOfCommandsFromTheRepositoryOfACertainType(
+                CommandType commandType,
+                [Frozen] Command[] commands,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                repository.ListByType(Any<CommandType>(), Any<CancellationToken>()).Returns(commands);
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                var result = await service.ListByType(commandType, cancellationToken);
+
+                result.Should().BeEquivalentTo(commands);
+                await repository.Received().ListByType(Is(commandType), Is(cancellationToken));
+            }
+        }
+
+        [TestFixture]
         public class GetByNameTests
         {
             [Test, Auto]
