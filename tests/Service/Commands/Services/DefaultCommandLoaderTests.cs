@@ -20,6 +20,39 @@ namespace Brighid.Commands.Service
     public class DefaultCommandLoaderTests
     {
         [TestFixture]
+        public class LoadAllEmbeddedCommandsTests
+        {
+            [Test, Auto]
+            public async Task ShouldGetAListOfEmbeddedCommands(
+                [Frozen] ICommandService commandService,
+                [Target] DefaultCommandLoader loader,
+                CancellationToken cancellationToken
+            )
+            {
+                await loader.LoadAllEmbeddedCommands(cancellationToken);
+
+                await commandService.Received().ListByType(Is(CommandType.Embedded), Is(cancellationToken));
+            }
+
+            [Test, Auto]
+            public async Task ShouldLoadEveryEmbeddedCommand(
+                Command command1,
+                Command command2,
+                [Frozen] ICommandService commandService,
+                [Target] DefaultCommandLoader loader,
+                CancellationToken cancellationToken
+            )
+            {
+                commandService.ListByType(Any<CommandType>(), Any<CancellationToken>()).Returns(new[] { command1, command2 });
+
+                await loader.LoadAllEmbeddedCommands(cancellationToken);
+
+                await commandService.Received().LoadEmbedded(Is(command1), Is(cancellationToken));
+                await commandService.Received().LoadEmbedded(Is(command2), Is(cancellationToken));
+            }
+        }
+
+        [TestFixture]
         public class LoadCommandByNameTests
         {
             [Test, Auto]

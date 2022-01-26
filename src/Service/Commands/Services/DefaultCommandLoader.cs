@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -17,6 +18,15 @@ namespace Brighid.Commands.Service
         )
         {
             this.service = service;
+        }
+
+        /// <inheritdoc />
+        public async Task LoadAllEmbeddedCommands(CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            var commands = await service.ListByType(CommandType.Embedded, cancellationToken);
+            var tasks = from command in commands select service.LoadEmbedded(command, cancellationToken);
+            await Task.WhenAll(tasks);
         }
 
         /// <inheritdoc />

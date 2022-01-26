@@ -2,6 +2,8 @@ using Amazon.S3;
 
 using Brighid.Commands.Service;
 
+using Microsoft.Extensions.Hosting;
+
 namespace Microsoft.Extensions.DependencyInjection
 {
     /// <summary>
@@ -21,6 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<ICommandService, DefaultCommandService>();
             services.AddSingleton<ICommandPackageDownloader, DefaultCommandPackageDownloader>();
             services.AddSingleton<ICommandLoader, DefaultCommandLoader>();
+            services.AddSingleton<IHostedService, StartupCommandLoader>();
             services.AddScoped<ICommandRepository, DefaultCommandRepository>();
         }
     }

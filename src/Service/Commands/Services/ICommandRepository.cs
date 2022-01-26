@@ -36,6 +36,14 @@ namespace Brighid.Commands.Service
         Task<IEnumerable<Command>> List(CancellationToken cancellationToken = default);
 
         /// <summary>
+        /// Lists available commands of a certain type.
+        /// </summary>
+        /// <param name="type">The type of commands to list.</param>
+        /// <param name="cancellationToken">Token used to cancel the operation.</param>
+        /// <returns>A list of commands.</returns>
+        Task<IEnumerable<Command>> ListByType(CommandType type, CancellationToken cancellationToken = default);
+
+        /// <summary>
         /// Finds a command by its name.
         /// </summary>
         /// <param name="name">The name of the command to find.</param>
