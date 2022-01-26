@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -224,97 +223,6 @@ namespace Brighid.Commands.Service
                 .Which.Value.Should().BeEquivalentTo(command.Parameters);
 
                 await service.Received().GetByName(Is(name), Is(httpContext.User), Is(httpContext.RequestAborted));
-            }
-        }
-
-        [TestFixture]
-        public class GetCommandParseInfo
-        {
-            [Test, Auto]
-            public async Task ShouldReturnArgCount(
-                string name,
-                uint argCount,
-                HttpContext httpContext,
-                [Frozen] Command command,
-                [Frozen, Substitute] ICommandRepository repository,
-                [Target] CommandController controller
-            )
-            {
-                command.RequiredRole = null;
-                command.ArgCount = argCount;
-                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
-
-                var result = (await controller.GetCommandParserRestrictions(name)).Result;
-
-                result.Should().BeOfType<OkObjectResult>()
-                .Which.Value.Should().BeOfType<CommandParserRestrictions>()
-                .Which.ArgCount.Should().Be(argCount);
-
-                await repository.Received().FindCommandByName(Is(name), Is(httpContext.RequestAborted));
-            }
-
-            [Test, Auto]
-            public async Task ShouldSetValidOptionsHeader(
-                string name,
-                string option1,
-                string option2,
-                HttpContext httpContext,
-                [Frozen] Command command,
-                [Frozen, Substitute] ICommandRepository repository,
-                [Target] CommandController controller
-            )
-            {
-                command.RequiredRole = null;
-                command.ValidOptions = new List<string> { option1, option2 };
-                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
-
-                var result = (await controller.GetCommandParserRestrictions(name)).Result;
-
-                var validOptions = result.Should().BeOfType<OkObjectResult>()
-                .Which.Value.Should().BeOfType<CommandParserRestrictions>()
-                .Which.ValidOptions;
-
-                validOptions.Should().Contain(option1);
-                validOptions.Should().Contain(option2);
-                await repository.Received().FindCommandByName(Is(name), Is(httpContext.RequestAborted));
-            }
-
-            [Test, Auto]
-            public async Task ShouldReturnNotFoundIfCommandWasntFound(
-                string name,
-                HttpContext httpContext,
-                [Frozen] Command command,
-                [Frozen, Substitute] ICommandRepository repository,
-                [Target] CommandController controller
-            )
-            {
-                command.RequiredRole = null;
-                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
-                repository.FindCommandByName(Any<string>(), Any<CancellationToken>()).Throws(new CommandNotFoundException(name));
-
-                var result = (await controller.GetCommandParserRestrictions(name)).Result;
-
-                result.Should().BeOfType<NotFoundResult>();
-            }
-
-            [Test, Auto]
-            public async Task ShouldReturnForbiddenIfUserDoesntHavePermissionToUseCommand(
-                string name,
-                HttpContext httpContext,
-                [Frozen] Command command,
-                [Frozen, Substitute] ICommandService service,
-                [Frozen, Substitute] ICommandRepository repository,
-                [Target] CommandController controller
-            )
-            {
-                command.RequiredRole = null;
-                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
-                service.When(svc => svc.EnsureCommandIsAccessibleToPrincipal(Any<Command>(), Any<ClaimsPrincipal>())).Throw(new CommandRequiresRoleException(command));
-
-                var result = (await controller.GetCommandParserRestrictions(name)).Result;
-
-                result.Should().BeOfType<ForbidResult>();
-                service.Received().EnsureCommandIsAccessibleToPrincipal(Is(command), Is(httpContext.User));
             }
         }
 
