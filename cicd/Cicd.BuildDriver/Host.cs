@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -73,7 +72,7 @@ namespace Brighid.Commands.Cicd.BuildDriver
                     },
                     arguments: new[]
                     {
-                        Assembly.Load("Service").Location,
+                        $"{ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory}bin/Service/{ThisAssembly.AssemblyConfiguration}/linux-musl-x64/Service.dll",
                         "v1",
                     }
                 );
