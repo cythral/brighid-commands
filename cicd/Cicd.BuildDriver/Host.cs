@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,6 +22,7 @@ namespace Brighid.Commands.Cicd.BuildDriver
     {
         private static readonly string ConfigFile = ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "cicd/config.yml";
         private static readonly string IntermediateOutputDirectory = ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "obj/Cicd.Driver/";
+        private static readonly string CicdOutputDirectory = ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "bin/Cicd/";
         private static readonly string ToolkitStack = "cdk-toolkit";
         private static readonly string OutputsFile = IntermediateOutputDirectory + "cdk.outputs.json";
         private readonly EcrUtils ecrUtils;
@@ -55,8 +57,32 @@ namespace Brighid.Commands.Cicd.BuildDriver
         {
             cancellationToken.ThrowIfCancellationRequested();
             Directory.SetCurrentDirectory(ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "cicd/Cicd.Artifacts");
-            Directory.CreateDirectory(ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "bin/Cicd");
+            Directory.CreateDirectory(CicdOutputDirectory);
             var accountNumber = await GetCurrentAccountNumber(cancellationToken);
+
+            await Step("Generating Swagger", async () =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var command = new Command(
+                    command: "dotnet swagger tofile",
+                    options: new Dictionary<string, object>
+                    {
+                        ["--output"] = $"{CicdOutputDirectory}swagger.json",
+                        ["--host"] = $"https://commands.brigh.id",
+                    },
+                    arguments: new[]
+                    {
+                        Assembly.Load("Service").Location,
+                        "v1",
+                    }
+                );
+
+                await command.RunOrThrowError(
+                    errorMessage: "Failed to generate swagger.",
+                    cancellationToken: cancellationToken
+                );
+            });
 
             await Step("Bootstrapping CDK", async () =>
             {
@@ -98,6 +124,29 @@ namespace Brighid.Commands.Cicd.BuildDriver
                 cancellationToken.ThrowIfCancellationRequested();
                 await ecrUtils.DockerLogin(outputs.ImageRepositoryUri, cancellationToken);
                 await ecrUtils.PublicDockerLogin(cancellationToken);
+            });
+
+            await Step("Build & Push Docker Image", async () =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var command = new Command(
+                    command: "docker buildx build",
+                    options: new Dictionary<string, object>
+                    {
+                        ["--tag"] = tag,
+                        ["--file"] = $"{ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory}Dockerfile",
+                        ["--cache-from"] = "type=gha,scope=brighid-commands",
+                        ["--cache-to"] = "type=gha,scope=brighid-commands",
+                        ["--push"] = true,
+                    },
+                    arguments: new[] { ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory }
+                );
+
+                await command.RunOrThrowError(
+                    errorMessage: "Failed to build Docker Image.",
+                    cancellationToken: cancellationToken
+                );
             });
 
             await Step("Build & Push Docker Image", async () =>
