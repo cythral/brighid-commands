@@ -278,11 +278,6 @@ Resources:
       GroupDescription: Security Group for Brighid Commands Custom Resources
       VpcId: !ImportValue cfn-utilities:VpcId
 
-  StartDatabaseAssociation:
-    Type: AWS::SSM::Association
-    Properties:
-      Name: AWS-StartRdsInstance
-
   MigrationsLambda:
     Type: AWS::Serverless::Function
     Properties:
