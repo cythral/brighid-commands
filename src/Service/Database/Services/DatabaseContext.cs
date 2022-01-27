@@ -25,7 +25,7 @@ namespace Brighid.Commands.Database
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseContext" /> class.
         /// </summary>
-        public DatabaseContext()
+        internal DatabaseContext()
         {
         }
 
