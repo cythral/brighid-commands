@@ -59,44 +59,6 @@ namespace Brighid.Commands.Cicd.BuildDriver
             Directory.CreateDirectory(CicdOutputDirectory);
             var accountNumber = await GetCurrentAccountNumber(cancellationToken);
 
-            await Step("Restoring Tools", async () =>
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var command = new Command(
-                    command: "dotnet tool restore"
-                );
-
-                await command.RunOrThrowError(
-                    errorMessage: "Failed to restore tools.",
-                    cancellationToken: cancellationToken
-                );
-            });
-
-            await Step("Generating Swagger", async () =>
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var command = new Command(
-                    command: "dotnet swagger tofile",
-                    options: new Dictionary<string, object>
-                    {
-                        ["--output"] = $"{CicdOutputDirectory}swagger.json",
-                        ["--host"] = $"https://commands.brigh.id",
-                    },
-                    arguments: new[]
-                    {
-                        $"{ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory}bin/Service/{ThisAssembly.AssemblyConfiguration}/linux-musl-x64/Service.dll",
-                        "v1",
-                    }
-                );
-
-                await command.RunOrThrowError(
-                    errorMessage: "Failed to generate swagger.",
-                    cancellationToken: cancellationToken
-                );
-            });
-
             await Step("Bootstrapping CDK", async () =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
