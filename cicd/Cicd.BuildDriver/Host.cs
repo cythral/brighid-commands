@@ -59,6 +59,20 @@ namespace Brighid.Commands.Cicd.BuildDriver
             Directory.CreateDirectory(CicdOutputDirectory);
             var accountNumber = await GetCurrentAccountNumber(cancellationToken);
 
+            await Step("Restoring Tools", async () =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var command = new Command(
+                    command: "dotnet tool restore"
+                );
+
+                await command.RunOrThrowError(
+                    errorMessage: "Failed to restore tools.",
+                    cancellationToken: cancellationToken
+                );
+            });
+
             await Step("Generating Swagger", async () =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
