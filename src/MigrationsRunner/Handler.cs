@@ -7,6 +7,8 @@ using Lambdajection.CustomResource;
 
 using Microsoft.Extensions.Options;
 
+#pragma warning disable IDE0060 // many parameters here go unused, but they are required nonetheless.
+
 namespace Brighid.Commands.MigrationsRunner
 {
     /// <summary>
@@ -41,7 +43,7 @@ namespace Brighid.Commands.MigrationsRunner
             return Task.FromResult(new OutputData());
         }
 
-#pragma warning disable IDE0060, CS1591, SA1600 // no documentation required here, only create is used.
+#pragma warning disable CS1591, SA1600 // no documentation required here, only create is used.
         public Task<OutputData> Update(CustomResourceRequest<MigrationsRequest> request, CancellationToken cancellationToken = default)
         {
             throw new NotSupportedException();
