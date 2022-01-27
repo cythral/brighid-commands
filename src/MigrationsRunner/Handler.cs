@@ -40,7 +40,7 @@ namespace Brighid.Commands.MigrationsRunner
         public async Task<OutputData> Create(CustomResourceRequest<MigrationsRequest> request, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            using var process = Process.Start("MigrationsBundle", "--connection", $@"""{databaseOptions}""");
+            using var process = Process.Start("MigrationsBundle", new[] { "--connection", $@"""{databaseOptions}""" });
             await process.WaitForExitAsync(cancellationToken);
             return new OutputData();
         }
