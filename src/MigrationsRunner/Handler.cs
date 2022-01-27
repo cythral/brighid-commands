@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,11 +37,12 @@ namespace Brighid.Commands.MigrationsRunner
         /// <param name="request">Request to run migrations.</param>
         /// <param name="cancellationToken">Token used to cancel the operation.</param>
         /// <returns>The result of running migrations.</returns>
-        public Task<OutputData> Create(CustomResourceRequest<MigrationsRequest> request, CancellationToken cancellationToken = default)
+        public async Task<OutputData> Create(CustomResourceRequest<MigrationsRequest> request, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            AppDomain.CurrentDomain.ExecuteAssemblyByName("MigrationsBundle", "--connection", $@"""{databaseOptions}""");
-            return Task.FromResult(new OutputData());
+            using var process = Process.Start("MigrationsBundle", "--connection", $@"""{databaseOptions}""");
+            await process.WaitForExitAsync(cancellationToken);
+            return new OutputData();
         }
 
 #pragma warning disable CS1591, SA1600 // no documentation required here, only create is used.

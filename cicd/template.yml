@@ -277,11 +277,16 @@ Resources:
     Properties:
       GroupDescription: Security Group for Brighid Commands Custom Resources
       VpcId: !ImportValue cfn-utilities:VpcId
-  
+
+  StartDatabaseAssociation:
+    Type: AWS::SSM::Association
+    Properties:
+      Name: AWS-StartRdsInstance
+
   MigrationsLambda:
     Type: AWS::Serverless::Function
     Properties:
-      Handler: Brighid.Commands.MigrationsRunner::Brighid.Commands.MigrationsRunner.Handler::Run
+      Handler: MigrationsRunner::Brighid.Commands.MigrationsRunner.Handler::Run
       Runtime: provided.al2
       Timeout: 30
       CodeUri: ../bin/MigrationsRunner/Release/linux-x64/publish
@@ -301,4 +306,3 @@ Resources:
           Database__User: !Ref DatabaseUser
           Database__Password: !Ref DatabasePassword
           Database__Name: !Ref DatabaseName
-
