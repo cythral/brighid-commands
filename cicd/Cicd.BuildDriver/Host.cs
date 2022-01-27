@@ -68,6 +68,7 @@ namespace Brighid.Commands.Cicd.BuildDriver
                     ["--project"] = "src/Service/Service.csproj",
                     ["--msbuildprojectextensionspath"] = "obj/Service/",
                     ["--output"] = "bin/MigrationsRunner/Release/linux-x64/publish/MigrationsBundle",
+                    ["--verbose"] = true,
                 });
 
                 await command.RunOrThrowError(
