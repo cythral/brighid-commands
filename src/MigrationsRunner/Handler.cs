@@ -42,6 +42,12 @@ namespace Brighid.Commands.MigrationsRunner
             cancellationToken.ThrowIfCancellationRequested();
             using var process = Process.Start("MigrationsBundle", new[] { "--connection", $@"""{databaseOptions}""" });
             await process.WaitForExitAsync(cancellationToken);
+
+            if (process.ExitCode != 0)
+            {
+                throw new Exception("An error occurred while attempting to run migrations.");
+            }
+
             return new OutputData();
         }
 

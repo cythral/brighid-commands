@@ -69,6 +69,7 @@ namespace Brighid.Commands.Cicd.BuildDriver
                     ["--msbuildprojectextensionspath"] = "obj/Service/",
                     ["--output"] = "bin/MigrationsRunner/Release/linux-x64/publish/MigrationsBundle",
                     ["--target-runtime"] = "linux-x64",
+                    ["--self-contained"] = true,
                     ["--verbose"] = true,
                 });
 
