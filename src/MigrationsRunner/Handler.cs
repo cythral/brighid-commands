@@ -43,12 +43,9 @@ namespace Brighid.Commands.MigrationsRunner
             using var process = Process.Start("MigrationsBundle", new[] { "--connection", $@"""{databaseOptions}""" });
             await process.WaitForExitAsync(cancellationToken);
 
-            if (process.ExitCode != 0)
-            {
-                throw new Exception("An error occurred while attempting to run migrations.");
-            }
-
-            return new OutputData();
+            return (process.ExitCode != 0)
+                ? throw new Exception("An error occurred while attempting to run migrations.")
+                : new OutputData();
         }
 
 #pragma warning disable CS1591, SA1600 // no documentation required here, only create is used.
