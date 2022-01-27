@@ -1,3 +1,4 @@
+Transform: AWS::Serverless-2016-10-31
 Description: Brighid Commands Service
 Parameters:
   DomainName:
@@ -46,6 +47,14 @@ Parameters:
     AllowedValues:
       - dev
       - prod
+
+  LambdajectionVersion:
+    Type: String
+    Description: ARN of the Lambda Layer containing Lambdajection + its dependencies
+
+  DotnetVersion:
+    Type: String
+    Description: ARN of the Lambda Layer containing .NET
 
 Resources:
   MeshService:
@@ -262,3 +271,34 @@ Resources:
     Properties:
       LogGroupName: /brighid/commands
       RetentionInDays: 14
+
+  MigrationsSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security Group for Brighid Commands Custom Resources
+      VpcId: !ImportValue cfn-utilities:VpcId
+  
+  MigrationsLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: Brighid.Commands.MigrationsRunner::Brighid.Commands.MigrationsRunner.Handler::Run
+      Runtime: provided.al2
+      Timeout: 30
+      CodeUri: ../bin/MigrationsRunner/Release/linux-x64/publish
+      MemorySize: 512
+      Policies:
+        - !ImportValue cfn-utilities:SecretsKeyDecryptPolicyArn
+      Layers:
+        - !Sub "{{resolve:ssm:/dotnet/${DotnetVersion}/layer-arn}}"
+        - !Sub "{{resolve:ssm:/lambdajection/${LambdajectionVersion}/layer-arn}}"
+      VpcConfig:
+        SecurityGroupIds:
+          - !Ref MigrationsSecurityGroup
+        SubnetIds: !Split [",", !ImportValue cfn-utilities:PrivateSubnetIds]
+      Environment:
+        Variables:
+          Database__Host: !Ref DatabaseHost
+          Database__User: !Ref DatabaseUser
+          Database__Password: !Ref DatabasePassword
+          Database__Name: !Ref DatabaseName
+

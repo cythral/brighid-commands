@@ -17,4 +17,8 @@
     <Target Name="Format" DependsOnTargets="Restore;RestoreTools">
         <Exec Command="dotnet format $(MSBuildThisFileDirectory)brighid-commands.sln --fix-style info" />
     </Target>
+
+    <Target Name="AddMigration">
+        <Exec Command="dotnet ef migrations add $(MigrationName) --project $(MSBuildThisFileDirectory)src/Service/Service.csproj --msbuildprojectextensionspath $(MSBuildThisFileDirectory)obj/Service" />
+    </Target>
 </Project>

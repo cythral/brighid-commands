@@ -1,3 +1,4 @@
+using Brighid.Commands;
 using Brighid.Commands.Database;
 
 using Microsoft.EntityFrameworkCore;
@@ -17,13 +18,16 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configuration">Application configuration object.</param>
         public static void ConfigureDatabaseServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var databaseOptions = configuration.GetSection("Database").Get<DatabaseOptions>();
-            var connectionString = databaseOptions?.ToString() ?? string.Empty;
+            var databaseOptions = configuration.GetSection("Database").Get<DatabaseOptions>() ?? new();
+            var connectionString = databaseOptions.ToString();
+            var version = Program.IsRunningViaEfTool
+                ? new MySqlServerVersion(new System.Version(7, 0))
+                : ServerVersion.AutoDetect(connectionString);
 
             services.AddDbContextPool<DatabaseContext>(options =>
             {
                 options
-                .UseMySql(connectionString, ServerVersion.AutoDetect(connectionString));
+                .UseMySql(connectionString, version);
             });
         }
     }

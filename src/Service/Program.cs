@@ -15,8 +15,11 @@ namespace Brighid.Commands
 {
     public class Program
     {
+        public static bool IsRunningViaEfTool { get; private set; } = true;
+
         public static async Task Main(string[] args)
         {
+            IsRunningViaEfTool = false;
             using var host = CreateHostBuilder(args).Build();
             await host.RunAsync();
         }

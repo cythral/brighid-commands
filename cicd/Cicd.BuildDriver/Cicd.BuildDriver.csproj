@@ -7,12 +7,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <AssemblyAttribute Include="ProjectRootDirectory">
-            <_Parameter1>$(ProjectRootDirectory)</_Parameter1>
-        </AssemblyAttribute>
-    </ItemGroup>
-
-    <ItemGroup>
         <PackageReference Include="AWSSDK.SecurityToken" Version="3.7.1.109" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
         <PackageReference Include="YamlDotNet" Version="11.2.1" />
@@ -20,9 +14,28 @@
 
     <ItemGroup>
         <ProjectReference Include="../../src/Service/Service.csproj" ReferenceOutputAssembly="false" Targets="Publish" Properties="SwaggerOutputPath=$(CicdOutputFolder)" />
+        <ProjectReference Include="../../src/MigrationsRunner/MigrationsRunner.csproj" Targets="Publish" />
         <ProjectReference Include="../../tests/Tests.csproj" ReferenceOutputAssembly="false" Targets="Publish" />
         <ProjectReference Include="../Cicd.Utils/Cicd.Utils.csproj" />
     </ItemGroup>
+
+    <ItemGroup>
+        <AssemblyAttribute Include="ProjectRootDirectory">
+            <_Parameter1>$(ProjectRootDirectory)</_Parameter1>
+        </AssemblyAttribute>
+
+        <AssemblyAttribute Include="DotnetSdkVersion">
+            <_Parameter1>$(NETCoreSdkVersion)</_Parameter1>
+        </AssemblyAttribute>
+    </ItemGroup>
+
+    <Target Name="GetLambdajectionVersion" BeforeTargets="BeforeBuild" DependsOnTargets="ResolveReferences;RunResolvePackageDependencies">
+        <ItemGroup>
+            <AssemblyAttribute Include="LambdajectionVersion" Condition="%(PackageDefinitions.Name) == 'Lambdajection'">
+                <_Parameter1>%(PackageDefinitions.Version)</_Parameter1>
+            </AssemblyAttribute>
+        </ItemGroup>
+    </Target>
 
     <Target Name="SetupCicd">
         <MakeDir Directories="$(CicdOutputFolder)" />

@@ -59,6 +59,23 @@ namespace Brighid.Commands.Cicd.BuildDriver
             Directory.CreateDirectory(CicdOutputDirectory);
             var accountNumber = await GetCurrentAccountNumber(cancellationToken);
 
+            await Step("Creating Migrations Bundle", async () =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var command = new Command("dotnet ef migrations bundle", new Dictionary<string, object>
+                {
+                    ["--project"] = ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "src/Service/Service.csproj",
+                    ["--msbuildprojectextensionspath"] = ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "obj/Service/",
+                    ["--output"] = ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "bin/MigrationsRunner/Release/linux-x64/publish/MigrationsBundle",
+                });
+
+                await command.RunOrThrowError(
+                    errorMessage: "Could not create migrations bundle.",
+                    cancellationToken: cancellationToken
+                );
+            });
+
             await Step("Bootstrapping CDK", async () =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
@@ -99,29 +116,6 @@ namespace Brighid.Commands.Cicd.BuildDriver
                 cancellationToken.ThrowIfCancellationRequested();
                 await ecrUtils.DockerLogin(outputs.ImageRepositoryUri, cancellationToken);
                 await ecrUtils.PublicDockerLogin(cancellationToken);
-            });
-
-            await Step("Build & Push Docker Image", async () =>
-            {
-                cancellationToken.ThrowIfCancellationRequested();
-
-                var command = new Command(
-                    command: "docker buildx build",
-                    options: new Dictionary<string, object>
-                    {
-                        ["--tag"] = tag,
-                        ["--file"] = $"{ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory}Dockerfile",
-                        ["--cache-from"] = "type=gha,scope=brighid-commands",
-                        ["--cache-to"] = "type=gha,scope=brighid-commands",
-                        ["--push"] = true,
-                    },
-                    arguments: new[] { ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory }
-                );
-
-                await command.RunOrThrowError(
-                    errorMessage: "Failed to build Docker Image.",
-                    cancellationToken: cancellationToken
-                );
             });
 
             await Step("Build & Push Docker Image", async () =>
@@ -260,6 +254,8 @@ namespace Brighid.Commands.Cicd.BuildDriver
             var parameters = new Dictionary<string, string>
             {
                 ["Image"] = imageTag,
+                ["DotnetVersion"] = DotnetSdkVersionAttribute.ThisAssemblyDotnetSdkVersion,
+                ["LambdajectionVersion"] = LambdajectionVersionAttribute.ThisAssemblyLambdajectionVersion,
             };
 
             foreach (var (parameterName, parameterDefinition) in config.Parameters)
