@@ -55,7 +55,6 @@ namespace Brighid.Commands.Cicd.BuildDriver
         public async Task StartAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            Directory.SetCurrentDirectory(ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "cicd/Cicd.Artifacts");
             Directory.CreateDirectory(CicdOutputDirectory);
             var accountNumber = await GetCurrentAccountNumber(cancellationToken);
 
@@ -63,11 +62,12 @@ namespace Brighid.Commands.Cicd.BuildDriver
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
+                Directory.SetCurrentDirectory(ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory);
                 var command = new Command("dotnet ef migrations bundle", new Dictionary<string, object>
                 {
-                    ["--project"] = ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "src/Service/Service.csproj",
-                    ["--msbuildprojectextensionspath"] = ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "obj/Service/",
-                    ["--output"] = ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "bin/MigrationsRunner/Release/linux-x64/publish/MigrationsBundle",
+                    ["--project"] = "src/Service/Service.csproj",
+                    ["--msbuildprojectextensionspath"] = "obj/Service/",
+                    ["--output"] = "bin/MigrationsRunner/Release/linux-x64/publish/MigrationsBundle",
                 });
 
                 await command.RunOrThrowError(
@@ -80,6 +80,7 @@ namespace Brighid.Commands.Cicd.BuildDriver
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
+                Directory.SetCurrentDirectory(ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "cicd/Cicd.Artifacts");
                 var command = new Command("cdk bootstrap", new Dictionary<string, object>
                 {
                     ["--toolkit-stack-name"] = ToolkitStack,
