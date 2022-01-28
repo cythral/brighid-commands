@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -101,6 +102,7 @@ namespace Brighid.Commands.Cicd.DeployDriver
             var path = options.ArtifactsLocation!.AbsolutePath.TrimStart('/');
             var request = new GetPreSignedUrlRequest
             {
+                Expires = DateTime.Now + TimeSpan.FromMinutes(15),
                 BucketName = options.ArtifactsLocation!.Host,
                 Key = $"{path}/migrator",
             };
