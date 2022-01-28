@@ -4,11 +4,11 @@
     "net6.0": {
       "AWSSDK.SecurityToken": {
         "type": "Direct",
-        "requested": "[3.7.1.110, )",
-        "resolved": "3.7.1.110",
-        "contentHash": "nKrLF3wTpnZ8oT4Lb7S2UtRIJQ4GNrJvlyY6kzn+LezESVygollOSIVOcQQQyh5tIVE+rqj38eOa6aEaheOdZQ==",
+        "requested": "[3.7.1.109, )",
+        "resolved": "3.7.1.109",
+        "contentHash": "ird8Y3HALKhvRRpIqoZlXSW+/sU9PTxo7k2X9VHkXWx+79n/YK5zqa6CWt3nBMh4m4Rb4Xr22ovg91mfSbtZyA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.6.2, 4.0.0)"
+          "AWSSDK.Core": "[3.7.6.1, 4.0.0)"
         }
       },
       "Microsoft.Extensions.Hosting": {
