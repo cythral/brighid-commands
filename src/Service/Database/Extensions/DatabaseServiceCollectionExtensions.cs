@@ -20,9 +20,9 @@ namespace Microsoft.Extensions.DependencyInjection
         {
             var databaseOptions = configuration.GetSection("Database").Get<DatabaseOptions>() ?? new();
             var connectionString = databaseOptions.ToString();
-            var version = Program.IsRunningViaEfTool
-                ? new MySqlServerVersion(new System.Version(7, 0))
-                : ServerVersion.AutoDetect(connectionString);
+            var version = Program.AutoDetectDatabaseVersion
+                ? ServerVersion.AutoDetect(connectionString)
+                : new MySqlServerVersion(new System.Version(7, 0));
 
             services.AddDbContextPool<DatabaseContext>(options =>
             {

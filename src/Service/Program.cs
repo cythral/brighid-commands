@@ -15,11 +15,11 @@ namespace Brighid.Commands
 {
     public class Program
     {
-        public static bool IsRunningViaEfTool { get; private set; } = true;
+        public static bool AutoDetectDatabaseVersion { get; private set; } = false;
 
         public static async Task Main(string[] args)
         {
-            IsRunningViaEfTool = false;
+            AutoDetectDatabaseVersion = true;
             using var host = CreateHostBuilder(args).Build();
             await host.RunAsync();
         }
