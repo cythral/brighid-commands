@@ -47,7 +47,7 @@ namespace Brighid.Commands.Cicd.DeployDriver
         private async Task EnsureTaskExitedOk(string task, CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            var request = new DescribeTasksRequest { Cluster = "brighid", asks = new List<string> { task } };
+            var request = new DescribeTasksRequest { Cluster = "brighid", Tasks = new List<string> { task } };
             var taskInfo = await ecs.DescribeTasksAsync(request, cancellationToken);
 
             foreach (var container in taskInfo.Tasks.ElementAt(0).Containers)
