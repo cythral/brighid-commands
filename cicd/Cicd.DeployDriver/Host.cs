@@ -17,6 +17,7 @@ namespace Brighid.Commands.Cicd.DeployDriver
     public class Host : IHost
     {
         private readonly StackDeployer deployer;
+        private readonly MigrationsRunner migrator;
         private readonly EcrUtils ecrUtils;
         private readonly CommandLineOptions options;
         private readonly IHostApplicationLifetime lifetime;
@@ -25,12 +26,14 @@ namespace Brighid.Commands.Cicd.DeployDriver
         /// Initializes a new instance of the <see cref="Host" /> class.
         /// </summary>
         /// <param name="deployer">Service for deploying cloudformation stacks.</param>
+        /// <param name="migrator">Service for running database migrations.</param>
         /// <param name="ecrUtils">Utilities for interacting with ECR.</param>
         /// <param name="options">Command line options.</param>
         /// <param name="lifetime">Service that controls the application lifetime.</param>
         /// <param name="serviceProvider">Object that provides access to the program's services.</param>
         public Host(
             StackDeployer deployer,
+            MigrationsRunner migrator,
             EcrUtils ecrUtils,
             IOptions<CommandLineOptions> options,
             IHostApplicationLifetime lifetime,
@@ -38,6 +41,7 @@ namespace Brighid.Commands.Cicd.DeployDriver
         )
         {
             this.deployer = deployer;
+            this.migrator = migrator;
             this.ecrUtils = ecrUtils;
             this.options = options.Value;
             this.lifetime = lifetime;
@@ -69,6 +73,14 @@ namespace Brighid.Commands.Cicd.DeployDriver
                 config = await JsonSerializer.DeserializeAsync<EnvironmentConfig>(response.ResponseStream, cancellationToken: cancellationToken);
 
                 Console.WriteLine("Loaded configuration from S3.");
+            });
+
+            await Step($"Run database migrations.", async () =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                await migrator.Run(config!, cancellationToken);
+                Console.WriteLine("Successfully ran database migrations.");
             });
 
             var image = config!.Parameters!["Image"]!;

@@ -11,6 +11,15 @@
           "AWSSDK.Core": "[3.7.6.1, 4.0.0)"
         }
       },
+      "AWSSDK.ECS": {
+        "type": "Direct",
+        "requested": "[3.7.4.25, )",
+        "resolved": "3.7.4.25",
+        "contentHash": "qJ7m6kJfE08Z2o/GaCafaxoL0WOsCcBx++Fe2D8Idaym2rmsNsvicdTbBiojz3Qwv1DTJ8580SPqvebDVWIYNA==",
+        "dependencies": {
+          "AWSSDK.Core": "[3.7.6.1, 4.0.0)"
+        }
+      },
       "AWSSDK.S3": {
         "type": "Direct",
         "requested": "[3.7.7.16, )",
