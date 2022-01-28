@@ -73,6 +73,7 @@ namespace Brighid.Commands.Cicd.DeployDriver
                         new ContainerOverride
                         {
                             Name = "migrator",
+                            Command = new List<string> { "migrate" },
                             Environment = new List<KeyValuePair>
                             {
                                 new KeyValuePair { Name = "MIGRATIONS_BUNDLE_URL", Value = migrationsBundleUrl },
