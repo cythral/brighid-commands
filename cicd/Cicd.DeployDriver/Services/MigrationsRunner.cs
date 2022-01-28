@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using Amazon.CloudFormation;
 using Amazon.CloudFormation.Model;
+using Amazon.ECS;
 using Amazon.ECS.Model;
 using Amazon.S3;
 using Amazon.S3.Model;
@@ -58,10 +59,12 @@ namespace Brighid.Commands.Cicd.DeployDriver
             {
                 Cluster = "brighid",
                 TaskDefinition = "brighid-migrations:1",
+                LaunchType = LaunchType.FARGATE,
                 NetworkConfiguration = new NetworkConfiguration
                 {
                     AwsvpcConfiguration = new AwsVpcConfiguration
                     {
+                        AssignPublicIp = "ENABLED",
                         Subnets = await GetSubnets(cancellationToken),
                     },
                 },
