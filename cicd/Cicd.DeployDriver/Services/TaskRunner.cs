@@ -40,7 +40,7 @@ namespace Brighid.Commands.Cicd.DeployDriver
             while ((await GetTaskStatus(task, cancellationToken)) != "STOPPED")
             {
                 Console.WriteLine("Waiting for task to complete...");
-                await Task.Delay(1000, cancellationToken);
+                await Task.Delay(10000, cancellationToken);
             }
         }
 
