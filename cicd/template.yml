@@ -48,14 +48,6 @@ Parameters:
       - dev
       - prod
 
-  LambdajectionVersion:
-    Type: String
-    Description: ARN of the Lambda Layer containing Lambdajection + its dependencies
-
-  DotnetVersion:
-    Type: String
-    Description: ARN of the Lambda Layer containing .NET
-
 Resources:
   MeshService:
     Type: AWS::AppMesh::VirtualService
