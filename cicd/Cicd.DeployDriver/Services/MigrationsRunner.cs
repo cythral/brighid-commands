@@ -56,6 +56,7 @@ namespace Brighid.Commands.Cicd.DeployDriver
             var parameters = config.Parameters!;
             var runTaskRequest = new RunTaskRequest
             {
+                Cluster = "brighid",
                 TaskDefinition = "brighid-migrations:1",
                 NetworkConfiguration = new NetworkConfiguration
                 {

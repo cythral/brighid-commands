@@ -14,7 +14,6 @@
 
     <ItemGroup>
         <ProjectReference Include="../../src/Service/Service.csproj" ReferenceOutputAssembly="false" Targets="Publish" Properties="SwaggerOutputPath=$(CicdOutputFolder)" />
-        <ProjectReference Include="../../src/MigrationsRunner/MigrationsRunner.csproj" Targets="Publish" />
         <ProjectReference Include="../../tests/Tests.csproj" ReferenceOutputAssembly="false" Targets="Publish" />
         <ProjectReference Include="../Cicd.Utils/Cicd.Utils.csproj" />
     </ItemGroup>
