@@ -24,12 +24,6 @@
         <ProjectReference Include="../Cicd.Utils/Cicd.Utils.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-        <AssemblyAttribute Include="ProjectRootDirectory">
-            <_Parameter1>$(ProjectRootDirectory)</_Parameter1>
-        </AssemblyAttribute>
-    </ItemGroup>
-
     <Target Name="SetupCicd">
         <MakeDir Directories="$(CicdOutputFolder)" />
     </Target>
