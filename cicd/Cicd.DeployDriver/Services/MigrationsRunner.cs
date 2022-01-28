@@ -79,6 +79,7 @@ namespace Brighid.Commands.Cicd.DeployDriver
                             {
                                 new KeyValuePair { Name = "MIGRATIONS_BUNDLE_URL", Value = migrationsBundleUrl },
                                 new KeyValuePair { Name = "DATABASE_HOST", Value = parameters["DatabaseHost"] },
+                                new KeyValuePair { Name = "Database__Host", Value = parameters["DatabaseHost"] },
                                 new KeyValuePair { Name = "DATABASE_NAME", Value = parameters["DatabaseName"] },
                                 new KeyValuePair { Name = "DATABASE_USER", Value = parameters["DatabaseUser"] },
                                 new KeyValuePair { Name = "ENCRYPTED_DATABASE_PASSWORD", Value = parameters["DatabasePassword"] },
