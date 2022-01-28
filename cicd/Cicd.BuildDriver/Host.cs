@@ -21,6 +21,7 @@ namespace Brighid.Commands.Cicd.BuildDriver
     {
         private static readonly string ConfigFile = ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "cicd/config.yml";
         private static readonly string IntermediateOutputDirectory = ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "obj/Cicd.Driver/";
+        private static readonly string CicdOutputDirectory = ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "bin/Cicd/";
         private static readonly string ToolkitStack = "cdk-toolkit";
         private static readonly string OutputsFile = IntermediateOutputDirectory + "cdk.outputs.json";
         private readonly EcrUtils ecrUtils;
@@ -54,14 +55,35 @@ namespace Brighid.Commands.Cicd.BuildDriver
         public async Task StartAsync(CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            Directory.SetCurrentDirectory(ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "cicd/Cicd.Artifacts");
-            Directory.CreateDirectory(ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "bin/Cicd");
+            Directory.CreateDirectory(CicdOutputDirectory);
             var accountNumber = await GetCurrentAccountNumber(cancellationToken);
+
+            await Step("Creating Migrations Bundle", async () =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                Directory.SetCurrentDirectory(ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory);
+                var command = new Command("dotnet ef migrations bundle", new Dictionary<string, object>
+                {
+                    ["--project"] = "src/Service/Service.csproj",
+                    ["--msbuildprojectextensionspath"] = "obj/Service/",
+                    ["--output"] = "bin/Cicd/migrator",
+                    ["--target-runtime"] = "linux-musl-x64",
+                    ["--self-contained"] = true,
+                    ["--verbose"] = true,
+                });
+
+                await command.RunOrThrowError(
+                    errorMessage: "Could not create migrations bundle.",
+                    cancellationToken: cancellationToken
+                );
+            });
 
             await Step("Bootstrapping CDK", async () =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
+                Directory.SetCurrentDirectory(ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory + "cicd/Cicd.Artifacts");
                 var command = new Command("cdk bootstrap", new Dictionary<string, object>
                 {
                     ["--toolkit-stack-name"] = ToolkitStack,

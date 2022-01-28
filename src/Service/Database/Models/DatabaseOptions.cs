@@ -33,7 +33,8 @@ namespace Brighid.Commands.Database
             result += $"User={User};";
             result += $"Password=\"{Password}\";";
             result += "GuidFormat=Binary16;";
-            result += "DefaultCommandTimeout=0";
+            result += "DefaultCommandTimeout=0;";
+            result += "UseCompression=true";
             return result;
         }
     }

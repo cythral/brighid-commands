@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace Brighid.Commands.Cicd.BuildDriver
 {
     /// <summary>
@@ -10,7 +8,6 @@ namespace Brighid.Commands.Cicd.BuildDriver
         /// <summary>
         /// Gets or sets the version to build.
         /// </summary>
-        [Required]
         public string Version { get; set; } = string.Empty;
     }
 }

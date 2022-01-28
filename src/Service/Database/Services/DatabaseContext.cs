@@ -17,7 +17,7 @@ namespace Brighid.Commands.Database
         /// Initializes a new instance of the <see cref="DatabaseContext" /> class.
         /// </summary>
         /// <param name="options">Options to use when interacting with the database.</param>
-        public DatabaseContext(DbContextOptions options)
+        public DatabaseContext(DbContextOptions<DatabaseContext> options)
             : base(options)
         {
         }

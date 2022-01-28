@@ -1,12 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <RuntimeIdentifier>linux-musl-x64</RuntimeIdentifier>
+    <RuntimeIdentifiers>osx-x64;linux-x64;linux-musl-x64</RuntimeIdentifiers>
     <TrimMode>copyused</TrimMode>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
-    <PublishTrimmed>true</PublishTrimmed>
+    <PublishTrimmed Condition="'$(RuntimeIdentifier)' != ''">true</PublishTrimmed>
     <PublishSelfContained>true</PublishSelfContained>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+    <TargetLatestRuntimePatch>true</TargetLatestRuntimePatch>
   </PropertyGroup>
 
   <ItemGroup>
@@ -14,32 +15,34 @@
     <PackageReference Include="Brighid.Commands.Sdk.Core" Version="0.1.0-beta4" />
     <PackageReference Include="Serilog.AspNetCore" Version="4.1.0" />
     <PackageReference Include="Destructurama.Attributed" Version="3.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1">
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.1" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
     <PackageReference Include="System.Linq.Async" Version="5.1.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
 
-  <Target Name="GenerateSwagger" AfterTargets="Publish" Condition="'$(SkipSwagger)' != 'true'">
-    <PropertyGroup>
-      <DotnetDockerImage>mcr.microsoft.com/dotnet/sdk:$(NETCoreSdkVersion)-alpine3.14</DotnetDockerImage>
-      <RelativeOutputPath>$([MSBuild]::MakeRelative('$(MSBuildThisFileDirectory)../../', $(OutputPath)))</RelativeOutputPath>
-      <SwaggerOutputPath Condition="'$(SwaggerOutputPath)' == ''">$(OutputPath)</SwaggerOutputPath>
-      <RelativeSwaggerOutputPath>$([MSBuild]::MakeRelative('$(MSBuildThisFileDirectory)../../', $(SwaggerOutputPath)))</RelativeSwaggerOutputPath>
-    </PropertyGroup>
+  <Target Name="PublishLinuxMusl" AfterTargets="Build" Condition="'$(RuntimeIdentifier)' == ''">
+    <ItemGroup>
+      <ProjectsToPublish
+        Include="$(MSBuildProjectFullPath)"
+        AdditionalProperties="RuntimeIdentifier=linux-musl-x64" />
+    </ItemGroup>
 
-    <Message Text="Generating Swagger..." Importance="High" />
-    <Exec Command="docker pull $(DotnetDockerImage)" StandardOutputImportance="Low" />
-    <Exec Command="docker run --rm -id -v $(MSBuildThisFileDirectory)../../:/app -w /app $(DotnetDockerImage)" ConsoleToMsBuild="true" StandardOutputImportance="Low">
-      <Output TaskParameter="ConsoleOutput" PropertyName="ContainerId" />
-    </Exec>
-
-    <Exec Command="docker exec -i $(ContainerId) dotnet tool restore" StandardOutputImportance="Low" />
-    <Exec Command="docker exec -i $(ContainerId) dotnet swagger tofile --output $(RelativeSwaggerOutputPath)swagger.json --host https://commands.brigh.id $(RelativeOutputPath)/Service.dll v1" />
-    <Exec Command="docker stop $(ContainerId)" StandardOutputImportance="Low" />
+    <MSBuild
+      Projects="@(ProjectsToPublish)"
+      Targets="Publish"
+      BuildInParallel="true"
+    />
   </Target>
 
+  <Target Name="GenerateSwagger" Condition="$(SkipSwagger) != 'true' and $(DesignTimeBuild) != 'true' and $(RuntimeIdentifier) == ''" AfterTargets="PublishLinuxMusl">
+    <PropertyGroup>
+      <GeneratedSwagger>true</GeneratedSwagger>
+      <SwaggerOutputPath Condition="'$(SwaggerOutputPath)' == ''">$(OutputPath)</SwaggerOutputPath>
+    </PropertyGroup>
+
+    <Message Importance="High" Text="Generating Swagger..." />
+    <Exec Command="dotnet swagger tofile --host https://commands.brigh.id --output $(SwaggerOutputPath)swagger.json $(BaseOutputPath)/$(Configuration)/$(AssemblyName).dll v1" />
+  </Target>
 </Project>
