@@ -62,7 +62,6 @@ namespace Brighid.Commands.Cicd.DeployDriver
                 {
                     AwsvpcConfiguration = new AwsVpcConfiguration
                     {
-                        AssignPublicIp = "ENABLED",
                         Subnets = await GetSubnets(cancellationToken),
                     },
                 },
