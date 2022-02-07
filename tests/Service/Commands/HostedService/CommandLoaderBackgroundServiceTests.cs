@@ -12,21 +12,21 @@ using static NSubstitute.Arg;
 
 namespace Brighid.Commands.Service
 {
-    public class StartupCommandLoaderTests
+    public class CommandLoaderBackgroundServiceTests
     {
         [TestFixture]
         public class StartAsyncTests
         {
             [Test, Auto]
             public async Task ShouldLoadAllEmbeddedCommands(
-                [Frozen, Substitute] ICommandLoader commandLoader,
-                [Target] StartupCommandLoader loader,
+                [Frozen, Substitute] ICommandService service,
+                [Target] CommandLoaderBackgroundService loader,
                 CancellationToken cancellationToken
             )
             {
                 await loader.StartAsync(cancellationToken);
 
-                await commandLoader.Received().LoadAllEmbeddedCommands(Is(cancellationToken));
+                await service.Received().LoadAllEmbeddedCommands(Is(cancellationToken));
             }
         }
     }

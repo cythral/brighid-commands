@@ -3,8 +3,6 @@ using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Brighid.Commands.Sdk;
-
 namespace Brighid.Commands.Service
 {
     /// <summary>
@@ -65,12 +63,19 @@ namespace Brighid.Commands.Service
         Task<Command> DeleteByName(string name, ClaimsPrincipal principal, CancellationToken cancellationToken = default);
 
         /// <summary>
-        /// Loads an embedded command into the assembly load context.
+        /// Loads all embedded commands.
         /// </summary>
-        /// <param name="command">The command to load.</param>
         /// <param name="cancellationToken">Token used to cancel the operation.</param>
         /// <returns>The resulting task.</returns>
-        Task<ICommandRunner> LoadEmbedded(Command command, CancellationToken cancellationToken = default);
+        Task LoadAllEmbeddedCommands(CancellationToken cancellationToken);
+
+        /// <summary>
+        /// Loads a command by name.
+        /// </summary>
+        /// <param name="command">Command to load.</param>
+        /// <param name="cancellationToken">Token used to cancel the operation.</param>
+        /// <returns>The resulting command.</returns>
+        Task LoadCommand(Command command, CancellationToken cancellationToken);
 
         /// <summary>
         /// Ensures that a command is accessible to the given <paramref name="principal" />.  If not,

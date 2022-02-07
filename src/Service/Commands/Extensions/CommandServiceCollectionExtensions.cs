@@ -23,7 +23,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<ICommandService, DefaultCommandService>();
             services.AddSingleton<ICommandPackageDownloader, DefaultCommandPackageDownloader>();
             services.AddSingleton<ICommandLoader, DefaultCommandLoader>();
-            services.AddSingleton<IHostedService, StartupCommandLoader>();
+            services.AddSingleton<IHostedService, CommandLoaderBackgroundService>();
             services.AddScoped<ICommandRepository, DefaultCommandRepository>();
         }
     }

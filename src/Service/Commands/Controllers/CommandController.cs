@@ -162,10 +162,8 @@ namespace Brighid.Commands.Service
 
             try
             {
-                var command = await repository.FindCommandByName(name, HttpContext.RequestAborted);
-                service.EnsureCommandIsAccessibleToPrincipal(command, HttpContext.User);
-                await loader.LoadCommand(command, HttpContext.RequestAborted);
-
+                var command = await service.GetByName(name, HttpContext.User, HttpContext.RequestAborted);
+                await service.LoadCommand(command, HttpContext.RequestAborted);
                 var context = new CommandContext(HttpContext.Request.Body, HttpContext.User, null!, null!);
 
                 // Embedded Commands are typically very fast once loaded into the Assembly Load Context.
