@@ -9,22 +9,22 @@ namespace Brighid.Commands.Service
     /// <summary>
     /// Service that loads commands on startup.
     /// </summary>
-    public class StartupCommandLoader : IHostedService
+    public class CommandLoaderBackgroundService : IHostedService
     {
-        private readonly ICommandLoader loader;
-        private readonly ILogger<StartupCommandLoader> logger;
+        private readonly ICommandService commandService;
+        private readonly ILogger<CommandLoaderBackgroundService> logger;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="StartupCommandLoader" /> class.
+        /// Initializes a new instance of the <see cref="CommandLoaderBackgroundService" /> class.
         /// </summary>
-        /// <param name="loader">Service that provides command-loading functionality.</param>
+        /// <param name="commandService">Service that provides command-loading functionality.</param>
         /// <param name="logger">Service used to log information to some destination(s).</param>
-        public StartupCommandLoader(
-            ICommandLoader loader,
-            ILogger<StartupCommandLoader> logger
+        public CommandLoaderBackgroundService(
+            ICommandService commandService,
+            ILogger<CommandLoaderBackgroundService> logger
         )
         {
-            this.loader = loader;
+            this.commandService = commandService;
             this.logger = logger;
         }
 
@@ -32,7 +32,7 @@ namespace Brighid.Commands.Service
         public async Task StartAsync(CancellationToken cancellationToken)
         {
             logger.LogInformation("Pre-loading all embedded commands.");
-            await loader.LoadAllEmbeddedCommands(cancellationToken);
+            await commandService.LoadAllEmbeddedCommands(cancellationToken);
             logger.LogInformation("All embedded commands have been loaded.");
         }
 

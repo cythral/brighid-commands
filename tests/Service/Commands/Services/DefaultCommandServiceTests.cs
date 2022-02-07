@@ -1,12 +1,7 @@
 using System;
-using System.IO;
-using System.Reflection;
 using System.Security.Claims;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-
-using Amazon.S3;
 
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
@@ -17,7 +12,6 @@ using Brighid.Commands.Sdk;
 using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 using NSubstitute;
 
@@ -166,6 +160,32 @@ namespace Brighid.Commands.Service
                 result.OwnerId.Should().Be(ownerId);
                 repository.Received().Add(Is(result));
                 await repository.Received().Save(Is(cancellationToken));
+            }
+
+            [Test, Auto]
+            public async Task ShouldLoadCommandIfItsEmbedded(
+                Guid ownerId,
+                CommandRequest request,
+                ClaimsIdentity identity,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandLoader loader,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                var principal = new ClaimsPrincipal(identity);
+                identity.AddClaim(new Claim(ClaimTypes.Name, ownerId.ToString()));
+
+                request.Type = CommandType.Embedded;
+
+                await service.Create(request, principal, cancellationToken);
+                await loader.Received().LoadEmbedded(Is(request), Any<CancellationToken>());
             }
 
             [Test, Auto]
@@ -716,6 +736,33 @@ namespace Brighid.Commands.Service
 
                 await repository.Received().Save(Is(cancellationToken));
             }
+
+            [Test, Auto]
+            public async Task ShouldLoadCommandIfItsEmbedded(
+                string name,
+                ClaimsIdentity identity,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Frozen] ICommandLoader loader,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                request.Type = CommandType.Embedded;
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                await service.UpdateByName(name, request, principal, cancellationToken);
+
+                await loader.Received().LoadEmbedded(Is(command), Any<CancellationToken>());
+            }
         }
 
         [TestFixture]
@@ -879,106 +926,65 @@ namespace Brighid.Commands.Service
         }
 
         [TestFixture]
-        public class LoadEmbedded
+        public class LoadAllEmbeddedCommandsTests
         {
             [Test, Auto]
-            public async Task ShouldDownloadFromS3(
-                string contents,
-                Command command,
-                MemoryStream fileStream,
-                [Frozen] S3UriInfo s3UriInfo,
-                [Frozen, Substitute] Assembly assembly,
-                [Frozen, Substitute] ICommandPackageDownloader downloader,
-                [Frozen, Substitute] IUtilsFactory utilsFactory,
+            public async Task ShouldLoadEveryEmbeddedCommand(
+                Command command1,
+                Command command2,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Frozen] ICommandLoader loader,
                 [Target] DefaultCommandService service,
                 CancellationToken cancellationToken
             )
             {
-                using var responseStream = new MemoryStream(Encoding.UTF8.GetBytes(contents));
-                assembly.GetType(Any<string>(), Any<bool>()).Returns(typeof(TestCommandRegistrator));
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
 
-                await service.LoadEmbedded(command, cancellationToken);
+                repository.ListByType(Any<CommandType>(), Any<CancellationToken>()).Returns(new[] { command1, command2 });
 
-                await downloader.Received().DownloadCommandPackageFromS3(Is(command.EmbeddedLocation!.DownloadURL!), Is(command.EmbeddedLocation!.AssemblyName!), Is(cancellationToken));
+                await service.LoadAllEmbeddedCommands(cancellationToken);
+
+                await loader.Received().LoadEmbedded(Is(command1), Is(cancellationToken));
+                await loader.Received().LoadEmbedded(Is(command2), Is(cancellationToken));
+            }
+        }
+
+        [TestFixture]
+        public class LoadCommandByNameTests
+        {
+            [Test, Auto]
+            public async Task ShouldLoadEmbeddedCommands(
+                string name,
+                Command command,
+                [Frozen] ICommandRunner runner,
+                [Frozen, Substitute] ICommandLoader loader,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                command.Type = CommandType.Embedded;
+                await service.LoadCommand(command, cancellationToken);
+
+                command.Runner.Should().Be(runner);
+                await loader.Received().LoadEmbedded(Is(command), Is(cancellationToken));
             }
 
             [Test, Auto]
-            public async Task ShouldThrowIfTheTypeCouldNotBeLoadedFromTheAssembly(
-                string contents,
+            public async Task ShouldThrowForUnsupportedCommands(
                 Command command,
-                MemoryStream fileStream,
-                Type commandType,
-                [Frozen, Substitute] Assembly assembly,
-                [Frozen] S3UriInfo s3UriInfo,
-                [Frozen, Substitute] IUtilsFactory utilsFactory,
+                [Frozen, Substitute] ICommandLoader loader,
                 [Target] DefaultCommandService service,
                 CancellationToken cancellationToken
             )
             {
-                assembly.GetType(Any<string>(), Any<bool>()).Returns((Type?)null);
+                command.Type = (CommandType)(-1);
+                Func<Task> func = () => service.LoadCommand(command, cancellationToken);
 
-                Func<Task> func = () => service.LoadEmbedded(command, cancellationToken);
-
-                await func.Should().ThrowAsync<CommandNotFoundException>();
-            }
-
-            [Test, Auto]
-            public async Task ShouldAddTheCommandToTheCache(
-                string contents,
-                Command command,
-                MemoryStream fileStream,
-                [Frozen] ICommandCache cache,
-                [Frozen] IServiceCollection services,
-                [Frozen, Substitute] Assembly assembly,
-                [Frozen] S3UriInfo s3UriInfo,
-                [Frozen, Substitute] IAmazonS3 s3Client,
-                [Frozen, Substitute] IUtilsFactory utilsFactory,
-                [Target] DefaultCommandService service,
-                CancellationToken cancellationToken
-            )
-            {
-                assembly.GetType(Any<string>(), Any<bool>()).Returns(typeof(TestCommandRegistrator));
-
-                await service.LoadEmbedded(command, cancellationToken);
-
-                cache.Should().ContainKey(command.Name!).WhichValue.Should().BeOfType<TestCommandRunner>();
-            }
-
-            private class TestStartup : ICommandStartup
-            {
-                private readonly ILogger<TestStartup> logger;
-
-                public TestStartup(
-                    ILogger<TestStartup> logger
-                )
-                {
-                    this.logger = logger;
-                }
-
-                public void ConfigureServices(IServiceCollection services)
-                {
-                    services.AddSingleton<TestDummyClass>();
-                }
-            }
-
-            private class TestCommandRegistrator : ICommandRegistrator
-            {
-                public ICommandRunner Register(IServiceCollection services)
-                {
-                    return new TestCommandRunner();
-                }
-            }
-
-            private class TestCommandRunner : ICommandRunner
-            {
-                public Task<CommandResult> Run(CommandContext context, CancellationToken cancellationToken = default)
-                {
-                    throw new NotImplementedException();
-                }
-            }
-
-            private class TestDummyClass
-            {
+                await func.Should().ThrowAsync<CommandTypeNotSupportedException>();
             }
         }
     }

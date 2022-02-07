@@ -1,6 +1,8 @@
 using System.Threading;
 using System.Threading.Tasks;
 
+using Brighid.Commands.Sdk;
+
 namespace Brighid.Commands.Service
 {
     /// <summary>
@@ -9,18 +11,11 @@ namespace Brighid.Commands.Service
     public interface ICommandLoader
     {
         /// <summary>
-        /// Loads all embedded commands.
+        /// Loads an embedded command into the assembly load context.
         /// </summary>
+        /// <param name="command">The command to load.</param>
         /// <param name="cancellationToken">Token used to cancel the operation.</param>
         /// <returns>The resulting task.</returns>
-        Task LoadAllEmbeddedCommands(CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Loads a command by name.
-        /// </summary>
-        /// <param name="command">Command to load.</param>
-        /// <param name="cancellationToken">Token used to cancel the operation.</param>
-        /// <returns>The resulting command.</returns>
-        Task LoadCommand(Command command, CancellationToken cancellationToken);
+        Task<ICommandRunner> LoadEmbedded(Command command, CancellationToken cancellationToken = default);
     }
 }

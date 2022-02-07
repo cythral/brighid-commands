@@ -58,6 +58,31 @@ namespace Brighid.Commands.Service
             }
 
             [Test, Auto]
+            public async Task ShouldProtectAgainstDownloadingTheSamePackageConcurrently(
+                string bucket,
+                string key,
+                string assemblyName,
+                [Frozen, Substitute] IAmazonS3 s3Client,
+                [Target] DefaultCommandPackageDownloader downloader,
+                CancellationToken cancellationToken
+            )
+            {
+                s3Client.GetObjectAsync(Any<string>(), Any<string>(), Any<CancellationToken>()).Returns(async (x) =>
+                {
+                    await Task.Delay(10);
+                    return new GetObjectResponse();
+                });
+
+                var uri = $"s3://{bucket}/{key}";
+                var task1 = downloader.DownloadCommandPackageFromS3(uri, assemblyName, cancellationToken);
+                var task2 = downloader.DownloadCommandPackageFromS3(uri, assemblyName, cancellationToken);
+
+                await Task.WhenAll(task1, task2);
+
+                await s3Client.Received(1).GetObjectAsync(Is(bucket), Is(key), Is(cancellationToken));
+            }
+
+            [Test, Auto]
             public async Task ShouldSaveTheZipToAFile(
                 string bucket,
                 string key,

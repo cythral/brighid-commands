@@ -138,7 +138,7 @@ Resources:
       DesiredCount: 1
       DeploymentConfiguration:
         MinimumHealthyPercent: 1
-        MaximumPercent: 200
+        MaximumPercent: 125
         DeploymentCircuitBreaker:
           Enable: true
           Rollback: true

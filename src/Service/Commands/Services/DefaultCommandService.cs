@@ -1,52 +1,35 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 
 using Brighid.Commands.Auth;
-using Brighid.Commands.Sdk;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 namespace Brighid.Commands.Service
 {
     /// <inheritdoc />
     public class DefaultCommandService : ICommandService
     {
-        private readonly IUtilsFactory utilsFactory;
-        private readonly ICommandCache commandCache;
-        private readonly ICommandPackageDownloader downloader;
+        private readonly ICommandLoader loader;
         private readonly IServiceScopeFactory serviceScopeFactory;
-        private readonly ILogger<DefaultCommandService> logger;
-        private readonly ILoggerFactory loggerFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultCommandService"/> class.
         /// </summary>
-        /// <param name="utilsFactory">Factory to create utils with.</param>
-        /// <param name="commandCache">Cache for name to command lookups.</param>
-        /// <param name="downloader">Service for downloading command packages with.</param>
+        /// <param name="loader">Service for loading commands.</param>
         /// <param name="serviceScopeFactory">Factory to create service scopes with.</param>
-        /// <param name="logger">Logger used to log info to some destination(s).</param>
-        /// <param name="loggerFactory">Logger factory to inject into the command's service collection.</param>
         public DefaultCommandService(
-            IUtilsFactory utilsFactory,
-            ICommandCache commandCache,
-            ICommandPackageDownloader downloader,
-            IServiceScopeFactory serviceScopeFactory,
-            ILogger<DefaultCommandService> logger,
-            ILoggerFactory loggerFactory
+            ICommandLoader loader,
+            IServiceScopeFactory serviceScopeFactory
         )
         {
-            this.utilsFactory = utilsFactory;
-            this.commandCache = commandCache;
-            this.downloader = downloader;
+            this.loader = loader;
             this.serviceScopeFactory = serviceScopeFactory;
-            this.logger = logger;
-            this.loggerFactory = loggerFactory;
         }
 
         /// <inheritdoc />
@@ -92,6 +75,7 @@ namespace Brighid.Commands.Service
 
             repository.Add(mappedCommand);
             await repository.Save(cancellationToken);
+            PreloadIfEmbedded(mappedCommand, cancellationToken);
             return mappedCommand;
         }
 
@@ -125,6 +109,7 @@ namespace Brighid.Commands.Service
             }
 
             await repository.Save(cancellationToken);
+            PreloadIfEmbedded(command, cancellationToken);
             return command;
         }
 
@@ -154,25 +139,24 @@ namespace Brighid.Commands.Service
         }
 
         /// <inheritdoc />
-        public async Task<ICommandRunner> LoadEmbedded(Command command, CancellationToken cancellationToken = default)
+        public async Task LoadAllEmbeddedCommands(CancellationToken cancellationToken)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            if (commandCache.TryGetValue(command.Name!, out var cachedCommand))
+
+            var commands = await ListByType(CommandType.Embedded, cancellationToken);
+            var tasks = from command in commands select loader.LoadEmbedded(command, cancellationToken);
+            await Task.WhenAll(tasks);
+        }
+
+        /// <inheritdoc />
+        public async Task LoadCommand(Command command, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            command.Runner = command.Type switch
             {
-                return cachedCommand;
-            }
-
-            var assembly = await downloader.DownloadCommandPackageFromS3(command.EmbeddedLocation!.DownloadURL!, command.EmbeddedLocation.AssemblyName!, cancellationToken);
-            var registratorType = assembly.GetType(command.EmbeddedLocation.TypeName, false) ?? throw new CommandNotFoundException(command.Name);
-            var registrator = (ICommandRegistrator)(Activator.CreateInstance(registratorType, Array.Empty<object>()) ?? throw new CommandNotFoundException(command.Name));
-
-            var services = utilsFactory.CreateServiceCollection();
-            services.AddSingleton(loggerFactory);
-            services.AddLogging();
-
-            var runner = registrator.Register(services);
-            commandCache.Add(command.Name, runner);
-            return runner;
+                CommandType.Embedded => await loader.LoadEmbedded(command, cancellationToken),
+                _ => throw new CommandTypeNotSupportedException(command.Type),
+            };
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -209,6 +193,17 @@ namespace Brighid.Commands.Service
                 {
                     throw new DuplicateArgumentIndexException(command.Name, argumentIndex.Value);
                 }
+            }
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        private void PreloadIfEmbedded(Command command, CancellationToken cancellationToken)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (command.Type == CommandType.Embedded)
+            {
+                _ = loader.LoadEmbedded(command, CancellationToken.None);
             }
         }
     }

@@ -230,18 +230,18 @@ namespace Brighid.Commands.Service
         public class ExecuteTests
         {
             [Test, Auto]
-            public async Task ShouldFindTheCommandInTheRepository(
+            public async Task ShouldGetTheCommandByName(
                 string commandName,
                 HttpContext httpContext,
                 ExecuteCommandRequest request,
-                [Frozen, Substitute] ICommandRepository repository,
+                [Frozen, Substitute] ICommandService service,
                 [Target] CommandController controller
             )
             {
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 await controller.Execute(commandName);
 
-                await repository.Received().FindCommandByName(Is(commandName), Is(httpContext.RequestAborted));
+                await service.Received().GetByName(Is(commandName), Is(httpContext.User), Is(httpContext.RequestAborted));
             }
 
             [Test, Auto]
@@ -250,14 +250,14 @@ namespace Brighid.Commands.Service
                 HttpContext httpContext,
                 ExecuteCommandRequest request,
                 [Frozen] Command command,
-                [Frozen, Substitute] ICommandLoader loader,
+                [Frozen, Substitute] ICommandService service,
                 [Target] CommandController controller
             )
             {
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 await controller.Execute(commandName);
 
-                await loader.Received().LoadCommand(Is(command), Is(httpContext.RequestAborted));
+                await service.Received().LoadCommand(Is(command), Is(httpContext.RequestAborted));
             }
 
             [Test, Auto]
@@ -340,7 +340,7 @@ namespace Brighid.Commands.Service
                 runner.Run(Any<CommandContext>(), Any<CancellationToken>()).Returns(commandOutput);
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
 
-                service.When(svc => svc.EnsureCommandIsAccessibleToPrincipal(Any<Command>(), Any<ClaimsPrincipal>())).Throw(new CommandRequiresRoleException(command));
+                service.When(svc => svc.GetByName(Any<string>(), Any<ClaimsPrincipal>(), Any<CancellationToken>())).Throw(new CommandRequiresRoleException(command));
 
                 var result = (await controller.Execute(commandName)).Result;
 
@@ -352,13 +352,13 @@ namespace Brighid.Commands.Service
                 string commandName,
                 HttpContext httpContext,
                 ExecuteCommandRequest request,
-                [Frozen, Substitute] ICommandRepository repository,
+                [Frozen, Substitute] ICommandService service,
                 [Target] CommandController controller
             )
             {
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
 
-                repository.FindCommandByName(Any<string>(), Any<CancellationToken>()).Throws(new CommandNotFoundException(commandName));
+                service.GetByName(Any<string>(), Any<ClaimsPrincipal>(), Any<CancellationToken>()).Throws(new CommandNotFoundException(commandName));
 
                 var result = (await controller.Execute(commandName)).Result;
 
