@@ -121,8 +121,8 @@
       },
       "Brighid.Commands.Sdk.Core": {
         "type": "Transitive",
-        "resolved": "0.1.0-beta7",
-        "contentHash": "JfnYQ6Mh3IIF5V9ng6lcOsWMl+KfrZqbKe6lTQZrhGPYlELDUtSJH/qhp2sZKU6UfXsXjhB7/zihz4vTQCfEQg==",
+        "resolved": "0.1.0-beta8",
+        "contentHash": "+2uhFvp9qaD6apMd9R5Vto8a5l5FJrYOOb0KQ4hYJ7QRTI4fwX8vpNZcIeQx21bxlMaYYv8T7YbsPsOrqMQInA==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "6.0.0"
         }
@@ -1286,7 +1286,7 @@
         "type": "Project",
         "dependencies": {
           "AWSSDK.S3": "3.7.7.19",
-          "Brighid.Commands.Sdk.Core": "0.1.0-beta7",
+          "Brighid.Commands.Sdk.Core": "0.1.0-beta8",
           "Destructurama.Attributed": "3.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.2",
           "Microsoft.EntityFrameworkCore.Design": "6.0.2",
