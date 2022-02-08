@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 
 using Brighid.Commands.Database;
 using Brighid.Commands.Service;
@@ -54,10 +53,7 @@ namespace Brighid.Commands
         /// <param name="services">Collection of services to configure.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services
-            .AddControllers()
-            .AddJsonOptions(ConfigureJsonOptions);
-
+            services.AddControllers();
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
             services.Configure<ServiceOptions>(configuration.GetSection("Commands"));
             services.AddHealthChecks();
@@ -69,15 +65,6 @@ namespace Brighid.Commands
             {
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
             });
-        }
-
-        /// <summary>
-        /// Configures JSON Serialization options.
-        /// </summary>
-        /// <param name="options">JSON Options to configure.</param>
-        public void ConfigureJsonOptions(Microsoft.AspNetCore.Mvc.JsonOptions options)
-        {
-            options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
         }
 
         /// <summary>
