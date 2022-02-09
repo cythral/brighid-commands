@@ -74,6 +74,13 @@ jobs:
             --logger trx \
             --no-build
 
+      - name: Upload Coverage
+        uses: codecov/codecov-action@v2
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          file: ./obj/Tests/Results/coverage.cobertura.xml
+          fail_ci_if_error: true
+
       - name: Discord Failure Notification
         uses: Ilshidur/action-discord@master
         if: failure() && (github.event_name == 'push' || github.event_name == 'schedule')

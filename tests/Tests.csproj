@@ -1,7 +1,8 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk" InitialTargets="CleanResultsDirectory">
 
     <PropertyGroup>
         <IsPackable>false</IsPackable>
+        <RunSettingsFilePath>$(MSBuildProjectDirectory)/.runsettings</RunSettingsFilePath>
     </PropertyGroup>
 
     <ItemGroup>
@@ -14,9 +15,24 @@
         <PackageReference Include="nunit" Version="3.13.2" />
         <PackageReference Include="NUnit3TestAdapter" Version="4.0.0" />
         <PackageReference Include="RichardSzalay.MockHttp" Version="6.0.0" />
+        <PackageReference Include="coverlet.collector" Version="3.1.0" />
     </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="../src/Service/Service.csproj" />
     </ItemGroup>
+
+    <Target Name="CleanResultsDirectory">
+        <RemoveDir Directories="$(MSBuildThisFileDirectory)/../obj/Tests/IntermediateResults" />
+        <RemoveDir Directories="$(MSBuildThisFileDirectory)/../obj/Tests/Results" />
+    </Target>
+
+    <Target Name="CopyResults" AfterTargets="VSTest">
+        <ItemGroup>
+            <ResultFiles Include="$(MSBuildThisFileDirectory)/../obj/Tests/IntermediateResults/**/*.xml" />
+        </ItemGroup>
+
+        <MakeDir Directories="$(MSBuildThisFileDirectory)/../obj/Tests/Results" />
+        <Copy SourceFiles="@(ResultFiles)" DestinationFolder="$(MSBuildThisFileDirectory)/../obj/Tests/Results" />
+    </Target>
 </Project>
