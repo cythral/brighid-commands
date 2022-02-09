@@ -45,7 +45,7 @@ namespace Brighid.Commands.Service
         /// <summary>
         /// Gets or sets the role users need to execute this command.
         /// </summary>
-        public string? RequiredRole { get; set; } = string.Empty;
+        public string? RequiredRole { get; set; }
 
         /// <summary>
         /// Gets or sets the description of the command.
