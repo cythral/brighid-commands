@@ -122,6 +122,7 @@ Resources:
     Type: AWS::ECS::Service
     Properties:
       Cluster: !ImportValue brighid-infrastructure:ClusterName
+      ServiceName: commands
       LaunchType: FARGATE
       NetworkConfiguration:
         AwsvpcConfiguration:
