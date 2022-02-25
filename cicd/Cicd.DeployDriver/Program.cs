@@ -25,6 +25,7 @@ await Microsoft.Extensions.Hosting.Host
     services.AddSingleton<IHost, Brighid.Commands.Cicd.DeployDriver.Host>();
     services.AddSingleton<MigrationsRunner>();
     services.AddSingleton<TaskRunner>();
+    services.AddSingleton<EcsDeployer>();
     services.AddSingleton<StackDeployer>();
     services.AddSingleton<EcrUtils>();
 })

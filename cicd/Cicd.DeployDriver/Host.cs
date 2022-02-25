@@ -17,6 +17,7 @@ namespace Brighid.Commands.Cicd.DeployDriver
     public class Host : IHost
     {
         private readonly StackDeployer deployer;
+        private readonly EcsDeployer ecsDeployer;
         private readonly MigrationsRunner migrator;
         private readonly EcrUtils ecrUtils;
         private readonly CommandLineOptions options;
@@ -26,6 +27,7 @@ namespace Brighid.Commands.Cicd.DeployDriver
         /// Initializes a new instance of the <see cref="Host" /> class.
         /// </summary>
         /// <param name="deployer">Service for deploying cloudformation stacks.</param>
+        /// <param name="ecsDeployer">Service for deploying ECS services.</param>
         /// <param name="migrator">Service for running database migrations.</param>
         /// <param name="ecrUtils">Utilities for interacting with ECR.</param>
         /// <param name="options">Command line options.</param>
@@ -33,6 +35,7 @@ namespace Brighid.Commands.Cicd.DeployDriver
         /// <param name="serviceProvider">Object that provides access to the program's services.</param>
         public Host(
             StackDeployer deployer,
+            EcsDeployer ecsDeployer,
             MigrationsRunner migrator,
             EcrUtils ecrUtils,
             IOptions<CommandLineOptions> options,
@@ -41,6 +44,7 @@ namespace Brighid.Commands.Cicd.DeployDriver
         )
         {
             this.deployer = deployer;
+            this.ecsDeployer = ecsDeployer;
             this.migrator = migrator;
             this.ecrUtils = ecrUtils;
             this.options = options.Value;
@@ -88,6 +92,14 @@ namespace Brighid.Commands.Cicd.DeployDriver
             var imageParts = image.AbsolutePath[1..].Split(':');
             var repository = imageParts[0];
             var version = imageParts[1];
+
+            await Step("Deploy identity service", async () =>
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var request = new EcsDeployContext { ClusterName = "brighid", ServiceName = "identity" };
+                await ecsDeployer.Deploy(request, cancellationToken);
+            });
 
             await Step($"Deploy template to {options.Environment}", async () =>
             {
