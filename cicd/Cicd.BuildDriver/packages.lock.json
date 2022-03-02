@@ -701,7 +701,7 @@
           "Microsoft.EntityFrameworkCore.Design": "6.0.2",
           "Microsoft.Extensions.Configuration": "6.0.0",
           "Microsoft.Extensions.Configuration.Binder": "6.0.0",
-          "Microsoft.Extensions.Configuration.EnvironmentVariables": "6.0.0",
+          "Microsoft.Extensions.Configuration.EnvironmentVariables": "6.0.1",
           "Pomelo.EntityFrameworkCore.MySql": "6.0.1"
         }
       },
