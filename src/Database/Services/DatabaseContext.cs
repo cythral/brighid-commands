@@ -6,7 +6,7 @@ using Brighid.Commands.Service;
 
 using Microsoft.EntityFrameworkCore;
 
-namespace Brighid.Commands.Database
+namespace Brighid.Commands
 {
     /// <summary>
     /// Context to use for database interactions.
@@ -17,7 +17,7 @@ namespace Brighid.Commands.Database
         /// Initializes a new instance of the <see cref="DatabaseContext" /> class.
         /// </summary>
         /// <param name="options">Options to use when interacting with the database.</param>
-        public DatabaseContext(DbContextOptions<DatabaseContext> options)
+        public DatabaseContext(DbContextOptions options)
             : base(options)
         {
         }

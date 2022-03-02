@@ -4,8 +4,6 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Brighid.Commands.Database;
-
 using Microsoft.EntityFrameworkCore;
 
 namespace Brighid.Commands.Service

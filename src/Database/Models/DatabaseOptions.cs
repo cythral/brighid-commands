@@ -1,4 +1,4 @@
-namespace Brighid.Commands.Database
+namespace Brighid.Commands
 {
     /// <summary>
     /// Options to use when interacting with the database.

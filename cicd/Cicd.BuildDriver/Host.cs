@@ -5,12 +5,16 @@ using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Amazon.SecurityToken;
-
 using Brighid.Commands.Cicd.Utils;
 
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Microsoft.OpenApi.Writers;
+
+using Swashbuckle.AspNetCore.Swagger;
 
 using YamlDotNet.Serialization;
 
@@ -56,17 +60,22 @@ namespace Brighid.Commands.Cicd.BuildDriver
         {
             cancellationToken.ThrowIfCancellationRequested();
             Directory.CreateDirectory(CicdOutputDirectory);
-            var accountNumber = await GetCurrentAccountNumber(cancellationToken);
+            Directory.SetCurrentDirectory(ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory);
+
+            await Step("Generating Swagger", async () =>
+            {
+                await CreateSwagger();
+                Console.WriteLine($"Wrote swagger to {CicdOutputDirectory}swagger.json");
+            });
 
             await Step("Creating Migrations Bundle", async () =>
             {
                 cancellationToken.ThrowIfCancellationRequested();
 
-                Directory.SetCurrentDirectory(ProjectRootDirectoryAttribute.ThisAssemblyProjectRootDirectory);
                 var command = new Command("dotnet ef migrations bundle", new Dictionary<string, object>
                 {
-                    ["--project"] = "src/Service/Service.csproj",
-                    ["--msbuildprojectextensionspath"] = "obj/Service/",
+                    ["--project"] = "src/Database/Database.csproj",
+                    ["--msbuildprojectextensionspath"] = "obj/Database/",
                     ["--output"] = "bin/Cicd/migrator",
                     ["--target-runtime"] = "linux-musl-x64",
                     ["--self-contained"] = true,
@@ -228,13 +237,19 @@ namespace Brighid.Commands.Cicd.BuildDriver
             GC.SuppressFinalize(this);
         }
 
-        private static async Task<string> GetCurrentAccountNumber(CancellationToken cancellationToken = default)
+        private static async Task CreateSwagger()
         {
-            cancellationToken.ThrowIfCancellationRequested();
+            var serviceProvider = WebHost.CreateDefaultBuilder()
+                .UseStartup<Startup>()
+                .Build()
+                .Services;
 
-            var sts = new AmazonSecurityTokenServiceClient();
-            var response = await sts.GetCallerIdentityAsync(new(), cancellationToken);
-            return response.Account;
+            var swaggerProvider = serviceProvider.GetRequiredService<ISwaggerProvider>();
+            var swagger = swaggerProvider.GetSwagger("v1", "https://commands.brigh.id");
+            using var fileWriter = File.CreateText("bin/Cicd/swagger.json");
+            var swaggerWriter = new OpenApiJsonWriter(fileWriter);
+            swagger.SerializeAsV3(swaggerWriter);
+            await fileWriter.FlushAsync();
         }
 
         private static async Task<Outputs> GetOutputs(CancellationToken cancellationToken = default)
