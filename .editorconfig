@@ -89,7 +89,7 @@ dotnet_diagnostic.SA1200.severity = none
 dotnet_diagnostic.CS1591.severity = none
 dotnet_diagnostic.SA1601.severity = none
 
-[src/Service/Database/Migrations/*.cs]
+[src/Database/Migrations/*.cs]
 
 # XML Comments
 dotnet_diagnostic.CS1591.severity = none

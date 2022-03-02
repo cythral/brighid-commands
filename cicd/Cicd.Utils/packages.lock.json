@@ -45,6 +45,9 @@
         "resolved": "1.2.0.354",
         "contentHash": "/3RlM31XbJ02gaWh7dVumWOyMvGHswb/zygGJXd9oEJMRyyYc/HFJlAC5gBPxvi9cB4CMvIyyUTmZz5VLKwTvg=="
       }
-    }
+    },
+    "net6.0/linux-musl-x64": {},
+    "net6.0/linux-x64": {},
+    "net6.0/osx-x64": {}
   }
 }

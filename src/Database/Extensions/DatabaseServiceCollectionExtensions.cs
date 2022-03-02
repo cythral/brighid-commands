@@ -1,5 +1,4 @@
 using Brighid.Commands;
-using Brighid.Commands.Database;
 
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -18,16 +17,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="configuration">Application configuration object.</param>
         public static void ConfigureDatabaseServices(this IServiceCollection services, IConfiguration configuration)
         {
-            var databaseOptions = configuration.GetSection("Database").Get<DatabaseOptions>() ?? new();
-            var connectionString = databaseOptions.ToString();
-            var version = Program.AutoDetectDatabaseVersion
-                ? ServerVersion.AutoDetect(connectionString)
-                : new MySqlServerVersion(new System.Version(7, 0));
-
-            services.AddDbContextPool<DatabaseContext>(options =>
+            services.AddDbContextPool<DatabaseContext>(optionsBuilder =>
             {
-                options
-                .UseMySql(connectionString, version);
+                var factory = new DatabaseContextFactory(configuration, ServerVersion.AutoDetect, optionsBuilder);
+                factory.Configure();
             });
         }
     }
