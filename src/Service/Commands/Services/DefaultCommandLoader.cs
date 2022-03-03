@@ -41,9 +41,9 @@ namespace Brighid.Commands.Service
         public async Task<ICommandRunner> LoadEmbedded(Command command, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
-            if (commandCache.TryGetValue(command.Name!, out var cachedCommand))
+            if (commandCache.TryGetValue(command.Name!, out var cachedCommand) && cachedCommand.Version >= command.Version)
             {
-                return cachedCommand;
+                return cachedCommand.Runner;
             }
 
             var assembly = await downloader.DownloadCommandPackageFromS3(command.EmbeddedLocation!.DownloadURL!, command.EmbeddedLocation.AssemblyName!, cancellationToken);
@@ -55,7 +55,7 @@ namespace Brighid.Commands.Service
             services.AddLogging();
 
             var runner = registrator.Register(services);
-            commandCache.Add(command.Name, runner);
+            commandCache[command.Name] = new CommandVersion(command.Version, runner);
             return runner;
         }
     }

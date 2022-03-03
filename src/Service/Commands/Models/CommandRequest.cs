@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 
 namespace Brighid.Commands.Service
 {
@@ -16,5 +17,10 @@ namespace Brighid.Commands.Service
         /// Gets or sets the owner's ID.
         /// </summary>
         protected new Guid OwnerId { get; set; } = Guid.NewGuid();
+
+        /// <summary>
+        /// Gets or sets this command's version number.
+        /// </summary>
+        protected new BigInteger Version { get; set; }
     }
 }
