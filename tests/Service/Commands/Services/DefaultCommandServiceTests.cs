@@ -430,6 +430,34 @@ namespace Brighid.Commands.Service
             }
 
             [Test, Auto]
+            public async Task ShouldIncrementCommandVersion(
+                string name,
+                ClaimsIdentity identity,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                command.Version = 2;
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                var result = await service.UpdateByName(name, request, principal, cancellationToken);
+
+                result.Should().BeSameAs(command);
+                command.Version.Should().Be(3);
+            }
+
+            [Test, Auto]
             public async Task ShouldUpdateCommandRequiredRole(
                 string name,
                 ClaimsIdentity identity,

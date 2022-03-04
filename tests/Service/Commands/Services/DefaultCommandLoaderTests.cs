@@ -5,8 +5,6 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-using Amazon.S3;
-
 using AutoFixture.AutoNSubstitute;
 using AutoFixture.NUnit3;
 
@@ -52,6 +50,78 @@ namespace Brighid.Commands.Service
             }
 
             [Test, Auto]
+            public async Task ShouldCacheCommands(
+                string contents,
+                Command command,
+                MemoryStream fileStream,
+                [Frozen] S3UriInfo s3UriInfo,
+                [Frozen, Substitute] Assembly assembly,
+                [Frozen, Substitute] ICommandPackageDownloader downloader,
+                [Frozen, Substitute] IUtilsFactory utilsFactory,
+                [Target] DefaultCommandLoader loader,
+                CancellationToken cancellationToken
+            )
+            {
+                using var responseStream = new MemoryStream(Encoding.UTF8.GetBytes(contents));
+                assembly.GetType(Any<string>(), Any<bool>()).Returns(typeof(TestCommandRegistrator));
+
+                await loader.LoadEmbedded(command, cancellationToken);
+                await loader.LoadEmbedded(command, cancellationToken);
+
+                await downloader.Received(1).DownloadCommandPackageFromS3(Is(command.EmbeddedLocation!.DownloadURL!), Is(command.EmbeddedLocation!.AssemblyName!), Is(cancellationToken));
+            }
+
+            [Test, Auto]
+            public async Task ShouldInvalidateCacheIfNewerCommandIsAvailable(
+                string contents,
+                Command command,
+                MemoryStream fileStream,
+                [Frozen] S3UriInfo s3UriInfo,
+                [Frozen, Substitute] Assembly assembly,
+                [Frozen, Substitute] ICommandPackageDownloader downloader,
+                [Frozen, Substitute] IUtilsFactory utilsFactory,
+                [Target] DefaultCommandLoader loader,
+                CancellationToken cancellationToken
+            )
+            {
+                using var responseStream = new MemoryStream(Encoding.UTF8.GetBytes(contents));
+                assembly.GetType(Any<string>(), Any<bool>()).Returns(typeof(TestCommandRegistrator));
+
+                command.Version = 1;
+                await loader.LoadEmbedded(command, cancellationToken);
+
+                command.Version = 2;
+                await loader.LoadEmbedded(command, cancellationToken);
+
+                await downloader.Received(2).DownloadCommandPackageFromS3(Is(command.EmbeddedLocation!.DownloadURL!), Is(command.EmbeddedLocation!.AssemblyName!), Is(cancellationToken));
+            }
+
+            [Test, Auto]
+            public async Task ShouldNotInvalidateCacheIfOlderCommandVersionIsRequested(
+                string contents,
+                Command command,
+                MemoryStream fileStream,
+                [Frozen] S3UriInfo s3UriInfo,
+                [Frozen, Substitute] Assembly assembly,
+                [Frozen, Substitute] ICommandPackageDownloader downloader,
+                [Frozen, Substitute] IUtilsFactory utilsFactory,
+                [Target] DefaultCommandLoader loader,
+                CancellationToken cancellationToken
+            )
+            {
+                using var responseStream = new MemoryStream(Encoding.UTF8.GetBytes(contents));
+                assembly.GetType(Any<string>(), Any<bool>()).Returns(typeof(TestCommandRegistrator));
+
+                command.Version = 2;
+                await loader.LoadEmbedded(command, cancellationToken);
+
+                command.Version = 1;
+                await loader.LoadEmbedded(command, cancellationToken);
+
+                await downloader.Received(1).DownloadCommandPackageFromS3(Is(command.EmbeddedLocation!.DownloadURL!), Is(command.EmbeddedLocation!.AssemblyName!), Is(cancellationToken));
+            }
+
+            [Test, Auto]
             public async Task ShouldThrowIfTheTypeCouldNotBeLoadedFromTheAssembly(
                 string contents,
                 Command command,
@@ -69,28 +139,6 @@ namespace Brighid.Commands.Service
                 Func<Task> func = () => loader.LoadEmbedded(command, cancellationToken);
 
                 await func.Should().ThrowAsync<CommandNotFoundException>();
-            }
-
-            [Test, Auto]
-            public async Task ShouldAddTheCommandToTheCache(
-                string contents,
-                Command command,
-                MemoryStream fileStream,
-                [Frozen] ICommandCache cache,
-                [Frozen] IServiceCollection services,
-                [Frozen, Substitute] Assembly assembly,
-                [Frozen] S3UriInfo s3UriInfo,
-                [Frozen, Substitute] IAmazonS3 s3Client,
-                [Frozen, Substitute] IUtilsFactory utilsFactory,
-                [Target] DefaultCommandLoader loader,
-                CancellationToken cancellationToken
-            )
-            {
-                assembly.GetType(Any<string>(), Any<bool>()).Returns(typeof(TestCommandRegistrator));
-
-                await loader.LoadEmbedded(command, cancellationToken);
-
-                cache.Should().ContainKey(command.Name!).WhichValue.Should().BeOfType<TestCommandRunner>();
             }
 
             private class TestStartup : ICommandStartup

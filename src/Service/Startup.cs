@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Numerics;
 
 using Brighid.Commands.Service;
 
@@ -52,7 +53,13 @@ namespace Brighid.Commands
         /// <param name="services">Collection of services to configure.</param>
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services
+            .AddControllers()
+            .AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new BigIntegerJsonConverter());
+            });
+
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
             services.Configure<ServiceOptions>(configuration.GetSection("Commands"));
             services.AddHealthChecks();
@@ -75,6 +82,7 @@ namespace Brighid.Commands
             options.SwaggerDoc($"v1", new OpenApiInfo { Title = "Brighid Commands", Version = ThisAssembly.AssemblyVersion });
             options.SchemaFilter<DisplayNameFilter>();
             options.OperationFilter<ExecuteCommandFilter>();
+            options.MapType<BigInteger>(() => new OpenApiSchema { Type = "string" });
         }
 
         /// <summary>

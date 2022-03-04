@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Numerics;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading;
@@ -36,6 +37,11 @@ namespace Brighid.Commands.Service
         /// Gets or sets the type of command this is.
         /// </summary>
         public CommandType Type { get; set; }
+
+        /// <summary>
+        /// Gets or sets the version of this command.
+        /// </summary>
+        public BigInteger Version { get; set; } = 1;
 
         /// <summary>
         /// Gets or sets the name of the command.
@@ -105,6 +111,14 @@ namespace Brighid.Commands.Service
             public void Configure(EntityTypeBuilder<Command> builder)
             {
                 builder.HasIndex(bucket => bucket.Name).IsUnique();
+
+                builder
+                .Property(command => command.Version)
+                .HasConversion(new ValueConverter<BigInteger, string>(
+                    bigInt => bigInt.ToString(),
+                    @string => BigInteger.Parse(@string)
+                ));
+
                 builder
                 .Property(command => command.ValidOptions)
                 .HasConversion(new ValueConverter<List<string>, string>(

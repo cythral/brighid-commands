@@ -91,6 +91,7 @@ namespace Brighid.Commands.Service
             var command = await repository.FindCommandByName(name, cancellationToken);
             EnsurePrincipalOwnsCommandOrIsAnAdministrator(command, principal);
 
+            command.Version++;
             command.Type = request.Type;
             command.Name = request.Name;
             command.RequiredRole = request.RequiredRole;

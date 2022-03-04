@@ -7,5 +7,5 @@ MIGRATION_NAME=$1
 cd $PROJECT_ROOT
 dotnet tool restore >/dev/null
 dotnet ef migrations add $MIGRATION_NAME \
-    --project ${PROJECT_ROOT}src/Service/Service.csproj \
-    --msbuildprojectextensionspath ${PROJECT_ROOT}obj/Service
+    --project ${PROJECT_ROOT}src/Database/Database.csproj \
+    --msbuildprojectextensionspath ${PROJECT_ROOT}obj/Database
