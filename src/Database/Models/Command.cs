@@ -41,7 +41,7 @@ namespace Brighid.Commands.Service
         /// <summary>
         /// Gets or sets the version of this command.
         /// </summary>
-        public BigInteger Version { get; set; }
+        public BigInteger Version { get; set; } = 1;
 
         /// <summary>
         /// Gets or sets the name of the command.
