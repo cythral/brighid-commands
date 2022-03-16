@@ -506,6 +506,13 @@
         }
       }
     },
+    "net6.0/linux-musl-arm64": {
+      "System.Security.Cryptography.Cng": {
+        "type": "Transitive",
+        "resolved": "4.5.0",
+        "contentHash": "WG3r7EyjUe9CMPFSs6bty5doUqT+q9pbI80hlNzo2SkPkZ4VTuZkGWjpp77JB8+uaL4DFPRdBsAY+DX3dBK92A=="
+      }
+    },
     "net6.0/linux-musl-x64": {
       "System.Security.Cryptography.Cng": {
         "type": "Transitive",

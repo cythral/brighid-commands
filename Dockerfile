@@ -1,12 +1,12 @@
 ARG CONFIGURATION=Release
 
-FROM public.ecr.aws/cythral/brighid/base:0.1.13
+FROM public.ecr.aws/cythral/brighid/base:0.2.1
 ARG CONFIGURATION
 
 ENV CONFIGURATION=${CONFIGURATION}
 WORKDIR /app
 COPY ./entrypoint.sh /
-COPY ./bin/Service/${CONFIGURATION}/linux-musl-x64/publish ./
+COPY ./bin/Service/${CONFIGURATION}/linux-musl-arm64/publish ./
 
 RUN \
     mkdir -p /var/brighid/commands && \
