@@ -2,6 +2,7 @@
 
   <PropertyGroup>
     <RuntimeIdentifier>linux-musl-arm64</RuntimeIdentifier>
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <TrimMode>copyused</TrimMode>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <PublishTrimmed>true</PublishTrimmed>
