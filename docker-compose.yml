@@ -18,10 +18,12 @@ services:
     restart: unless-stopped
     ports:
       - "80"
+    platform: linux/arm64
     volumes:
-      - ./bin/Service/Debug/linux-musl-x64/publish:/app
+      - ./bin/Service/Debug/linux-musl-arm64/publish:/app
       - ~/.aws:/home/brighid/.aws
     environment:
+      ASPNETCORE_ENVIRONMENT: local
       Environment: local
       CONFIGURATION: Debug
       AWS_REGION: us-east-1
