@@ -280,6 +280,52 @@ namespace Brighid.Commands.Service
             }
 
             [Test, Auto]
+            public async Task ShouldRespondWithCommandVersionIfCommandTypeIsEmbedded(
+                string commandName,
+                HttpContext httpContext,
+                ExecuteCommandRequest request,
+                [Frozen] ICommandRunner runner,
+                [Frozen] Command command,
+                [Frozen, Substitute] ICommandLoader loader,
+                [Target] CommandController controller
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                command.Type = CommandType.Embedded;
+                var result = (await controller.Execute(commandName)).Result;
+
+                result.Should().BeOfType<OkObjectResult>();
+                result.As<OkObjectResult>()
+                .Value.Should().BeOfType<ExecuteCommandResponse>()
+                .Which.Version.Should().Be(command.Version);
+
+                await runner.Received().Run(Any<CommandContext>());
+            }
+
+            [Test, Auto]
+            public async Task ShouldRespondWithCommandVersionIfCommandTypeIsNotEmbedded(
+                string commandName,
+                HttpContext httpContext,
+                ExecuteCommandRequest request,
+                [Frozen] ICommandRunner runner,
+                [Frozen] Command command,
+                [Frozen, Substitute] ICommandLoader loader,
+                [Target] CommandController controller
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                command.Type = (CommandType)(-1);
+                var result = (await controller.Execute(commandName)).Result;
+
+                result.Should().BeOfType<AcceptedResult>();
+                result.As<AcceptedResult>()
+                .Value.Should().BeOfType<ExecuteCommandResponse>()
+                .Which.Version.Should().Be(command.Version);
+
+                await runner.Received().Run(Any<CommandContext>());
+            }
+
+            [Test, Auto]
             public async Task ShouldReturnAcceptedIfCommandTypeIsNotEmbedded(
                 string commandName,
                 HttpContext httpContext,
