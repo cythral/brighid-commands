@@ -173,12 +173,12 @@ namespace Brighid.Commands.Service
                 if (command.Type == CommandType.Embedded)
                 {
                     var result = await command.Run(context, HttpContext.RequestAborted);
-                    var okResponse = new ExecuteCommandResponse { Response = result.Message, ReplyImmediately = true };
+                    var okResponse = new ExecuteCommandResponse { Response = result.Message, ReplyImmediately = true, Version = command.Version };
                     return Ok(okResponse);
                 }
 
                 _ = command.Run(context);
-                var acceptedResponse = new ExecuteCommandResponse { ReplyImmediately = false };
+                var acceptedResponse = new ExecuteCommandResponse { ReplyImmediately = false, Version = command.Version };
                 return Accepted(acceptedResponse);
             }
             catch (CommandRequiresRoleException)
