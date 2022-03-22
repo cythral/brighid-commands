@@ -31,6 +31,8 @@ services:
       Database__Name: ${DB_NAME}
       Database__User: ${DB_USER}
       Database__Password: ${DB_PASSWORD}
+      Auth__MetadataAddress: ${IDENTITY_METADATA_URL}
+      Auth__ValidIssuer: ${IDENTITY_ISSUER}
       SkipSwagger: "true"
     labels:
       - traefik.enable=true

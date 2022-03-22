@@ -280,6 +280,48 @@ namespace Brighid.Commands.Service
             }
 
             [Test, Auto]
+            public async Task ShouldExecuteTheLoadedCommandAndPassSourceSystem(
+                string commandName,
+                string sourceSystem,
+                [Substitute] HttpContext httpContext,
+                ExecuteCommandRequest request,
+                [Frozen] ICommandRunner runner,
+                [Frozen, Substitute] ICommandLoader loader,
+                [Target] CommandController controller
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+
+                await controller.Execute(commandName, sourceSystem);
+
+                await runner.Received().Run(
+                    Is<CommandContext>(context => context.SourceSystem == sourceSystem),
+                    Is(httpContext.RequestAborted)
+                );
+            }
+
+            [Test, Auto]
+            public async Task ShouldExecuteTheLoadedCommandAndPassSourceSystemId(
+                string commandName,
+                string sourceSystemId,
+                [Substitute] HttpContext httpContext,
+                ExecuteCommandRequest request,
+                [Frozen] ICommandRunner runner,
+                [Frozen, Substitute] ICommandLoader loader,
+                [Target] CommandController controller
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+
+                await controller.Execute(commandName, sourceSystemId: sourceSystemId);
+
+                await runner.Received().Run(
+                    Is<CommandContext>(context => context.SourceSystemId == sourceSystemId),
+                    Is(httpContext.RequestAborted)
+                );
+            }
+
+            [Test, Auto]
             public async Task ShouldRespondWithCommandVersionIfCommandTypeIsEmbedded(
                 string commandName,
                 HttpContext httpContext,

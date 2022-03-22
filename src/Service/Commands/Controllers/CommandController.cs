@@ -151,12 +151,18 @@ namespace Brighid.Commands.Service
         /// Executes a command.
         /// </summary>
         /// <param name="name">The name of the command to execute.</param>
+        /// <param name="sourceSystem">The system where the command execution is being requested from.</param>
+        /// <param name="sourceSystemId">The channel within the source system where the command execution is being requested from.</param>
         /// <returns>The HTTP Response.</returns>
         [HttpPost("{name}/execute", Name = "Commands:ExecuteCommand")]
         [ReadableBodyStream]
         [ProducesResponseType(typeof(ExecuteCommandResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ExecuteCommandResponse), (int)HttpStatusCode.Accepted)]
-        public async Task<ActionResult<ExecuteCommandResponse>> Execute(string name)
+        public async Task<ActionResult<ExecuteCommandResponse>> Execute(
+            string name,
+            [FromHeader(Name = "x-source-system")] string? sourceSystem = null,
+            [FromHeader(Name = "x-source-system-id")] string? sourceSystemId = null
+        )
         {
             HttpContext.RequestAborted.ThrowIfCancellationRequested();
 
@@ -164,7 +170,7 @@ namespace Brighid.Commands.Service
             {
                 var command = await service.GetByName(name, HttpContext.User, HttpContext.RequestAborted);
                 await service.LoadCommand(command, HttpContext.RequestAborted);
-                var context = new CommandContext(HttpContext.Request.Body, HttpContext.User, null!, null!);
+                var context = new CommandContext(HttpContext.Request.Body, HttpContext.User, sourceSystem!, sourceSystemId!);
 
                 // Embedded Commands are typically very fast once loaded into the Assembly Load Context.
                 // Save a call to the response topic + its transformer by just returning immediately and delegating
