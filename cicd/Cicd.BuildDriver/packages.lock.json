@@ -4,11 +4,11 @@
     "net6.0": {
       "AWSSDK.SecurityToken": {
         "type": "Direct",
-        "requested": "[3.7.1.137, )",
-        "resolved": "3.7.1.137",
-        "contentHash": "PllPeeQ74kqVfyyJZVAzcZ/bFkNS7IbJ4KKueGkz9HhNQmz/O9iy0l1HRBa7AtO67mXEj1Gtky+53Eg/3pLF8Q==",
+        "requested": "[3.7.1.140, )",
+        "resolved": "3.7.1.140",
+        "contentHash": "bPwgMEM8A9tKF/aqEmPM8MYgQX8QfB9Xt8P8PL62DyV2xYm0i9MyaNd4FLrUc1SD7AuNLSWoEMzA/V2o8jVBDg==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.10.5, 4.0.0)"
+          "AWSSDK.Core": "[3.7.10.8, 4.0.0)"
         }
       },
       "Microsoft.Extensions.Hosting": {
@@ -72,31 +72,31 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.10.5",
-        "contentHash": "D04DK/+58D2xyD1/WoBjp7Aq5T5M0ebonwp3cjRpx5lR4AeXPFc77JlMlWHX2/ST6dEfbp+zQjyE2AyNOfRcVw=="
+        "resolved": "3.7.10.8",
+        "contentHash": "9bW62kH+p4OvYj98KpeapiWd4WFF7U7QnIBX7Rh6qiwtVx+YRxjzJHbV1X/ucotVHQVajkkB8YtUWN6Za+joTw=="
       },
       "AWSSDK.ECR": {
         "type": "Transitive",
-        "resolved": "3.7.4.7",
-        "contentHash": "7e+HuS6FqWsvPOpYNZAJEjy530GlWjvCFkZSsLXWuRo0/PBmMcsYtDUwKsQxSbhspajcn281oa+QPvxb9SaKSw==",
+        "resolved": "3.7.4.10",
+        "contentHash": "VomxpMWsOeXiWONH0WSky+SCddOkvOlPHIBxrP+byvMtfRj/zW3ojSCFNylai1Ta0OcTeunTxdrHL8KeXD2Owg==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.10.5, 4.0.0)"
+          "AWSSDK.Core": "[3.7.10.8, 4.0.0)"
         }
       },
       "AWSSDK.ECRPublic": {
         "type": "Transitive",
-        "resolved": "3.7.0.145",
-        "contentHash": "KM6gRSuyKklEMJtFItT6TyWEhAmosVP8M4pUpsoiWOmmg0+ijXj5yucTaXM05Wa6DdtH0M7n73EoQzLuNIcupQ==",
+        "resolved": "3.7.0.148",
+        "contentHash": "UW3LQCI/w7+jX7q2MSi8hrZShyeRIUQ4V7BwGIHOzlua/1cylw3iWGrFZ8304qrLN50WsZjbuS6LuqFTf/BQbA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.10.5, 4.0.0)"
+          "AWSSDK.Core": "[3.7.10.8, 4.0.0)"
         }
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.8.17",
-        "contentHash": "NDKrzCY/cDsvuG4vY/kTD0asQY9/4isVUVZ0ScH6IvLrIuwkiYqGf6bk9snghhVMmDF7bj/9lVOAFdetCCURNA==",
+        "resolved": "3.7.8.20",
+        "contentHash": "MJcqPk5BvP9+4+gMEanz4s00xw9ptmJZdQBWBLsat/UB8Rb1qMF74tPnO2WrPirAJuf5hR0Kj5u1/son1aCwHg==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.10.5, 4.0.0)"
+          "AWSSDK.Core": "[3.7.10.8, 4.0.0)"
         }
       },
       "Brighid.Commands.Sdk.Core": {
@@ -690,8 +690,8 @@
       "cicd.utils": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.ECR": "3.7.4.7",
-          "AWSSDK.ECRPublic": "3.7.0.145"
+          "AWSSDK.ECR": "3.7.4.10",
+          "AWSSDK.ECRPublic": "3.7.0.148"
         }
       },
       "database": {
@@ -708,7 +708,7 @@
       "service": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.S3": "3.7.8.17",
+          "AWSSDK.S3": "3.7.8.20",
           "Database": "1.0.0",
           "Destructurama.Attributed": "3.0.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.4",
