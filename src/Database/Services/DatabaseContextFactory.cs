@@ -30,9 +30,9 @@ namespace Brighid.Commands
         /// <summary>
         /// Initializes a new instance of the <see cref="DatabaseContextFactory" /> class.
         /// </summary>
-        /// <param name="configuration">Configuration to use for the database.</param>
-        /// <param name="detectVersion">Function used to detect the MySQL version to use.</param>
-        /// <param name="dbOptionsBuilder">Options builder to configure options on.</param>
+        /// <param name="configuration">Configuration values to use for the database connection.</param>
+        /// <param name="detectVersion">Delegate used to detect the server version.</param>
+        /// <param name="dbOptionsBuilder">Builder service to build the database options with.</param>
         public DatabaseContextFactory(
             IConfiguration configuration,
             Func<string, ServerVersion> detectVersion,
@@ -45,20 +45,29 @@ namespace Brighid.Commands
         }
 
         /// <summary>
-        /// Configures the dbOptionsBuilder.
+        /// Configures the database options.
         /// </summary>
-        public void Configure()
+        /// <param name="configure">Delegate to configure custom properties for the database options.</param>
+        public void Configure(Action<DbContextOptionsBuilder>? configure = null)
         {
-            var conn = options.ToString();
+            var conn = $"Server={options.Host};";
+            conn += $"Database={options.Name};";
+            conn += $"User={options.User};";
+            conn += $"Password=\"{options.Password}\";";
+            conn += "GuidFormat=Binary16;";
+            conn += "UseCompression=true";
+
             var version = detectVersion(conn);
             dbOptionsBuilder.UseMySql(conn, version);
+
+            configure?.Invoke(dbOptionsBuilder);
         }
 
         /// <summary>
-        /// Configures the dbOptionsBuilder and creates a new database context.
+        /// Creates the database context.
         /// </summary>
-        /// <param name="args">This parameter is unused.</param>
-        /// <returns>The resulting database context.</returns>
+        /// <param name="args">Command line arguments.</param>
+        /// <returns>The database context.</returns>
         public DatabaseContext CreateDbContext(string[] args)
         {
             Configure();

@@ -20,7 +20,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddDbContextPool<DatabaseContext>(optionsBuilder =>
             {
                 var factory = new DatabaseContextFactory(configuration, ServerVersion.AutoDetect, optionsBuilder);
-                factory.Configure();
+                factory.Configure(options => options.AddXRayInterceptor(true));
             });
         }
     }

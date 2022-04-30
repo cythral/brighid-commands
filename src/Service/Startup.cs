@@ -107,6 +107,7 @@ namespace Brighid.Commands
                 databaseContext.Database.Migrate();
             }
 
+            app.UseXRay("Commands");
             app.UseForwardedHeaders();
             app.UseSwagger(options => options.PreSerializeFilters.Add(ConfigureSwaggerPreserializeFilter));
             app.UseSwaggerUI(options => options.SwaggerEndpoint("/swagger/v1/swagger.json", "Brighid Commands Swagger"));
