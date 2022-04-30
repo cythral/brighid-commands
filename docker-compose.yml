@@ -16,6 +16,8 @@ services:
   adapter:
     image: brighid/commands
     restart: unless-stopped
+    depends_on:
+      - db
     ports:
       - "80"
     platform: linux/arm64
@@ -23,6 +25,10 @@ services:
       - ./bin/Service/Debug/linux-musl-arm64/publish:/app
       - ~/.aws:/home/brighid/.aws
     environment:
+      AWS_PROFILE: ${AWS_PROFILE}
+      AWS_XRAY_DAEMON_ADDRESS: xray:2000
+      AWS_XRAY_TRACING_NAME: Commands
+      AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
       ASPNETCORE_ENVIRONMENT: local
       Environment: local
       CONFIGURATION: Debug
@@ -50,6 +56,15 @@ services:
       MYSQL_RANDOM_ROOT_PASSWORD: "true"
     volumes:
       - my-db:/var/lib/mysql
+
+  xray:
+    image: public.ecr.aws/xray/aws-xray-daemon:latest
+    command: -o
+    volumes:
+      - ~/.aws:/home/xray/.aws
+    environment:
+      AWS_PROFILE: ${AWS_PROFILE}
+      AWS_REGION: us-east-1
 
 volumes:
   my-db: null
