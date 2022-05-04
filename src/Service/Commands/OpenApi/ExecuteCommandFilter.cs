@@ -24,6 +24,9 @@ namespace Brighid.Commands.Service
                     AdditionalPropertiesAllowed = true,
                 });
 
+                operation.Parameters.RemoveAt(1); // remove header value parameters
+                operation.Parameters.RemoveAt(1);
+
                 operation.RequestBody = new OpenApiRequestBody()
                 {
                     Content = new Dictionary<string, OpenApiMediaType>()
