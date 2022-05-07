@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,6 +13,7 @@ using Brighid.Commands.Sdk;
 
 using FluentAssertions;
 
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -233,15 +237,19 @@ namespace Brighid.Commands.Service
             public async Task ShouldGetTheCommandByName(
                 string commandName,
                 HttpContext httpContext,
+                ClaimsPrincipal principal,
                 ExecuteCommandRequest request,
                 [Frozen, Substitute] ICommandService service,
-                [Target] CommandController controller
+                [Target] CommandController controller,
+                CancellationToken cancellationToken
             )
             {
+                httpContext.User.Returns(principal);
+                httpContext.RequestAborted.Returns(cancellationToken);
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 await controller.Execute(commandName);
 
-                await service.Received().GetByName(Is(commandName), Is(httpContext.User), Is(httpContext.RequestAborted));
+                await service.Received().GetByName(Is(commandName), Is(principal), Is(cancellationToken));
             }
 
             [Test, Auto]
@@ -265,16 +273,85 @@ namespace Brighid.Commands.Service
                 string commandName,
                 HttpContext httpContext,
                 ExecuteCommandRequest request,
+                Stream body,
                 [Frozen] ICommandRunner runner,
                 [Frozen, Substitute] ICommandLoader loader,
                 [Target] CommandController controller
             )
             {
+                httpContext.Request.Body.Returns(body);
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
                 await controller.Execute(commandName);
 
                 await runner.Received().Run(
-                    Is<CommandContext>(context => context.InputStream == httpContext.Request.Body),
+                    Is<CommandContext>(context => context.InputStream == body),
+                    Is(httpContext.RequestAborted)
+                );
+            }
+
+            [Test, Auto]
+            public async Task ShouldExecuteTheLoadedCommandWithToken(
+                string commandName,
+                string token,
+                HttpContext httpContext,
+                [Frozen] Command command,
+                [Frozen] IAuthenticationService authenticationService,
+                ExecuteCommandRequest request,
+                [Frozen] ICommandRunner runner,
+                [Frozen, Substitute] ICommandLoader loader,
+                [Target] CommandController controller
+            )
+            {
+                var props = new AuthenticationProperties(new Dictionary<string, string?>
+                {
+                    [".Token.access_token"] = token,
+                });
+
+                command.Type = CommandType.Embedded;
+                command.Runner = runner;
+                command.Scopes = new[] { "token" };
+
+                var authenticateResult = AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(), props, null!));
+                authenticationService.AuthenticateAsync(Any<HttpContext>(), Any<string?>()).Returns(authenticateResult);
+
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                await controller.Execute(commandName);
+
+                await runner.Received().Run(
+                    Is<CommandContext>(context => context.Token == token),
+                    Is(httpContext.RequestAborted)
+                );
+            }
+
+            [Test, Auto]
+            public async Task ShouldExecuteTheLoadedCommandWithoutTokenIfScopeIsNotPresent(
+                string commandName,
+                string token,
+                HttpContext httpContext,
+                [Frozen] Command command,
+                [Frozen] IAuthenticationService authenticationService,
+                ExecuteCommandRequest request,
+                [Frozen] ICommandRunner runner,
+                [Frozen, Substitute] ICommandLoader loader,
+                [Target] CommandController controller
+            )
+            {
+                var props = new AuthenticationProperties(new Dictionary<string, string?>
+                {
+                    [".Token.access_token"] = token,
+                });
+
+                var authenticateResult = AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(), props, null!));
+                authenticationService.AuthenticateAsync(Any<HttpContext>(), Any<string?>()).Returns(authenticateResult);
+
+                command.Type = CommandType.Embedded;
+                command.Runner = runner;
+                command.Scopes = Array.Empty<string>();
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+                await controller.Execute(commandName);
+
+                await runner.Received().Run(
+                    Is<CommandContext>(context => context.Token == null),
                     Is(httpContext.RequestAborted)
                 );
             }
@@ -283,20 +360,22 @@ namespace Brighid.Commands.Service
             public async Task ShouldExecuteTheLoadedCommandAndPassSourceSystem(
                 string commandName,
                 string sourceSystem,
-                [Substitute] HttpContext httpContext,
+                HttpContext httpContext,
                 ExecuteCommandRequest request,
                 [Frozen] ICommandRunner runner,
                 [Frozen, Substitute] ICommandLoader loader,
-                [Target] CommandController controller
+                [Target] CommandController controller,
+                CancellationToken cancellationToken
             )
             {
+                httpContext.RequestAborted.Returns(cancellationToken);
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
 
                 await controller.Execute(commandName, sourceSystem);
 
                 await runner.Received().Run(
                     Is<CommandContext>(context => context.SourceSystem == sourceSystem),
-                    Is(httpContext.RequestAborted)
+                    Is(cancellationToken)
                 );
             }
 
@@ -304,7 +383,7 @@ namespace Brighid.Commands.Service
             public async Task ShouldExecuteTheLoadedCommandAndPassSourceSystemId(
                 string commandName,
                 string sourceSystemId,
-                [Substitute] HttpContext httpContext,
+                HttpContext httpContext,
                 ExecuteCommandRequest request,
                 [Frozen] ICommandRunner runner,
                 [Frozen, Substitute] ICommandLoader loader,
