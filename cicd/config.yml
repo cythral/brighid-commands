@@ -33,7 +33,7 @@ Parameters:
     Development: http://identity.dev.brigh.id/.well-known/openid-configuration
     Production: http://identity.brigh.id/.well-known/openid-configuration
 
-  OpenIdValidIssuer:
+  IdentityServiceUri:
     Development: https://identity.dev.brigh.id/
     Production: https://identity.brigh.id/
 

@@ -29,7 +29,7 @@ Parameters:
     Type: String
     Description: The metadata address for validating OpenID Tokens.
 
-  OpenIdValidIssuer:
+  IdentityServiceUri:
     Type: String
     Description: The issuer to validate tokens against.
 
@@ -211,7 +211,9 @@ Resources:
             - Name: Auth__MetadataAddress
               Value: !Ref OpenIdMetadataAddress
             - Name: Auth__ValidIssuer
-              Value: !Ref OpenIdValidIssuer
+              Value: !Ref IdentityServiceUri
+            - Name: Identity__IdentityServerUri
+              Value: !Ref IdentityServiceUri
         - Name: envoy
           Image: !Ref EnvoyImage
           Essential: true
