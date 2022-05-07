@@ -6,6 +6,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.4" />
     <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.1" />
-    <PackageReference Include="Brighid.Commands.Sdk.Core" Version="0.1.0-beta8" />
+    <PackageReference Include="Brighid.Commands.Sdk.Core" Version="0.1.0-beta9" />
   </ItemGroup>
 </Project>
