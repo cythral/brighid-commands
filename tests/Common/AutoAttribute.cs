@@ -13,6 +13,8 @@ using AutoFixture.NUnit3;
 
 using Brighid.Commands.Service;
 
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -34,7 +36,15 @@ internal class AutoAttribute : AutoDataAttribute
         var fixture = new Fixture();
         fixture.Inject(new CancellationToken(false));
         var messageHandler = new MockHttpMessageHandler();
+
+        var authenticationService = Substitute.For<IAuthenticationService>();
+        var httpContext = Substitute.For<HttpContext>();
+        httpContext.RequestServices.GetService(Arg.Is(typeof(IAuthenticationService))).Returns(authenticationService);
+        httpContext.RequestServices.GetService<IAuthenticationService>().Returns(authenticationService);
+
         fixture.Inject(messageHandler);
+        fixture.Inject(httpContext);
+        fixture.Inject(authenticationService);
         fixture.Inject(new MemoryStream());
         fixture.Inject(Substitute.For<Assembly>());
         fixture.Inject<IServiceCollection>(new ServiceCollection());

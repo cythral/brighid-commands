@@ -66,7 +66,12 @@ namespace Brighid.Commands.Service
         /// <summary>
         /// Gets or sets the command's parameters.
         /// </summary>
-        public IEnumerable<CommandParameter> Parameters { get; set; } = Array.Empty<CommandParameter>();
+        public ICollection<CommandParameter> Parameters { get; set; } = Array.Empty<CommandParameter>();
+
+        /// <summary>
+        /// Gets or sets the command's scopes.
+        /// </summary>
+        public ICollection<string> Scopes { get; set; } = Array.Empty<string>();
 
         /// <summary>
         /// Gets or sets a value indicating whether or not this command is enabled.
@@ -135,9 +140,16 @@ namespace Brighid.Commands.Service
 
                 builder
                 .Property(command => command.Parameters)
-                .HasConversion(new ValueConverter<IEnumerable<CommandParameter>, string>(
-                    location => JsonSerializer.Serialize(location, (JsonSerializerOptions?)null),
+                .HasConversion(new ValueConverter<ICollection<CommandParameter>, string>(
+                    parameter => JsonSerializer.Serialize(parameter, (JsonSerializerOptions?)null),
                     @string => JsonSerializer.Deserialize<CommandParameter[]>(@string, (JsonSerializerOptions?)null) ?? Array.Empty<CommandParameter>()
+                ));
+
+                builder
+                .Property(command => command.Scopes)
+                .HasConversion(new ValueConverter<ICollection<string>, string>(
+                    scopes => string.Join(',', scopes),
+                    @string => @string.Split(',', StringSplitOptions.None)
                 ));
             }
         }

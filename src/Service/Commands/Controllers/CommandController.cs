@@ -1,10 +1,12 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 
 using Brighid.Commands.Auth;
 using Brighid.Commands.Sdk;
 
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -170,7 +172,9 @@ namespace Brighid.Commands.Service
             {
                 var command = await service.GetByName(name, HttpContext.User, HttpContext.RequestAborted);
                 await service.LoadCommand(command, HttpContext.RequestAborted);
-                var context = new CommandContext(HttpContext.Request.Body, HttpContext.User, sourceSystem!, sourceSystemId!);
+
+                var token = command.Scopes.Contains("token") ? await HttpContext.GetTokenAsync("access_token") : null;
+                var context = new CommandContext(HttpContext.Request.Body, HttpContext.User, sourceSystem!, sourceSystemId!, token);
 
                 // Embedded Commands are typically very fast once loaded into the Assembly Load Context.
                 // Save a call to the response topic + its transformer by just returning immediately and delegating
