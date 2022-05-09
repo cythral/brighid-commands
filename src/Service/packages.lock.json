@@ -178,8 +178,8 @@
       },
       "Brighid.Commands.Sdk.Core": {
         "type": "Transitive",
-        "resolved": "0.1.1",
-        "contentHash": "PJc3mjFfWXAN1fMTkLHo+igf7dqGffENzb7OATTtrDX3Lj9A1l2EK70JUi1ksAuXLC/plPlzat/KWHLFNj87/Q==",
+        "resolved": "0.1.2",
+        "contentHash": "X9u4BJ/WNAIAJOKUWkukrG2h3YPkHIGFqJgEbBRLJULXRXn30gw2B5RQw7DthrmZEegmBaAvPSQGCT/dJKIQZA==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "6.0.0"
         }
@@ -1249,7 +1249,7 @@
         "type": "Project",
         "dependencies": {
           "AWSXRayRecorder": "2.10.1",
-          "Brighid.Commands.Sdk.Core": "0.1.1",
+          "Brighid.Commands.Sdk.Core": "0.1.2",
           "Microsoft.EntityFrameworkCore.Design": "6.0.4",
           "Microsoft.Extensions.Configuration": "6.0.1",
           "Microsoft.Extensions.Configuration.Binder": "6.0.0",
