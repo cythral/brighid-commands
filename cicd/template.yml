@@ -211,9 +211,9 @@ Resources:
             - Name: Auth__MetadataAddress
               Value: !Ref OpenIdMetadataAddress
             - Name: Auth__ValidIssuer
-              Value: !Ref IdentityServiceUri
+              Value: !Sub https://${IdentityServiceUri}/
             - Name: Identity__IdentityServerUri
-              Value: !Ref IdentityServiceUri
+              Value: !Sub http://${IdentityServiceUri}
         - Name: envoy
           Image: !Ref EnvoyImage
           Essential: true

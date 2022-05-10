@@ -34,8 +34,8 @@ Parameters:
     Production: http://identity.brigh.id/.well-known/openid-configuration
 
   IdentityServiceUri:
-    Development: https://identity.dev.brigh.id/
-    Production: https://identity.brigh.id/
+    Development: identity.dev.brigh.id
+    Production: identity.brigh.id
 
   EnvoyImage:
     Development: 840364872350.dkr.ecr.us-east-1.amazonaws.com/aws-appmesh-envoy:arm64-v1.21.1.0-prod
