@@ -50,7 +50,7 @@ namespace Brighid.Commands.Service
             loadContext.Resolving += (context, name) =>
             {
                 var assemblyFile = directory + "/" + name.FullName + ".dll";
-                return File.Exists(assemblyFile) ? context.LoadFromAssemblyPath(assemblyFile) : context.LoadFromAssemblyName(name);
+                return File.Exists(assemblyFile) ? Assembly.LoadFile(assemblyFile) : Assembly.Load(name);
             };
 
             return assembly;
