@@ -20,6 +20,16 @@
           "Serilog": "[2.8.0, 3.0.0)"
         }
       },
+      "McMaster.NETCore.Plugins": {
+        "type": "Direct",
+        "requested": "[1.4.0, )",
+        "resolved": "1.4.0",
+        "contentHash": "UKw5Z2/QHhkR7kiAJmqdCwVDMQV0lwsfj10+FG676r8DsJWIpxtachtEjE0qBs9WoK5GUQIqxgyFeYUSwuPszg==",
+        "dependencies": {
+          "Microsoft.DotNet.PlatformAbstractions": "3.1.6",
+          "Microsoft.Extensions.DependencyModel": "5.0.0"
+        }
+      },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "Direct",
         "requested": "[6.0.4, )",
@@ -265,6 +275,11 @@
         "resolved": "4.5.0",
         "contentHash": "kaj6Wb4qoMuH3HySFJhxwQfe8R/sJsNJnANrvv8WdFPMoNbKY5htfNscv+LHCu5ipz+49m2e+WQXpLXr9XYemQ=="
       },
+      "Microsoft.DotNet.PlatformAbstractions": {
+        "type": "Transitive",
+        "resolved": "3.1.6",
+        "contentHash": "jek4XYaQ/PGUwDKKhwR8K47Uh1189PFzMeLqO83mXrXQVIpARZCcfuDedH50YDTepBkfijCZN5U/vZi++erxtg=="
+      },
       "Microsoft.EntityFrameworkCore": {
         "type": "Transitive",
         "resolved": "6.0.4",
@@ -373,11 +388,8 @@
       },
       "Microsoft.Extensions.DependencyModel": {
         "type": "Transitive",
-        "resolved": "3.0.0",
-        "contentHash": "Iaectmzg9Dc4ZbKX/FurrRjgO/I8rTumL5UU+Uube6vZuGetcnXoIgTA94RthFWePhdMVm8MMhVFJZdbzMsdyQ==",
-        "dependencies": {
-          "System.Text.Json": "4.6.0"
-        }
+        "resolved": "5.0.0",
+        "contentHash": "umBECCoMC+sOUgm083yFr8SxTobUOcPFH4AXigdO2xJiszCHAnmeDl4qPphJt+oaJ/XIfV1wOjIts2nRnki61Q=="
       },
       "Microsoft.Extensions.FileProviders.Abstractions": {
         "type": "Transitive",
@@ -1220,11 +1232,6 @@
         "type": "Transitive",
         "resolved": "4.4.0",
         "contentHash": "l/tYeikqMHX2MD2jzrHDfR9ejrpTTF7wvAEbR51AMvzip1wSJgiURbDik4iv/w7ZgytmTD/hlwpplEhF9bmFNw=="
-      },
-      "System.Text.Json": {
-        "type": "Transitive",
-        "resolved": "4.6.0",
-        "contentHash": "4F8Xe+JIkVoDJ8hDAZ7HqLkjctN/6WItJIzQaifBwClC7wmoLSda/Sv2i6i1kycqDb3hWF4JCVbpAweyOKHEUA=="
       },
       "System.Threading": {
         "type": "Transitive",

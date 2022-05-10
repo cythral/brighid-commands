@@ -3,11 +3,17 @@ using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.Loader;
+using System.Resources;
 using System.Threading;
 using System.Threading.Tasks;
 
+using Brighid.Commands.Sdk;
+
+using McMaster.NETCore.Plugins;
+
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Brighid.Commands.Service
 {
@@ -42,18 +48,22 @@ namespace Brighid.Commands.Service
         /// <inheritdoc />
         public Assembly LoadAssemblyFromFile(string name, string location)
         {
-            var loadContext = new AssemblyLoadContext(name);
             var absolutePath = Path.GetFullPath(location);
-            var assembly = loadContext.LoadFromAssemblyPath(absolutePath);
-            var directory = Path.GetDirectoryName(absolutePath);
+            var result = PluginLoader.CreateFromAssemblyFile(
+                assemblyFile: absolutePath,
+                sharedTypes: new[]
+                {
+                    typeof(IServiceCollection),
+                    typeof(ICommandRegistrator),
+                    typeof(ILogger),
+                    typeof(IConfiguration),
+                    typeof(ConfigurationBinder),
+                    typeof(ResourceWriter),
+                },
+                isUnloadable: true
+            );
 
-            loadContext.Resolving += (context, name) =>
-            {
-                var assemblyFile = directory + "/" + name.FullName + ".dll";
-                return File.Exists(assemblyFile) ? Assembly.LoadFile(assemblyFile) : Assembly.Load(name);
-            };
-
-            return assembly;
+            return result.LoadDefaultAssembly();
         }
 
         /// <inheritdoc />
