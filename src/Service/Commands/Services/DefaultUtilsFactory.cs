@@ -45,6 +45,14 @@ namespace Brighid.Commands.Service
             var loadContext = new AssemblyLoadContext(name);
             var absolutePath = Path.GetFullPath(location);
             var assembly = loadContext.LoadFromAssemblyPath(absolutePath);
+            var directory = Path.GetDirectoryName(absolutePath);
+
+            loadContext.Resolving += (context, name) =>
+            {
+                var assemblyFile = directory + "/" + name.FullName + ".dll";
+                return File.Exists(assemblyFile) ? context.LoadFromAssemblyPath(assemblyFile) : context.LoadFromAssemblyName(name);
+            };
+
             return assembly;
         }
 
