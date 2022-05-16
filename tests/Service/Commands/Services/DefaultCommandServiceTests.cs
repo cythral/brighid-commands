@@ -506,7 +506,9 @@ namespace Brighid.Commands.Service
                 var result = await service.UpdateByName(name, request, principal, cancellationToken);
 
                 result.Should().BeSameAs(command);
-                command.EmbeddedLocation!.Checksum.Should().Be(request.EmbeddedLocation!.Checksum);
+
+                var location = command.EmbeddedLocation!.Value;
+                location.Checksum.Should().Be(request.EmbeddedLocation!.Value.Checksum);
             }
 
             [Test, Auto]
@@ -558,7 +560,8 @@ namespace Brighid.Commands.Service
                 var result = await service.UpdateByName(name, request, principal, cancellationToken);
 
                 result.Should().BeSameAs(command);
-                command.EmbeddedLocation!.DownloadURL.Should().Be(request.EmbeddedLocation!.DownloadURL);
+                var location = command.EmbeddedLocation!.Value;
+                location.DownloadURL.Should().Be(request.EmbeddedLocation!.Value.DownloadURL);
             }
 
             [Test, Auto]
@@ -584,7 +587,8 @@ namespace Brighid.Commands.Service
                 var result = await service.UpdateByName(name, request, principal, cancellationToken);
 
                 result.Should().BeSameAs(command);
-                command.EmbeddedLocation!.AssemblyName.Should().Be(request.EmbeddedLocation!.AssemblyName);
+                var location = command.EmbeddedLocation!.Value;
+                location.AssemblyName.Should().Be(request.EmbeddedLocation!.Value.AssemblyName);
             }
 
             [Test, Auto]
@@ -610,7 +614,8 @@ namespace Brighid.Commands.Service
                 var result = await service.UpdateByName(name, request, principal, cancellationToken);
 
                 result.Should().BeSameAs(command);
-                command.EmbeddedLocation!.TypeName.Should().Be(request.EmbeddedLocation!.TypeName);
+                var location = command.EmbeddedLocation!.Value;
+                location.TypeName.Should().Be(request.EmbeddedLocation!.Value.TypeName);
             }
 
             [Test, Auto]
