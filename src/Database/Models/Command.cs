@@ -133,10 +133,7 @@ namespace Brighid.Commands.Service
 
                 builder
                 .Property(command => command.EmbeddedLocation)
-                .HasConversion(new ValueConverter<EmbeddedCommandLocation?, string>(
-                    location => JsonSerializer.Serialize(location, (JsonSerializerOptions?)null),
-                    @string => JsonSerializer.Deserialize<EmbeddedCommandLocation>(@string, (JsonSerializerOptions?)null)
-                ));
+                .HasConversion<EmbeddedCommandLocation.Converter>();
 
                 builder
                 .Property(command => command.Parameters)

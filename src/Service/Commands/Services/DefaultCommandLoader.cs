@@ -46,8 +46,9 @@ namespace Brighid.Commands.Service
                 return cachedCommand.Runner;
             }
 
-            var assembly = await downloader.DownloadCommandPackageFromS3(command.EmbeddedLocation!.DownloadURL!, command.EmbeddedLocation.AssemblyName!, cancellationToken);
-            var registratorType = assembly.GetType(command.EmbeddedLocation.TypeName, false) ?? throw new CommandNotFoundException(command.Name);
+            var location = command.EmbeddedLocation!.Value;
+            var assembly = await downloader.DownloadCommandPackageFromS3(location.DownloadURL, location.AssemblyName, cancellationToken);
+            var registratorType = assembly.GetType(location.TypeName, false) ?? throw new CommandNotFoundException(command.Name);
             var registrator = (ICommandRegistrator)(Activator.CreateInstance(registratorType, Array.Empty<object>()) ?? throw new CommandNotFoundException(command.Name));
 
             var services = utilsFactory.CreateServiceCollection();

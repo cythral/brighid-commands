@@ -99,15 +99,7 @@ namespace Brighid.Commands.Service
             command.IsEnabled = request.IsEnabled;
             command.ArgCount = request.ArgCount;
             command.ValidOptions = request.ValidOptions;
-
-            if (request.EmbeddedLocation != null)
-            {
-                command.EmbeddedLocation ??= new EmbeddedCommandLocation();
-                command.EmbeddedLocation.Checksum = request.EmbeddedLocation.Checksum;
-                command.EmbeddedLocation.DownloadURL = request.EmbeddedLocation.DownloadURL;
-                command.EmbeddedLocation.AssemblyName = request.EmbeddedLocation.AssemblyName;
-                command.EmbeddedLocation.TypeName = request.EmbeddedLocation.TypeName;
-            }
+            command.EmbeddedLocation = request.EmbeddedLocation ?? command.EmbeddedLocation;
 
             await repository.Save(cancellationToken);
             PreloadIfEmbedded(command, cancellationToken);

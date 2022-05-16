@@ -46,7 +46,9 @@ namespace Brighid.Commands.Service
 
                 await loader.LoadEmbedded(command, cancellationToken);
 
-                await downloader.Received().DownloadCommandPackageFromS3(Is(command.EmbeddedLocation!.DownloadURL!), Is(command.EmbeddedLocation!.AssemblyName!), Is(cancellationToken));
+                var location = command.EmbeddedLocation!.Value;
+
+                await downloader.Received().DownloadCommandPackageFromS3(Is(location.DownloadURL), Is(location.AssemblyName), Is(cancellationToken));
             }
 
             [Test, Auto]
@@ -68,7 +70,8 @@ namespace Brighid.Commands.Service
                 await loader.LoadEmbedded(command, cancellationToken);
                 await loader.LoadEmbedded(command, cancellationToken);
 
-                await downloader.Received(1).DownloadCommandPackageFromS3(Is(command.EmbeddedLocation!.DownloadURL!), Is(command.EmbeddedLocation!.AssemblyName!), Is(cancellationToken));
+                var location = command.EmbeddedLocation!.Value;
+                await downloader.Received(1).DownloadCommandPackageFromS3(Is(location.DownloadURL), Is(location.AssemblyName), Is(cancellationToken));
             }
 
             [Test, Auto]
@@ -93,7 +96,8 @@ namespace Brighid.Commands.Service
                 command.Version = 2;
                 await loader.LoadEmbedded(command, cancellationToken);
 
-                await downloader.Received(2).DownloadCommandPackageFromS3(Is(command.EmbeddedLocation!.DownloadURL!), Is(command.EmbeddedLocation!.AssemblyName!), Is(cancellationToken));
+                var location = command.EmbeddedLocation!.Value;
+                await downloader.Received(2).DownloadCommandPackageFromS3(Is(location.DownloadURL), Is(location.AssemblyName), Is(cancellationToken));
             }
 
             [Test, Auto]
@@ -118,7 +122,8 @@ namespace Brighid.Commands.Service
                 command.Version = 1;
                 await loader.LoadEmbedded(command, cancellationToken);
 
-                await downloader.Received(1).DownloadCommandPackageFromS3(Is(command.EmbeddedLocation!.DownloadURL!), Is(command.EmbeddedLocation!.AssemblyName!), Is(cancellationToken));
+                var location = command.EmbeddedLocation!.Value;
+                await downloader.Received(1).DownloadCommandPackageFromS3(Is(location.DownloadURL), Is(location.AssemblyName), Is(cancellationToken));
             }
 
             [Test, Auto]
