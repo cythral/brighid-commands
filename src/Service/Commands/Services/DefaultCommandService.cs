@@ -99,6 +99,7 @@ namespace Brighid.Commands.Service
             command.IsEnabled = request.IsEnabled;
             command.ArgCount = request.ArgCount;
             command.ValidOptions = request.ValidOptions;
+            command.Scopes = request.Scopes;
             command.EmbeddedLocation = request.EmbeddedLocation ?? command.EmbeddedLocation;
 
             await repository.Save(cancellationToken);

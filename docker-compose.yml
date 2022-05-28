@@ -23,9 +23,10 @@ services:
     platform: linux/arm64
     volumes:
       - ./bin/Service/Debug/linux-musl-arm64/publish:/app
-      - ~/.aws:/home/brighid/.aws
     environment:
-      AWS_PROFILE: ${AWS_PROFILE}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN}
       AWS_XRAY_DAEMON_ADDRESS: xray:2000
       AWS_XRAY_TRACING_NAME: Commands
       AWS_XRAY_CONTEXT_MISSING: LOG_ERROR

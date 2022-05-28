@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using Brighid.Commands.Sdk;
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
@@ -71,7 +72,7 @@ namespace Brighid.Commands.Service
         /// <summary>
         /// Gets or sets the command's scopes.
         /// </summary>
-        public ICollection<string> Scopes { get; set; } = Array.Empty<string>();
+        public ICollection<string> Scopes { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// Gets or sets a value indicating whether or not this command is enabled.
@@ -144,10 +145,42 @@ namespace Brighid.Commands.Service
 
                 builder
                 .Property(command => command.Scopes)
-                .HasConversion(new ValueConverter<ICollection<string>, string>(
-                    scopes => string.Join(',', scopes),
-                    @string => @string.Split(',', StringSplitOptions.None)
-                ));
+                .HasConversion<Scope.Converter, Scope.Comparer>();
+            }
+
+            private class Scope
+            {
+                public class Converter : ValueConverter<ICollection<string>, string>
+                {
+                    public Converter()
+                        : base(
+                            scopes => string.Join(',', scopes),
+                            @string => @string.Split(',', StringSplitOptions.None).ToHashSet()
+                        )
+                    {
+                    }
+                }
+
+                public class Comparer : ValueComparer<ICollection<string>>
+                {
+                    public Comparer()
+                        : base(
+                            (a, b) => CollectionEqual(a, b),
+                            (scopes) => scopes
+                                .OrderBy(scopes => scopes)
+                                .Aggregate(0, (hashCode, scope) => HashCode.Combine(hashCode, scope.GetHashCode()))
+                        )
+                    {
+                    }
+
+                    private static bool CollectionEqual(ICollection<string>? left, ICollection<string>? right)
+                    {
+                        var sortedLeft = left?.OrderBy(left => left) ?? (IEnumerable<string>)Array.Empty<string>();
+                        var sortedRight = right?.OrderBy(right => right) ?? (IEnumerable<string>)Array.Empty<string>();
+
+                        return sortedLeft.SequenceEqual(sortedRight);
+                    }
+                }
             }
         }
     }
