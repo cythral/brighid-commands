@@ -697,6 +697,32 @@ namespace Brighid.Commands.Service
             }
 
             [Test, Auto]
+            public async Task ShouldUpdateCommandScopes(
+                string name,
+                ClaimsIdentity identity,
+                CommandRequest request,
+                [Frozen] Command command,
+                [Frozen] IServiceScope scope,
+                [Frozen] ICommandRepository repository,
+                [Target] DefaultCommandService service,
+                CancellationToken cancellationToken
+            )
+            {
+                scope.ServiceProvider.Returns(new ServiceCollection()
+                    .AddSingleton(repository)
+                    .BuildServiceProvider()
+                );
+
+                identity.AddClaim(new Claim(ClaimTypes.Name, command.OwnerId.ToString()));
+                var principal = new ClaimsPrincipal(identity);
+
+                var result = await service.UpdateByName(name, request, principal, cancellationToken);
+
+                result.Should().BeSameAs(command);
+                command.Scopes.Should().BeEquivalentTo(request.Scopes);
+            }
+
+            [Test, Auto]
             public async Task ShouldSaveCommandInTheDatabase(
                 string name,
                 ClaimsIdentity identity,
