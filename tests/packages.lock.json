@@ -114,15 +114,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.11.12",
-        "contentHash": "3X9+uQi2QSB/WCgBJgMv1SVzLhvpwYUGxJHlzYB89QeK9cqiezUNobEOdQ1r4vSzUVg8pt/pJKGjFSH0NINVwA=="
+        "resolved": "3.7.11.13",
+        "contentHash": "5BUhEIWrcYV4yGrN6/rlOlD6hXzKAHbuv1cOt4xz2ioaxZwcQ3Zk3LFp1P/X6y88t8bLlFocLm43nwLboOCa1A=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.9.12",
-        "contentHash": "41pDSeoYNx+GXm6T43kAjOPyTTB1Imc0cvbpekzPeRDM0PHRqUR1Xjhk4DcSltro4lO1pDtzY6yza5mnB+zw7A==",
+        "resolved": "3.7.9.13",
+        "contentHash": "jVK10Uu626sU1krRnM99wgxlrJCyqGrrSwQN2NdSseSvwY5AnfPz7T8vkflf+mzcf7+r0Pwi33bnGZeSFgPI+w==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.11.12, 4.0.0)"
+          "AWSSDK.Core": "[3.7.11.13, 4.0.0)"
         }
       },
       "AWSXRayRecorder": {
@@ -1792,7 +1792,7 @@
       "service": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.S3": "3.7.9.12",
+          "AWSSDK.S3": "3.7.9.13",
           "Database": "1.0.0",
           "Destructurama.Attributed": "3.0.0",
           "McMaster.NETCore.Plugins": "1.4.0",
