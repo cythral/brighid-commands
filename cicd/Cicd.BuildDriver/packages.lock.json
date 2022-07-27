@@ -93,8 +93,8 @@
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.9.30",
-        "contentHash": "m1cP4kxNBPvAWdPIGQMK4oy8ze+No0x5i1QChMIRT1EqiNtVz866p6zqMXqGR9PluKm/B1iS8wUpy/a+qenPXg==",
+        "resolved": "3.7.9.31",
+        "contentHash": "e516jOK03lR1l4K2XLkhm/HCN6UA4nz7WQgyua/PufuAi0wlUWQtwFOCqVbpakJyslH8s1x/tCq6/Kbi8MEHYQ==",
         "dependencies": {
           "AWSSDK.Core": "[3.7.12.13, 4.0.0)"
         }
@@ -859,7 +859,7 @@
       "service": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.S3": "3.7.9.30",
+          "AWSSDK.S3": "3.7.9.31",
           "Database": "1.0.0",
           "Destructurama.Attributed": "3.0.0",
           "McMaster.NETCore.Plugins": "1.4.0",
