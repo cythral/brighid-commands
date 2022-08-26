@@ -17,7 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services">Services to configure.</param>
         public static void ConfigureCommandServices(this IServiceCollection services)
         {
-            services.AddSingleton<IAmazonS3, AmazonS3Client>();
+            services.AddSingleton<IAmazonS3>(new AmazonS3Client(new AmazonS3Config { UseDualstackEndpoint = true }));
             services.AddSingleton<ICommandCache, DefaultCommandCache>();
             services.AddSingleton<IUtilsFactory, DefaultUtilsFactory>();
             services.AddSingleton<ICommandService, DefaultCommandService>();
