@@ -17,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 
 using Serilog;
+using Serilog.Events;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -43,6 +44,11 @@ namespace Brighid.Commands
                 .ReadFrom.Configuration(configuration)
                 .Destructure.UsingAttributes()
                 .Enrich.FromLogContext()
+                .MinimumLevel.Override("DefaultHealthCheckService", LogEventLevel.Information)
+                .MinimumLevel.Override("Microsoft.AspNetCore.Server.Kestrel", LogEventLevel.Information)
+                .MinimumLevel.Override("Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware", LogEventLevel.Warning)
+                .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Diagnostics", LogEventLevel.Warning)
+                .Filter.ByExcluding("RequestPath = '/healthcheck' and (StatusCode = 200 or EventId.Name = 'ExecutingEndpoint' or EventId.Name = 'ExecutedEndpoint')")
                 .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss} {Level:u3}] [{SourceContext:s}] {Message:lj} {Properties:j} {Exception}{NewLine}")
                 .CreateLogger();
         }
