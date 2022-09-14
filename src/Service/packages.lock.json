@@ -4,11 +4,11 @@
     "net6.0": {
       "AWSSDK.S3": {
         "type": "Direct",
-        "requested": "[3.7.9.51, )",
-        "resolved": "3.7.9.51",
-        "contentHash": "aZ2S45ev2LjRcNNvyzjmX4Y4SfasH/cnM7wXheXOK92ICmlxOukMVRCIlkvr+AbVGTgLmQgrf7P1gMX16vrB/w==",
+        "requested": "[3.7.9.52, )",
+        "resolved": "3.7.9.52",
+        "contentHash": "irmHWWuDwcsupipElymq6T1oDSoQhIsPfSAIYrI35BV4wy5SyYBUrBz1jX2ZWCkPzscc0eqSUkpjJ4NyqXwc3A==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.13.2, 4.0.0)"
+          "AWSSDK.Core": "[3.7.13.3, 4.0.0)"
         }
       },
       "Destructurama.Attributed": {
@@ -125,8 +125,8 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.13.2",
-        "contentHash": "qmOrKdgGUIuHxZ1vJqKPevhsXyPhaoZYu+1gVs2QGjIzJcExyJWNoWY28dI64bfQvLnQnVIaq0SbrHSMtnooeg=="
+        "resolved": "3.7.13.3",
+        "contentHash": "Avabz9QErWMi2hN6PkeD30FIMttRCy2hFzRes86Pkp0JEPlvM6Lrwpa54XQsvhF4Xobv2ky/5zSw4H0XirYX9A=="
       },
       "AWSXRayRecorder": {
         "type": "Transitive",
