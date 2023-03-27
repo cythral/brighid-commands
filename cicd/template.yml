@@ -52,6 +52,14 @@ Parameters:
     Type: String
     Description: Image to use for the X-Ray Sidecar.
 
+  RecaptchaSiteKey:
+    Type: String
+    Description: Site key to use for processing recaptcha authentication.
+
+  RecaptchaSecretKey:
+    Type: String
+    Description: Secret key to use for processing recaptcha authentication.
+
 Resources:
   MeshService:
     Type: AWS::AppMesh::VirtualService
@@ -217,6 +225,10 @@ Resources:
               Value: !Sub https://${IdentityServiceUri}/
             - Name: Identity__IdentityServerUri
               Value: !Sub http://${IdentityServiceUri}
+            - Name: RecaptchaSettings__SiteKey
+              Value: !Ref RecaptchaSiteKey
+            - Name: Encrypted__RecaptchaSettings__SecretKey
+              Value: !Ref RecaptchaSecretKey
         - Name: envoy
           Image: !Ref EnvoyImage
           Essential: true

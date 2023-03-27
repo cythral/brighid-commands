@@ -178,6 +178,14 @@
           "Serilog": "[2.8.0, 3.0.0)"
         }
       },
+      "Griesoft.AspNetCore.ReCaptcha": {
+        "type": "Transitive",
+        "resolved": "2.2.0",
+        "contentHash": "6tLg4/0Pap5K8ZJ8tmYv4UsfVVpWscwOITpfBS3dBrDSLJx6xoVAEXlypMYhnPlqiYsgAP8EWTuIaKWkTPanjQ==",
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.1"
+        }
+      },
       "Humanizer.Core": {
         "type": "Transitive",
         "resolved": "2.8.26",
@@ -588,6 +596,11 @@
         "resolved": "2.1.2",
         "contentHash": "JVokQTUNN3WHAu9Vw8ieeq1dXTFokJiig5P0VJ4f439UxRrsPo6SaVWC8Zdm6mkPeQFhZ0/9afdWa02EY/1j/w=="
       },
+      "Newtonsoft.Json": {
+        "type": "Transitive",
+        "resolved": "13.0.1",
+        "contentHash": "ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A=="
+      },
       "Pomelo.EntityFrameworkCore.MySql": {
         "type": "Transitive",
         "resolved": "6.0.2",
@@ -876,6 +889,7 @@
           "AWSSDK.S3": "3.7.9.69",
           "Database": "1.0.0",
           "Destructurama.Attributed": "3.0.0",
+          "Griesoft.AspNetCore.ReCaptcha": "2.2.0",
           "McMaster.NETCore.Plugins": "1.4.0",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "6.0.9",
           "Microsoft.EntityFrameworkCore.Design": "6.0.9",

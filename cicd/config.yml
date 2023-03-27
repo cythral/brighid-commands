@@ -48,3 +48,11 @@ Parameters:
   XrayImage:
     Development: public.ecr.aws/xray/aws-xray-daemon:3.3.3
     Production: public.ecr.aws/xray/aws-xray-daemon:3.3.3
+
+  RecaptchaSiteKey:
+    Development: 6LcZKiclAAAAAN8fC7p5NEhKirMr1hN1qFJhiIvU
+    Production: 6LcZKiclAAAAAN8fC7p5NEhKirMr1hN1qFJhiIvU
+
+  RecaptchaSecretKey:
+    Development: AQICAHgoCT+foL9Va61ILjex5kDLFnI+2BcWncYg6XnZcbrkEgFv9hsc9V3bFIY0OifmMsXkAAAAhzCBhAYJKoZIhvcNAQcGoHcwdQIBADBwBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDGDzMPr9x22H/9/FIQIBEIBDICbxvomjwo7IWlEMIAaL5X8nf006VWIEDAjQVCCqpK0QGsBGrzGn1ZylsZFOukNzSwYzCIFtKcelnBTtc7I4vUYTDQ==
+    Production: AQICAHi54q7lId3MD/Ui1K7aSfISd7MAgfjYVA3TKglV1sj1yAFii1ZXw3KrmB+iTQQMC6RcAAAAhzCBhAYJKoZIhvcNAQcGoHcwdQIBADBwBgkqhkiG9w0BBwEwHgYJYIZIAWUDBAEuMBEEDDQ4Cu7p27L4llAruQIBEIBD0x4rAz5StmfBWaE40gtiSlWPyGRj6NoW15K6oneppCiDNiedDu5g0ykq8iu7H9lIUjB3VH1B+k5IpK6JFeQ/lMou5Q==
