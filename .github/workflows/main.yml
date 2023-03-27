@@ -7,6 +7,7 @@ on:
       - "*"
   workflow_dispatch:
   pull_request:
+    types: [synchronize]
   schedule:
     - cron: "0 0 * * *"
 
@@ -105,10 +106,10 @@ jobs:
     secrets:
       role: ${{ secrets.AWS_DEV_ROLE }}
       discord-webhook: ${{ secrets.DISCORD_WEBHOOK }}
-  
+
   deploy-dev:
     uses: cythral/brighid-commands/.github/workflows/deploy.yml@master
-    needs: 
+    needs:
       - build
       - start-dev-db
     with:
