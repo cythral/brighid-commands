@@ -304,6 +304,10 @@ Resources:
             Effect: Allow
             Action: s3:GetObject
             Resource: "*"
+          - Sid: AllowSendingEmails
+            Effect: Allow
+            Action: ses:Send*
+            Resource: "*"
 
   LogGroup:
     Type: AWS::Logs::LogGroup
