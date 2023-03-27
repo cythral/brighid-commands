@@ -20,6 +20,15 @@
           "Serilog": "[2.8.0, 3.0.0)"
         }
       },
+      "Griesoft.AspNetCore.ReCaptcha": {
+        "type": "Direct",
+        "requested": "[2.2.0, )",
+        "resolved": "2.2.0",
+        "contentHash": "6tLg4/0Pap5K8ZJ8tmYv4UsfVVpWscwOITpfBS3dBrDSLJx6xoVAEXlypMYhnPlqiYsgAP8EWTuIaKWkTPanjQ==",
+        "dependencies": {
+          "Newtonsoft.Json": "13.0.1"
+        }
+      },
       "McMaster.NETCore.Plugins": {
         "type": "Direct",
         "requested": "[1.4.0, )",
@@ -459,6 +468,11 @@
         "type": "Transitive",
         "resolved": "2.1.2",
         "contentHash": "JVokQTUNN3WHAu9Vw8ieeq1dXTFokJiig5P0VJ4f439UxRrsPo6SaVWC8Zdm6mkPeQFhZ0/9afdWa02EY/1j/w=="
+      },
+      "Newtonsoft.Json": {
+        "type": "Transitive",
+        "resolved": "13.0.1",
+        "contentHash": "ppPFpBcvxdsfUonNcvITKqLl3bqxWbDCZIzDWHzjpdAHRFfZe0Dw9HmA0+za13IdyrgJwpkDTDA9fHaxOrt20A=="
       },
       "runtime.native.System.Data.SqlClient.sni": {
         "type": "Transitive",

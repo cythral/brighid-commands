@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Brighid.Commands.Auth;
 using Brighid.Commands.Sdk;
 
+using Griesoft.AspNetCore.ReCaptcha;
+
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -156,6 +158,7 @@ namespace Brighid.Commands.Service
         /// <param name="sourceSystemId">The channel within the source system where the command execution is being requested from.</param>
         /// <returns>The HTTP Response.</returns>
         [HttpPost("{name}/execute", Name = "Commands:ExecuteCommand")]
+        [Authorize]
         [ReadableBodyStream]
         [ProducesResponseType(typeof(ExecuteCommandResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ExecuteCommandResponse), (int)HttpStatusCode.Accepted)]
@@ -198,6 +201,27 @@ namespace Brighid.Commands.Service
             {
                 return NotFound();
             }
+        }
+
+        /// <summary>
+        /// Executes a command but uses recaptcha to allow for anonymous authentication from authorized Brighid Websites.
+        /// </summary>
+        /// <param name="name">The name of the command to execute.</param>
+        /// <param name="sourceSystem">The system where the command execution is being requested from.</param>
+        /// <param name="sourceSystemId">The channel within the source system where the command execution is being requested from.</param>
+        /// <returns>The HTTP Response.</returns>
+        [HttpPost("{name}/execute/recaptcha", Name = "Commands:ExecuteCommandWithRecaptchaAuthentication")]
+        [ReadableBodyStream]
+        [ValidateRecaptcha]
+        [ProducesResponseType(typeof(ExecuteCommandResponse), (int)HttpStatusCode.OK)]
+        [ProducesResponseType(typeof(ExecuteCommandResponse), (int)HttpStatusCode.Accepted)]
+        public async Task<ActionResult<ExecuteCommandResponse>> ExecuteWithRecaptchaAuthentication(
+            string name,
+            [FromHeader(Name = "x-source-system")] string? sourceSystem = null,
+            [FromHeader(Name = "x-source-system-id")] string? sourceSystemId = null
+        )
+        {
+            return await Execute(name, sourceSystem, sourceSystemId);
         }
     }
 }

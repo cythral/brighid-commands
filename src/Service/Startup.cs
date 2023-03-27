@@ -69,6 +69,7 @@ namespace Brighid.Commands
             services.AddSingleton(typeof(ILogger<>), typeof(Logger<>));
             services.Configure<ServiceOptions>(configuration.GetSection("Commands"));
             services.AddHealthChecks();
+            services.AddRecaptchaService();
             services.AddSwaggerGen(ConfigureSwaggerGenOptions);
             services.ConfigureDatabaseServices(configuration);
             services.ConfigureCommandServices();
