@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.S3" Version="3.7.103.38" />
+    <PackageReference Include="AWSSDK.S3" Version="3.7.103.39" />
     <PackageReference Include="Griesoft.AspNetCore.ReCaptcha" Version="2.2.0" />
     <PackageReference Include="McMaster.NETCore.Plugins" Version="1.4.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
