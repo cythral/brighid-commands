@@ -12,7 +12,7 @@
 
     <ItemGroup>
         <PackageReference Include="AWSSDK.S3" Version="3.7.103.39" />
-        <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.1" />
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="7.0.1" />
     </ItemGroup>
 
     <ItemGroup>
