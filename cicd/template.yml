@@ -229,6 +229,8 @@ Resources:
               Value: !Ref RecaptchaSiteKey
             - Name: Encrypted__RecaptchaSettings__SecretKey
               Value: !Ref RecaptchaSecretKey
+            - Name: EmailCommand__EmailerRoleArn
+              Value: !ImportValue cfn-utilities:EmailerRoleArn
         - Name: envoy
           Image: !Ref EnvoyImage
           Essential: true
@@ -303,10 +305,6 @@ Resources:
           - Sid: AllowGettingAnyS3Object
             Effect: Allow
             Action: s3:GetObject
-            Resource: "*"
-          - Sid: AllowSendingEmails
-            Effect: Allow
-            Action: ses:Send*
             Resource: "*"
 
   LogGroup:
