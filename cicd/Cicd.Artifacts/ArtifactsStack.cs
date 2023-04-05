@@ -152,14 +152,5 @@ namespace Brighid.Commands.Artifacts
                 },
             });
         }
-
-        private void AddEmailerRole()
-        {
-            var role = new Role(this, "EmailerRole", new RoleProps());
-            role.GrantAssumeRole(new AccountPrincipal(Fn.ImportValue("cfn-metadata:DevAccountId")));
-            role.GrantAssumeRole(new AccountPrincipal(Fn.ImportValue("cfn-metadata:ProdAccountId")));
-
-            var managedPolicy = new ManagedPolicy(this, "EmailPolicy", new ManagedPolicyProps());
-        }
     }
 }
