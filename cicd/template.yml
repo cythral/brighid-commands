@@ -306,6 +306,11 @@ Resources:
             Effect: Allow
             Action: s3:GetObject
             Resource: "*"
+          - Sid: AllowAssumeEmailerRole
+            Effect: Allow
+            Action: sts:AssumeRole
+            Resource:
+              - !ImportValue cfn-utilities:EmailerRoleArn
 
   LogGroup:
     Type: AWS::Logs::LogGroup
