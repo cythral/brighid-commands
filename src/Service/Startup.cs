@@ -81,7 +81,6 @@ namespace Brighid.Commands
                     policy.AllowAnyOrigin();
                     policy.AllowAnyHeader();
                     policy.AllowAnyMethod();
-                    policy.AllowCredentials();
                 });
             });
 
