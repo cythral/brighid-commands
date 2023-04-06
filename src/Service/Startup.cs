@@ -74,6 +74,17 @@ namespace Brighid.Commands
             services.ConfigureDatabaseServices(configuration);
             services.ConfigureCommandServices();
             services.ConfigureAuthServices(configuration.GetSection("Auth").Bind);
+            services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.AllowAnyOrigin();
+                    policy.AllowAnyHeader();
+                    policy.AllowAnyMethod();
+                    policy.AllowCredentials();
+                });
+            });
+
             services.Configure<ForwardedHeadersOptions>(options =>
             {
                 options.ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
@@ -121,6 +132,7 @@ namespace Brighid.Commands
 
             app.UseStaticFiles();
             app.UseRouting();
+            app.UseCors();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>
