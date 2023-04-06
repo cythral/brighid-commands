@@ -5,7 +5,7 @@ namespace Brighid.Commands.Service
     /// <summary>
     /// Represents a parameter of a command.
     /// </summary>
-    public struct CommandParameter
+    public readonly struct CommandParameter
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandParameter" /> struct.

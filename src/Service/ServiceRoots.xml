@@ -1,0 +1,35 @@
+<linker>
+  <assembly fullname="Service" preserve="all" />
+  <assembly fullname="Database" preserve="all" />
+  <assembly fullname="System.Net.Http" preserve="all" />
+  <assembly fullname="System.Threading.Channels" preserve="all" />
+  <assembly fullname="Microsoft.Extensions.Configuration" preserve="all" />
+  <assembly fullname="Microsoft.Extensions.Configuration.Abstractions" preserve="all" />
+  <assembly fullname="Microsoft.Extensions.Configuration.Binder" preserve="all" />
+  <assembly fullname="Microsoft.Extensions.Configuration.EnvironmentVariables" preserve="all" />
+  <assembly fullname="Microsoft.Extensions.DependencyInjection" preserve="all" />
+  <assembly fullname="Microsoft.Extensions.Logging" preserve="all" />
+
+  <assembly fullname="AWSXRayRecorder.Core" preserve="all" />
+  <assembly fullname="AWSXRayRecorder.Handlers.AwsSdk" preserve="all" />
+  <assembly fullname="AWSXRayRecorder.Handlers.EntityFramework" preserve="all" />
+  <assembly fullname="AWSXRayRecorder.Handlers.System.Net" preserve="all" />
+  <assembly fullname="AWSXRayRecorder.Handlers.AspNetCore" preserve="all" />
+  
+  <assembly fullname="AWSSDK.Core" preserve="all" />
+  <assembly fullname="AWSSDK.S3" preserve="all" />
+
+  <assembly fullname="Microsoft.IdentityModel.Protocols.OpenIdConnect">
+    <type fullname="Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectConfiguration" preserve="all" />
+  </assembly>
+
+  <assembly fullname="Microsoft.IdentityModel.Tokens">
+    <type fullname="Microsoft.IdentityModel.Tokens.JsonWebKeySet" preserve="all" />
+    <type fullname="Microsoft.IdentityModel.Tokens.JsonWebKey" preserve="all" />
+  </assembly>
+
+  <assembly fullname="System.IdentityModel.Tokens.Jwt">
+    <type fullname="System.IdentityModel.Tokens.Jwt.JwtHeader" preserve="all" />
+    <type fullname="System.IdentityModel.Tokens.Jwt.JwtPayload" preserve="all" />
+  </assembly>
+</linker>

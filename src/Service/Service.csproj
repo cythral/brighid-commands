@@ -3,7 +3,6 @@
   <PropertyGroup>
     <RuntimeIdentifier>linux-musl-arm64</RuntimeIdentifier>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <TrimMode>copyused</TrimMode>
     <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
     <PublishTrimmed>true</PublishTrimmed>
     <PublishSelfContained>true</PublishSelfContained>
@@ -18,14 +17,17 @@
     <PackageReference Include="Serilog.AspNetCore" Version="6.1.0" />
     <PackageReference Include="Serilog.Filters.Expressions" Version="2.1.0" />
     <PackageReference Include="Destructurama.Attributed" Version="3.0.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.9" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.9" />
-    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.4" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
     <PackageReference Include="System.Linq.Async" Version="6.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="../Database/Database.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TrimmerRootDescriptor Include="ServiceRoots.xml" />
   </ItemGroup>
 </Project>

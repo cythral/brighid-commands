@@ -5,7 +5,7 @@ namespace Brighid.Commands.Service
     /// <summary>
     /// Represents a request to download a command.
     /// </summary>
-    public struct CommandDownloadRequest
+    public readonly struct CommandDownloadRequest
     {
         /// <summary>
         /// Gets the assembly name.
