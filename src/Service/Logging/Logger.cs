@@ -36,7 +36,7 @@ namespace Brighid.Commands
         }
 
         /// <inheritdoc />
-        IDisposable ILogger.BeginScope<TState>(TState state)
+        IDisposable? ILogger.BeginScope<TState>(TState state)
         {
             return logger.BeginScope(state);
         }
