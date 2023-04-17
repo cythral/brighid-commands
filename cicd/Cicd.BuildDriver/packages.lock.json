@@ -78,31 +78,31 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.106.20",
-        "contentHash": "0dA8hxej6qUGR5r+D96kckj6R3f5d7n9QRqoZDMbgOlgc/CllSCSMmjrme2rm8O/7KxmRkEKHNkKJGdMJeQTPA=="
+        "resolved": "3.7.106.21",
+        "contentHash": "NXeMfOWp1GeKod9tfbhPGtcAw6vj5b+cOocJcL5TOVfZ4QpTj+Wkjr4p0j5Q594nhTmXjXWYxU1MRzIOpn2LOg=="
       },
       "AWSSDK.ECR": {
         "type": "Transitive",
-        "resolved": "3.7.100.113",
-        "contentHash": "ksJGgjpmW39PkbWtCH/hnCjDKONee77/k8Q7Rvw6LyKScVrfZB4MlJEdzu5eYsTnqEUalvH2tblB5uiWtZdPZw==",
+        "resolved": "3.7.100.114",
+        "contentHash": "uZ3JyyftSTP+pzQh9ajk3y3iKrn14XaR9QfApyALz0yPM7c5Cn5sTegFlwQhXOXhqtkmOqg/w22E0BnpH66KOA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.106.20, 4.0.0)"
+          "AWSSDK.Core": "[3.7.106.21, 4.0.0)"
         }
       },
       "AWSSDK.ECRPublic": {
         "type": "Transitive",
-        "resolved": "3.7.102.3",
-        "contentHash": "d4RgFhgMV+Mpghupv1HbyIvL+EIUUnitlHZmTdc1FbKTFUH1+X+h9hMo9x72A/oeVL34LUIl8bsgi5SlHwlclg==",
+        "resolved": "3.7.102.4",
+        "contentHash": "ZqamwR+wS0jRuZ5Hc/4Dkr7PZcqzdNrDEn1KzOAKhvi9G18BjzfREL0WckfYlJZbxnEvv02Q2j+ImZxFBwe06Q==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.106.20, 4.0.0)"
+          "AWSSDK.Core": "[3.7.106.21, 4.0.0)"
         }
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.103.50",
-        "contentHash": "oIRJJxm+8+th6HrJfrfy165h3KGuF3/O2XLot4GshhAlhEP+RpBvb1eEgUhZyo3EGCT69eKmm2Hsd5K72XsohA==",
+        "resolved": "3.7.103.51",
+        "contentHash": "NoYGiRu8AcrR8eRGTiFCQe+DzXE9Q5MLQrmZzKXIuzPZeF0pB/wFm8tVCpDum/OEuWN4EM50S3x4NPpyBSzd6A==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.106.20, 4.0.0)"
+          "AWSSDK.Core": "[3.7.106.21, 4.0.0)"
         }
       },
       "AWSXRayRecorder": {
@@ -864,8 +864,8 @@
       "cicd.utils": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.ECR": "[3.7.100.113, )",
-          "AWSSDK.ECRPublic": "[3.7.102.3, )"
+          "AWSSDK.ECR": "[3.7.100.114, )",
+          "AWSSDK.ECRPublic": "[3.7.102.4, )"
         }
       },
       "database": {
@@ -883,7 +883,7 @@
       "service": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.S3": "[3.7.103.50, )",
+          "AWSSDK.S3": "[3.7.103.51, )",
           "Database": "[1.0.0, )",
           "Destructurama.Attributed": "[3.0.0, )",
           "Griesoft.AspNetCore.ReCaptcha": "[2.2.0, )",
