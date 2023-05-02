@@ -4,11 +4,11 @@
     "net7.0": {
       "AWSSDK.SecurityToken": {
         "type": "Direct",
-        "requested": "[3.7.101.58, )",
-        "resolved": "3.7.101.58",
-        "contentHash": "2DN2L+rhqkmu1B+fBk5JqNNLsmyTrRBCw1ZqizSAksmk6rHjoKYbrxQwIi74BmitPInfmNI9WO3eBc4/kzmiUg==",
+        "requested": "[3.7.101.59, )",
+        "resolved": "3.7.101.59",
+        "contentHash": "hB2x/M+5r41nmywcutETuTCh8yFApBubEo2gwvE2XJpDcDE86m4cbYx6bJK7Y1aXZPOZ47daSvvuVGORt30DRA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.106.30, 4.0.0)"
+          "AWSSDK.Core": "[3.7.106.31, 4.0.0)"
         }
       },
       "Microsoft.Extensions.Hosting": {
@@ -99,10 +99,10 @@
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.104.8",
-        "contentHash": "0Nf7/ToEhSjgFKRgt5wm1TLgWfdeNVdlc/qNeDSzrnrrzJVgSQj0TDs04zGqO62fRx3Ty3eVUT+50HuFpey4Tw==",
+        "resolved": "3.7.104.9",
+        "contentHash": "lm3t2q/FMwqDBMbYzLLBcbq0hCLvOqhmfW+E9869C7vGYIAX+n6v51ce0r1CZe0gwMATHXLvgjhRNTsNiyfcyQ==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.106.30, 4.0.0)"
+          "AWSSDK.Core": "[3.7.106.31, 4.0.0)"
         }
       },
       "AWSXRayRecorder": {
@@ -883,7 +883,7 @@
       "service": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.S3": "[3.7.104.8, )",
+          "AWSSDK.S3": "[3.7.104.9, )",
           "Database": "[1.0.0, )",
           "Destructurama.Attributed": "[3.0.0, )",
           "Griesoft.AspNetCore.ReCaptcha": "[2.2.0, )",
