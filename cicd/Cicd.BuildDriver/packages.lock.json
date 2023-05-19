@@ -99,8 +99,8 @@
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.104.17",
-        "contentHash": "oq4zbOmcGJwmriVqFq9lAbbiExmSU5I6O8cjESNPznrLgYZnDXlhG/iLLRmRS4HeP7QHq0YUF4MY4qtjMISmDw==",
+        "resolved": "3.7.104.18",
+        "contentHash": "6BDNfNyrWfVtIFy8KYcLbdOzs8ZArIybf5xJAq7misdPbG8+88AxhD9d5rbwxUoXmK5eN9+tcKmwks0lyvmVRw==",
         "dependencies": {
           "AWSSDK.Core": "[3.7.106.38, 4.0.0)"
         }
@@ -883,7 +883,7 @@
       "service": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.S3": "[3.7.104.17, )",
+          "AWSSDK.S3": "[3.7.104.18, )",
           "Database": "[1.0.0, )",
           "Destructurama.Attributed": "[3.0.0, )",
           "Griesoft.AspNetCore.ReCaptcha": "[2.2.0, )",
