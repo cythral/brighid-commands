@@ -118,15 +118,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.106.40",
-        "contentHash": "HfvEWQ6RKr3BDR5IDOPIExaHcXvgdhK2yUrBZWzby6uv4DS3iIGmbK2nH86pJPcyYhj0nNqo3MnMxRX9cKkIYQ=="
+        "resolved": "3.7.106.41",
+        "contentHash": "pcddfTH2MKiagp06t5Ebz5YIiplsvLqbH/Pjq2in3IbiCZKHzQAJi2dLDEj5T+eWKfVjHXtJ8HodUgeriOd9oA=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.104.20",
-        "contentHash": "qhhq+Q9NlVg/TEK+x09+zArI04HnwS/NJ2cxRpcA5+CXqXx0VqCbA0qmNSnnq1esvy5EJHIerudFwvasY7qZ8A==",
+        "resolved": "3.7.104.21",
+        "contentHash": "312b0KhnCku/orwnc/kOvuHoeJR6Nkr+AHrd/OtW2Mh1XSdDhq4+gw9M5KoJnjy3xCOcTx5OlLlUa1Gdnhr8ug==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.106.40, 4.0.0)"
+          "AWSSDK.Core": "[3.7.106.41, 4.0.0)"
         }
       },
       "AWSXRayRecorder": {
@@ -1039,7 +1039,7 @@
       "service": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.S3": "[3.7.104.20, )",
+          "AWSSDK.S3": "[3.7.104.21, )",
           "Database": "[1.0.0, )",
           "Destructurama.Attributed": "[3.0.0, )",
           "Griesoft.AspNetCore.ReCaptcha": "[2.2.0, )",
