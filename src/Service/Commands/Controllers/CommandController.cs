@@ -155,7 +155,8 @@ namespace Brighid.Commands.Service
         /// </summary>
         /// <param name="name">The name of the command to execute.</param>
         /// <param name="sourceSystem">The system where the command execution is being requested from.</param>
-        /// <param name="sourceSystemId">The channel within the source system where the command execution is being requested from.</param>
+        /// <param name="sourceSystemChannel">The channel within the source system where the command execution is being requested from.</param>
+        /// <param name="sourceSystemUser">The user ID within the source system where the command execution is being requested from.</param>
         /// <returns>The HTTP Response.</returns>
         [HttpPost("{name}/execute", Name = "Commands:ExecuteCommand")]
         [Authorize]
@@ -165,7 +166,8 @@ namespace Brighid.Commands.Service
         public async Task<ActionResult<ExecuteCommandResponse>> Execute(
             string name,
             [FromHeader(Name = "x-source-system")] string? sourceSystem = null,
-            [FromHeader(Name = "x-source-system-id")] string? sourceSystemId = null
+            [FromHeader(Name = "x-source-system-channel")] string? sourceSystemChannel = null,
+            [FromHeader(Name = "x-source-system-user")] string? sourceSystemUser = null
         )
         {
             HttpContext.RequestAborted.ThrowIfCancellationRequested();
@@ -176,7 +178,7 @@ namespace Brighid.Commands.Service
                 await service.LoadCommand(command, HttpContext.RequestAborted);
 
                 var token = command.Scopes.Contains("token") ? await HttpContext.GetTokenAsync("access_token") : null;
-                var context = new CommandContext(HttpContext.Request.Body, HttpContext.User, sourceSystem!, sourceSystemId!, token);
+                var context = new CommandContext(HttpContext.Request.Body, HttpContext.User, sourceSystem!, sourceSystemChannel!, sourceSystemUser!, token);
 
                 // Embedded Commands are typically very fast once loaded into the Assembly Load Context.
                 // Save a call to the response topic + its transformer by just returning immediately and delegating
@@ -208,7 +210,8 @@ namespace Brighid.Commands.Service
         /// </summary>
         /// <param name="name">The name of the command to execute.</param>
         /// <param name="sourceSystem">The system where the command execution is being requested from.</param>
-        /// <param name="sourceSystemId">The channel within the source system where the command execution is being requested from.</param>
+        /// <param name="sourceSystemChannel">The channel within the source system where the command execution is being requested from.</param>
+        /// <param name="sourceSystemUser">The user ID within the source system where the command execution is being requested from.</param>
         /// <returns>The HTTP Response.</returns>
         [HttpPost("{name}/execute/recaptcha", Name = "Commands:ExecuteCommandWithRecaptchaAuthentication")]
         [ReadableBodyStream]
@@ -218,10 +221,11 @@ namespace Brighid.Commands.Service
         public async Task<ActionResult<ExecuteCommandResponse>> ExecuteWithRecaptchaAuthentication(
             string name,
             [FromHeader(Name = "x-source-system")] string? sourceSystem = null,
-            [FromHeader(Name = "x-source-system-id")] string? sourceSystemId = null
+            [FromHeader(Name = "x-source-system-channel")] string? sourceSystemChannel = null,
+            [FromHeader(Name = "x-source-system-user")] string? sourceSystemUser = null
         )
         {
-            return await Execute(name, sourceSystem, sourceSystemId);
+            return await Execute(name, sourceSystem, sourceSystemChannel, sourceSystemUser);
         }
     }
 }

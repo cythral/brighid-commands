@@ -229,8 +229,11 @@ Resources:
               Value: !Ref RecaptchaSiteKey
             - Name: Encrypted__RecaptchaSettings__SecretKey
               Value: !Ref RecaptchaSecretKey
+<<<<<<< Updated upstream
             - Name: EmailCommand__EmailerRoleArn
               Value: !ImportValue cfn-utilities:EmailerRoleArn
+=======
+>>>>>>> Stashed changes
         - Name: envoy
           Image: !Ref EnvoyImage
           Essential: true
