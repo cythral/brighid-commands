@@ -380,9 +380,9 @@ namespace Brighid.Commands.Service
             }
 
             [Test, Auto]
-            public async Task ShouldExecuteTheLoadedCommandAndPassSourceSystemId(
+            public async Task ShouldExecuteTheLoadedCommandAndPassSourceSystemChannel(
                 string commandName,
-                string sourceSystemId,
+                string sourceSystemChannel,
                 HttpContext httpContext,
                 ExecuteCommandRequest request,
                 [Frozen] ICommandRunner runner,
@@ -392,10 +392,31 @@ namespace Brighid.Commands.Service
             {
                 controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
 
-                await controller.Execute(commandName, sourceSystemId: sourceSystemId);
+                await controller.Execute(commandName, sourceSystemChannel: sourceSystemChannel);
 
                 await runner.Received().Run(
-                    Is<CommandContext>(context => context.SourceSystemId == sourceSystemId),
+                    Is<CommandContext>(context => context.SourceSystemChannel == sourceSystemChannel),
+                    Is(httpContext.RequestAborted)
+                );
+            }
+
+            [Test, Auto]
+            public async Task ShouldExecuteTheLoadedCommandAndPassSourceSystemUser(
+                string commandName,
+                string sourceSystemUser,
+                HttpContext httpContext,
+                ExecuteCommandRequest request,
+                [Frozen] ICommandRunner runner,
+                [Frozen, Substitute] ICommandLoader loader,
+                [Target] CommandController controller
+            )
+            {
+                controller.ControllerContext = new ControllerContext { HttpContext = httpContext };
+
+                await controller.Execute(commandName, sourceSystemUser: sourceSystemUser);
+
+                await runner.Received().Run(
+                    Is<CommandContext>(context => context.SourceSystemUser == sourceSystemUser),
                     Is(httpContext.RequestAborted)
                 );
             }
