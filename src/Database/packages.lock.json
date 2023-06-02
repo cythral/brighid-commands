@@ -18,9 +18,9 @@
       },
       "Brighid.Commands.Sdk.Core": {
         "type": "Direct",
-        "requested": "[0.2.0-beta1, )",
-        "resolved": "0.2.0-beta1",
-        "contentHash": "ysz3H6H4PBIYYMjNqjct3FYe/HVjw+XYesJwjjQPEA9x5822lq92AcErJx+opZpGAF6NksVN3x5QI3XnhQ4QGQ==",
+        "requested": "[0.2.0-beta2, )",
+        "resolved": "0.2.0-beta2",
+        "contentHash": "s070OAEerMdOsvPeazaaUWtfsMAOds32hz1qxVrCocp7jkhs820bmIhn25ueaaV5pdaf20+TU4fA38NXWFElkQ==",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection": "7.0.0"
         }
