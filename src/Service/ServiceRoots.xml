@@ -1,6 +1,7 @@
 <linker>
   <assembly fullname="Service" preserve="all" />
   <assembly fullname="Database" preserve="all" />
+  <assembly fullname="System.Collections" preserve="all" />
   <assembly fullname="System.Net.Http" preserve="all" />
   <assembly fullname="System.Net.Http.Json" preserve="all" />
   <assembly fullname="System.Threading.Channels" preserve="all" />
