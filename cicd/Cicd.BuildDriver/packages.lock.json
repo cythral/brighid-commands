@@ -222,8 +222,8 @@
       },
       "Microsoft.AspNetCore.Authentication.JwtBearer": {
         "type": "Transitive",
-        "resolved": "7.0.7",
-        "contentHash": "V3ftCQYDWxHogvrZ3XEr3TNCACqoxMuBwnCI5kq+GeuFGh6u0VYDMrRwvXvFKxdFHgFwS9CFxq4/p1csSVPI8g==",
+        "resolved": "7.0.8",
+        "contentHash": "UWGvF86d2q90e1ync37Yg+yg2GRSeSh9y/Q5YRFw42YfzTDQd0X6somujDFVc9HWn6zVB7osSZnxHMW8BwoRSA==",
         "dependencies": {
           "Microsoft.IdentityModel.Protocols.OpenIdConnect": "6.15.1"
         }
@@ -937,7 +937,7 @@
           "Destructurama.Attributed": "[3.0.0, )",
           "Griesoft.AspNetCore.ReCaptcha": "[2.2.0, )",
           "McMaster.NETCore.Plugins": "[1.4.0, )",
-          "Microsoft.AspNetCore.Authentication.JwtBearer": "[7.0.7, )",
+          "Microsoft.AspNetCore.Authentication.JwtBearer": "[7.0.8, )",
           "Pomelo.EntityFrameworkCore.MySql": "[7.0.0, )",
           "Serilog.AspNetCore": "[7.0.0, )",
           "Serilog.Filters.Expressions": "[2.1.0, )",
