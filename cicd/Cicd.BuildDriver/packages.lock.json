@@ -192,10 +192,10 @@
       },
       "Destructurama.Attributed": {
         "type": "Transitive",
-        "resolved": "3.0.0",
-        "contentHash": "Wam0fvMhCrtN0HvRIiHpNsW8HhlKHM5CkAlUzrAdzqkzuHVBj3zd/zfY9610NELW296Vugcnmf/TMiaUMvepvA==",
+        "resolved": "3.1.0",
+        "contentHash": "WQtdbdLTraFSYl4Peo2YeyKung1SYC8s+HruNsi6o68BybZEd1bq8QPyT/cuwKpO6IPn/gW8F/dEAE+UhMoMWA==",
         "dependencies": {
-          "Serilog": "[2.8.0, 3.0.0)"
+          "Serilog": "[2.10.0, 4.0.0)"
         }
       },
       "Griesoft.AspNetCore.ReCaptcha": {
@@ -934,7 +934,7 @@
           "AWSSDK.S3": "[3.7.106.1, )",
           "Brighid.Identity.Client": "[0.7.0.62, )",
           "Database": "[1.0.0, )",
-          "Destructurama.Attributed": "[3.0.0, )",
+          "Destructurama.Attributed": "[3.1.0, )",
           "Griesoft.AspNetCore.ReCaptcha": "[2.2.0, )",
           "McMaster.NETCore.Plugins": "[1.4.0, )",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[7.0.8, )",
