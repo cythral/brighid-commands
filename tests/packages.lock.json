@@ -118,15 +118,15 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.200.3",
-        "contentHash": "cWV+BomRRjdGkeAulXXS0QWomAvbTmPY8KqiYdPu1gxKMR/KP3357E4c3NXiVy/lbk/SHcJjdJ3NBzeCjLiSMg=="
+        "resolved": "3.7.200.4",
+        "contentHash": "n72NXJM9Cac3SAV+CxYYGYIXjYnaqppBLMe+YM/0gcQsAl6nNiTGWirgAZp9Rdi+38MTsfN1ceVSIkgXAZYAuw=="
       },
       "AWSSDK.S3": {
         "type": "Transitive",
-        "resolved": "3.7.201.1",
-        "contentHash": "4SBfub/zH4L4XIsp6N5dF2sabAb4ymRTnpE8HdSTiCJ7AF0+byzHY+a/an52CTrCvZYGN9gNBEl0QYH6wc/NtA==",
+        "resolved": "3.7.201.2",
+        "contentHash": "nkpX11ewsO9W4rlN6tsZ6r04v24VxfG0oCo7AX3gYYHksJpakGIqv8aWoXlvo6SPQajplWEkgpRz6YAvYh/mCA==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.200.3, 4.0.0)"
+          "AWSSDK.Core": "[3.7.200.4, 4.0.0)"
         }
       },
       "AWSXRayRecorder": {
@@ -1075,7 +1075,7 @@
       "service": {
         "type": "Project",
         "dependencies": {
-          "AWSSDK.S3": "[3.7.201.1, )",
+          "AWSSDK.S3": "[3.7.201.2, )",
           "Brighid.Identity.Client": "[0.7.0.62, )",
           "Database": "[1.0.0, )",
           "Destructurama.Attributed": "[3.1.0, )",
