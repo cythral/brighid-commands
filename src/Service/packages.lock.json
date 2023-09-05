@@ -4,11 +4,11 @@
     "net7.0": {
       "AWSSDK.S3": {
         "type": "Direct",
-        "requested": "[3.7.203.7, )",
-        "resolved": "3.7.203.7",
-        "contentHash": "hHigpHoNGws2LHGhG8fC39eHsrG/KKm+pe8T4dkSxH+05Fitxc/ciOazC3jlmYJ5ctsjbVCmb2/U/v0BYa9jwg==",
+        "requested": "[3.7.203.8, )",
+        "resolved": "3.7.203.8",
+        "contentHash": "KumWVT3sUHE0KyhLrd4aVD92Yy3XDpSnZyRvtewV0ZwrFZ73tb+NB7sOLWlaZ+et4g3E23a5yoes2JEVpElP+g==",
         "dependencies": {
-          "AWSSDK.Core": "[3.7.202.1, 4.0.0)"
+          "AWSSDK.Core": "[3.7.202.2, 4.0.0)"
         }
       },
       "Brighid.Identity.Client": {
@@ -142,8 +142,8 @@
       },
       "AWSSDK.Core": {
         "type": "Transitive",
-        "resolved": "3.7.202.1",
-        "contentHash": "rqUH8rEpbbXCOUsiwfgEE5U7ZzBxSrYvHTAC5B9UJNxaXQ/QoeOD1N0jf8Vca8FrHWRmqy6fNj/K1Sudh34CRA=="
+        "resolved": "3.7.202.2",
+        "contentHash": "LtfHJniVW3Z74oQRqup6T3WjqNGjIrxtz8WAd0jlxJmOZHOXw4x2cQ+QZVTouzQ0H/2yAEJduc6CO4f8XPgrmg=="
       },
       "AWSXRayRecorder": {
         "type": "Transitive",
