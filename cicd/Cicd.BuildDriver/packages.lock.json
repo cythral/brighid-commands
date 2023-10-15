@@ -67,9 +67,9 @@
       },
       "YamlDotNet": {
         "type": "Direct",
-        "requested": "[13.3.1, )",
-        "resolved": "13.3.1",
-        "contentHash": "Q2dqDsb0xAlr092grgHk8/vTXI2snIiYM5ND3IXkgJDFIdPnqDYwYnlk+gwzSeRByDLhiSzTog8uT7xFwH68Zg=="
+        "requested": "[13.7.1, )",
+        "resolved": "13.7.1",
+        "contentHash": "X4m1PnFcJwvAj1sCDMntg/eZcX96CJLrWMiYnq41KqhFVZPuw63ZTSxIGqgdCwHWHvCAyTxheELC/VDf1HsU2A=="
       },
       "Amazon.Lambda.SQSEvents": {
         "type": "Transitive",
