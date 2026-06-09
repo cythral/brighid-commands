@@ -5,12 +5,9 @@ using System.Threading.Tasks;
 using Brighid.Commands.Auth;
 using Brighid.Commands.Sdk;
 
-using Griesoft.AspNetCore.ReCaptcha;
-
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Brighid.Commands.Service
 {
@@ -20,29 +17,17 @@ namespace Brighid.Commands.Service
     [Route("/commands")]
     public class CommandController : Controller
     {
-        private readonly ICommandLoader loader;
         private readonly ICommandService service;
-        private readonly ICommandRepository repository;
-        private readonly ILogger<CommandController> logger;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandController"/> class.
         /// </summary>
-        /// <param name="loader">Service to load commands with.</param>
         /// <param name="service">Service used to perform operations on commands.</param>
-        /// <param name="repository">Repository to look for commands in.</param>
-        /// <param name="logger">Logger used to log info to some destination(s).</param>
         public CommandController(
-            ICommandLoader loader,
-            ICommandService service,
-            ICommandRepository repository,
-            ILogger<CommandController> logger
+            ICommandService service
         )
         {
-            this.loader = loader;
             this.service = service;
-            this.repository = repository;
-            this.logger = logger;
         }
 
         /// <summary>
