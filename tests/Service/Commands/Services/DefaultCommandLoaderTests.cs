@@ -13,7 +13,6 @@ using Brighid.Commands.Sdk;
 using FluentAssertions;
 
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 
 using NSubstitute;
 
@@ -148,15 +147,6 @@ namespace Brighid.Commands.Service
 
             private class TestStartup : ICommandStartup
             {
-                private readonly ILogger<TestStartup> logger;
-
-                public TestStartup(
-                    ILogger<TestStartup> logger
-                )
-                {
-                    this.logger = logger;
-                }
-
                 public void ConfigureServices(IServiceCollection services)
                 {
                     services.AddSingleton<TestDummyClass>();
