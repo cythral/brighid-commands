@@ -215,7 +215,7 @@ namespace Brighid.Commands.Service
         /// <returns>The HTTP Response.</returns>
         [HttpPost("{name}/execute/recaptcha", Name = "Commands:ExecuteCommandWithRecaptchaAuthentication")]
         [ReadableBodyStream]
-        [ValidateRecaptcha]
+        // [ValidateRecaptcha]
         [ProducesResponseType(typeof(ExecuteCommandResponse), (int)HttpStatusCode.OK)]
         [ProducesResponseType(typeof(ExecuteCommandResponse), (int)HttpStatusCode.Accepted)]
         public async Task<ActionResult<ExecuteCommandResponse>> ExecuteWithRecaptchaAuthentication(
