@@ -192,8 +192,8 @@
       },
       "Destructurama.Attributed": {
         "type": "Transitive",
-        "resolved": "3.1.0",
-        "contentHash": "WQtdbdLTraFSYl4Peo2YeyKung1SYC8s+HruNsi6o68BybZEd1bq8QPyT/cuwKpO6IPn/gW8F/dEAE+UhMoMWA==",
+        "resolved": "3.2.0",
+        "contentHash": "c8zQMIdRJa7fvVo02FUuHr9jVvckSnpyEtTvSlpe0XjOqIvhC1VokH3lTPSHNIMETBvdnReR0e0cxe11IiBHUw==",
         "dependencies": {
           "Serilog": "[2.10.0, 4.0.0)"
         }
@@ -934,7 +934,7 @@
           "AWSSDK.S3": "[3.7.203.14, )",
           "Brighid.Identity.Client": "[0.7.0.62, )",
           "Database": "[1.0.0, )",
-          "Destructurama.Attributed": "[3.1.0, )",
+          "Destructurama.Attributed": "[3.2.0, )",
           "Griesoft.AspNetCore.ReCaptcha": "[2.2.0, )",
           "McMaster.NETCore.Plugins": "[1.4.0, )",
           "Microsoft.AspNetCore.Authentication.JwtBearer": "[7.0.11, )",
